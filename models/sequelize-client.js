@@ -8,3 +8,4 @@ export const sequelize = new Sequelize(process.env.PG_URL, {
     updatedAt: "updated_at"
   }
 });
+

@@ -20,19 +20,67 @@ Account.hasMany(Challenge, { as: "challenges", foreignKey: "id_account", onDelet
 Challenge.belongsTo(Account, { as: "account", foreignKey: "id_account" });
 
 // Account <-> Vote <-> Challenge (Many-to-Many)
-Account.belongsToMany(Challenge, { as: "votedChallenges", through: "vote", foreignKey: "id_account", otherKey: "id_challenge" });
-Challenge.belongsToMany(Account, { as: "voters", through: "vote", foreignKey: "id_challenge", otherKey: "id_account" });
+Account.belongsToMany(Challenge, { 
+  as: "votedChallenges", 
+  through: "vote", 
+  foreignKey: "id_account", 
+  otherKey: "id_challenge",
+  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Vote
+});
+Challenge.belongsToMany(Account, { 
+  as: "voters", 
+  through: "vote", 
+  foreignKey: "id_challenge", 
+  otherKey: "id_account",
+  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Vote
+});
 
 // Account <-> Comment <-> Challenge (Many-to-Many)
-Account.belongsToMany(Challenge, { as: "commentedChallenges", through: "comment", foreignKey: "id_account", otherKey: "id_challenge" });
-Challenge.belongsToMany(Account, { as: "commenters", through: "comment", foreignKey: "id_challenge", otherKey: "id_account" });
+Account.belongsToMany(Challenge, { 
+  as: "commentedChallenges", 
+  through: "comment", 
+  foreignKey: "id_account", 
+  otherKey: "id_challenge",
+  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Comment
+});
+Challenge.belongsToMany(Account, { 
+  as: "commenters", 
+  through: "comment", 
+  foreignKey: "id_challenge", 
+  otherKey: "id_account",
+  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Comment
+});
 
 // Account <-> Participate <-> Challenge (Many-to-Many)
-Account.belongsToMany(Challenge, { as: "participatedChallenges", through: "participate", foreignKey: "id_account", otherKey: "id_challenge" });
-Challenge.belongsToMany(Account, { as: "participants", through: "participate", foreignKey: "id_challenge", otherKey: "id_account" });
+Account.belongsToMany(Challenge, { 
+  as: "participatedChallenges", 
+  through: "participate", 
+  foreignKey: "id_account", 
+  otherKey: "id_challenge",
+  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Participate
+});
+Challenge.belongsToMany(Account, { 
+  as: "participants", 
+  through: "participate", 
+  foreignKey: "id_challenge", 
+  otherKey: "id_account",
+  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Participate
+});
 
 // Account <-> Receive <-> Badge (Many-to-Many)
-Account.belongsToMany(Badge, { as: "badges", through: "receive", foreignKey: "id_account", otherKey: "id_badge" });
-Badge.belongsToMany(Account, { as: "owners", through: "receive", foreignKey: "id_badge", otherKey: "id_account" });
+Account.belongsToMany(Badge, { 
+  as: "badges", 
+  through: "receive", 
+  foreignKey: "id_account", 
+  otherKey: "id_badge",
+  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Receive
+});
+Badge.belongsToMany(Account, { 
+  as: "owners", 
+  through: "receive", 
+  foreignKey: "id_badge", 
+  otherKey: "id_account",
+  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Receive
+});
 
-export { Game, Ranking, Account, Challenge, Vote, Comment, Participate, Badge, Receive };
+export { Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive };

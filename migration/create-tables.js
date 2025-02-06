@@ -4,7 +4,7 @@ import { sequelize } from "../models/index.js"; // sequelize est "conscient" de 
 await sequelize.drop();
 
 // Création des tables
-await sequelize.sync(); // synchroniser toutes les tables associés à ce tunnel de connexion
+await sequelize.sync();; // synchroniser toutes les tables associés à ce tunnel de connexion
 
 // On close la connexion
 await sequelize.close();
