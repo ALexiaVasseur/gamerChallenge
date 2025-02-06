@@ -1,12 +1,13 @@
 import express from 'express';
+import "dotenv/config";
 
 const app = express();
-const port = 3000;
+console.log(process.env.PORT)
 
 app.get("/", (req, res) => {
     res.send("Hello world")
 });
 
 app.listen(port, () => {
-    console.log("Starting")
+    console.log(`Démarrage de l'API sur le localhost:${process.env.PORT}`)
 })
