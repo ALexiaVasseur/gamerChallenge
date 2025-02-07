@@ -7,80 +7,45 @@ import { Participate } from "./participate.js";
 import { Badge } from "./badge.js";
 import { Receive } from "./receive.js";
 
-// One-To-One : hasOne + belongsTo
-// One-To-Many : hasMany + belongsTo
-// Many-To-Many : belongsToMany + belongsToMany
+// Vérification des imports
+console.log("📌 Vérification des modèles avant associations :", {
+  Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive
+});
 
 // Game <-> Challenge (One-to-Many)
-Game.hasMany(Challenge, { as: "challenges", foreignKey: "id_game", onDelete: "CASCADE" });
-Challenge.belongsTo(Game, { as: "game", foreignKey: "id_game" });
+Game.hasMany(Challenge, { foreignKey: "id", onDelete: "CASCADE" });
+Challenge.belongsTo(Game, { foreignKey: "id" });
 
 // Account <-> Challenge (One-to-Many)
-Account.hasMany(Challenge, { as: "challenges", foreignKey: "id_account", onDelete: "CASCADE" });
-Challenge.belongsTo(Account, { as: "account", foreignKey: "id_account" });
+Account.hasMany(Challenge, { foreignKey: "id", onDelete: "CASCADE" });
+Challenge.belongsTo(Account, { foreignKey: "id" });
 
-// Account <-> Vote <-> Challenge (Many-to-Many)
-Account.belongsToMany(Challenge, { 
-  as: "votedChallenges", 
-  through: "vote", 
-  foreignKey: "id_account", 
-  otherKey: "id_challenge",
-  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Vote
-});
-Challenge.belongsToMany(Account, { 
-  as: "voters", 
-  through: "vote", 
-  foreignKey: "id_challenge", 
-  otherKey: "id_account",
-  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Vote
-});
+// Account <-> Vote <-> Participate (Many-to-Many via Vote)
+Account.hasMany(Vote, { foreignKey: "id", onDelete: "CASCADE" });
+Vote.belongsTo(Account, { foreignKey: "id" });
 
-// Account <-> Comment <-> Challenge (Many-to-Many)
-Account.belongsToMany(Challenge, { 
-  as: "commentedChallenges", 
-  through: "comment", 
-  foreignKey: "id_account", 
-  otherKey: "id_challenge",
-  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Comment
-});
-Challenge.belongsToMany(Account, { 
-  as: "commenters", 
-  through: "comment", 
-  foreignKey: "id_challenge", 
-  otherKey: "id_account",
-  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Comment
-});
+Participate.hasMany(Vote, { foreignKey: "id_participation", onDelete: "CASCADE" });
+Vote.belongsTo(Participate, { foreignKey: "id_participation" });
 
-// Account <-> Participate <-> Challenge (Many-to-Many)
-Account.belongsToMany(Challenge, { 
-  as: "participatedChallenges", 
-  through: "participate", 
-  foreignKey: "id_account", 
-  otherKey: "id_challenge",
-  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Participate
-});
-Challenge.belongsToMany(Account, { 
-  as: "participants", 
-  through: "participate", 
-  foreignKey: "id_challenge", 
-  otherKey: "id_account",
-  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Participate
-});
+// Account <-> Comment <-> Challenge (Many-to-Many via Comment)
+Account.hasMany(Comment, { foreignKey: "id", onDelete: "CASCADE" });
+Comment.belongsTo(Account, { foreignKey: "id" });
 
-// Account <-> Receive <-> Badge (Many-to-Many)
-Account.belongsToMany(Badge, { 
-  as: "badges", 
-  through: "receive", 
-  foreignKey: "id_account", 
-  otherKey: "id_badge",
-  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Receive
-});
-Badge.belongsToMany(Account, { 
-  as: "owners", 
-  through: "receive", 
-  foreignKey: "id_badge", 
-  otherKey: "id_account",
-  onDelete: "CASCADE" // Ajout de la suppression en cascade pour la relation Receive
-});
+Challenge.hasMany(Comment, { foreignKey: "id", onDelete: "CASCADE" });
+Comment.belongsTo(Challenge, { foreignKey: "id" });
+
+// Account <-> Participate <-> Challenge (Many-to-Many via Participate)
+Account.hasMany(Participate, { foreignKey: "id", onDelete: "CASCADE" });
+Participate.belongsTo(Account, { foreignKey: "id" });
+
+Challenge.hasMany(Participate, { foreignKey: "id", onDelete: "CASCADE" });
+Participate.belongsTo(Challenge, { foreignKey: "id" });
+
+// Account <-> Receive <-> Badge (Many-to-Many via Receive)
+Account.hasMany(Receive, { foreignKey: "id_account", onDelete: "CASCADE" });
+Receive.belongsTo(Account, { foreignKey: "id_account" });
+
+Badge.hasMany(Receive, { foreignKey: "id_badge", onDelete: "CASCADE" });
+Receive.belongsTo(Badge, { foreignKey: "id_badge" });
 
 export { Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive };

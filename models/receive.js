@@ -9,7 +9,7 @@ Receive.init({
         allowNull: false,
         references: {
             model: 'accounts', // Référence la table accounts
-            key: 'id_account'
+            key: 'id'
         }
     },
     id_badge: {
