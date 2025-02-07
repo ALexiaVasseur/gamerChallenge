@@ -8,6 +8,10 @@ Game.init({
     type: DataTypes.INTEGER,
     allowNull: true
   },
+  title: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
   description: {
     type: DataTypes.TEXT,
     allowNull: true
