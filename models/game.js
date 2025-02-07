@@ -4,11 +4,6 @@ import { sequelize } from './sequelize-client.js';
 export class Game extends Model {}
 
 Game.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
   id_igdb: {
     type: DataTypes.INTEGER,
     allowNull: true

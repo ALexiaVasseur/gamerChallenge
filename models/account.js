@@ -4,11 +4,6 @@ import { sequelize } from "./sequelize-client.js";
 export class Account extends Model {}
 
 Account.init({
-  id: {  // Renommé de id_account à id
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
   pseudo: {
     type: DataTypes.STRING(50),
     allowNull: false,

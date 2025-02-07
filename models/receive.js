@@ -4,7 +4,7 @@ import { sequelize } from "./sequelize-client.js";
 export class Receive extends Model {}
 
 Receive.init({
-    id_account: {
+    account_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -12,12 +12,12 @@ Receive.init({
             key: 'id'
         }
     },
-    id_badge: {
+    badge_id: {
         type: DataTypes.INTEGER,
         allowNull: true, // Permet des valeurs NULL pour id_badge
         references: {
             model: 'badges', // Référence la table badges
-            key: 'id_badge'
+            key: 'id'
         }
     },
     created_at: {

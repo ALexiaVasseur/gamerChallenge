@@ -25,34 +25,34 @@ async function populateDatabase() {
 
         // 📌 Add challenges
         const challenges = await Challenge.bulkCreate([
-            { id_game: games[0].id, id_account: accounts[0].id, title: "First Challenge", description: "Complete an exciting task in this virtual world. Show your skills and creativity!", rules: "No cheating, be respectful to others.", type: "Solo", video_url: "https://example.com/challenge1" },
-            { id_game: games[1].id, id_account: accounts[1].id, title: "Second Challenge", description: "Join a competitive match against others. Win the game to become the champion!", rules: "Respect other players, no toxic behavior.", type: "Competitive", video_url: "https://example.com/challenge2" },
-            { id_game: games[2].id, id_account: accounts[2].id, title: "Third Challenge", description: "Dominate the battlefield with your reflexes and sharp mind!", rules: "Fair play, no team killing.", type: "Team", video_url: "https://example.com/challenge3" },
-            { id_game: games[3].id, id_account: accounts[3].id, title: "Fourth Challenge", description: "Compete against others in this thrilling sports challenge!", rules: "Follow the rules of the game, no cheating.", type: "Competitive", video_url: "https://example.com/challenge4" }
+            { game_id: games[0].id, account_id: accounts[0].id, title: "First Challenge", description: "Complete an exciting task in this virtual world. Show your skills and creativity!", rules: "No cheating, be respectful to others.", type: "Solo", video_url: "https://example.com/challenge1" },
+            { game_id: games[1].id, account_id: accounts[1].id, title: "Second Challenge", description: "Join a competitive match against others. Win the game to become the champion!", rules: "Respect other players, no toxic behavior.", type: "Competitive", video_url: "https://example.com/challenge2" },
+            { game_id: games[2].id, account_id: accounts[2].id, title: "Third Challenge", description: "Dominate the battlefield with your reflexes and sharp mind!", rules: "Fair play, no team killing.", type: "Team", video_url: "https://example.com/challenge3" },
+            { game_id: games[3].id, account_id: accounts[3].id, title: "Fourth Challenge", description: "Compete against others in this thrilling sports challenge!", rules: "Follow the rules of the game, no cheating.", type: "Competitive", video_url: "https://example.com/challenge4" }
         ]);
 
         // 📌 Add participations
         const participations = await Participate.bulkCreate([
-            { id_challenge: challenges[0].id, video_url: "https://example.com/video1", image_url: "https://images.pexels.com/photos/856091/pexels-photo-856091.jpeg", score: 10, description: "Successfully completed the challenge! I put in a lot of effort and the experience was unforgettable." },
-            { id_challenge: challenges[1].id, video_url: "https://example.com/video2", image_url: "https://images.pexels.com/photos/1339746/pexels-photo-1339746.jpeg", score: 20, description: "An incredible participation! I gave my best and the results show my dedication." },
-            { id_challenge: challenges[2].id, video_url: "https://example.com/video3", image_url: "https://images.pexels.com/photos/1339835/pexels-photo-1339835.jpeg", score: 15, description: "Teamwork made this challenge so much fun. We worked together to reach our goal, and it was a great experience!" },
-            { id_challenge: challenges[3].id, video_url: "https://example.com/video4", image_url: "https://images.pexels.com/photos/1574566/pexels-photo-1574566.jpeg", score: 18, description: "What a challenge! I pushed my limits, and even though I didn't win, I had a fantastic time competing." }
+            { challenge_id: challenges[0].id, video_url: "https://example.com/video1", image_url: "https://images.pexels.com/photos/856091/pexels-photo-856091.jpeg", score: 10, description: "Successfully completed the challenge! I put in a lot of effort and the experience was unforgettable." },
+            { challenge_id: challenges[1].id, video_url: "https://example.com/video2", image_url: "https://images.pexels.com/photos/1339746/pexels-photo-1339746.jpeg", score: 20, description: "An incredible participation! I gave my best and the results show my dedication." },
+            { challenge_id: challenges[2].id, video_url: "https://example.com/video3", image_url: "https://images.pexels.com/photos/1339835/pexels-photo-1339835.jpeg", score: 15, description: "Teamwork made this challenge so much fun. We worked together to reach our goal, and it was a great experience!" },
+            { challenge_id: challenges[3].id, video_url: "https://example.com/video4", image_url: "https://images.pexels.com/photos/1574566/pexels-photo-1574566.jpeg", score: 18, description: "What a challenge! I pushed my limits, and even though I didn't win, I had a fantastic time competing." }
         ]);
 
         // 📌 Add votes
         await Vote.bulkCreate([
-            { id_account: accounts[0].id, id_participation: participations[0].id, vote: 5 },
-            { id_account: accounts[1].id, id_participation: participations[1].id, vote: 4 },
-            { id_account: accounts[2].id, id_participation: participations[2].id, vote: 3 },
-            { id_account: accounts[3].id, id_participation: participations[3].id, vote: 4 }
+            { account_id: accounts[0].id, participation_id: participations[0].id, vote: 5 },
+            { account_id: accounts[1].id, participation_id: participations[1].id, vote: 4 },
+            { account_id: accounts[2].id, participation_id: participations[2].id, vote: 3 },
+            { account_id: accounts[3].id, participation_id: participations[3].id, vote: 4 }
         ]);
 
         // 📌 Add comments
         await Comment.bulkCreate([
-            { id_challenge: challenges[0].id, id_account: accounts[0].id, text: "Great challenge! I absolutely loved taking part in it. The creativity required was amazing, and I feel like I learned a lot from this experience." },
-            { id_challenge: challenges[1].id, id_account: accounts[1].id, text: "I love this concept! The competition was intense, and every round pushed me to my limits. I look forward to participating in more challenges like this." },
-            { id_challenge: challenges[2].id, id_account: accounts[2].id, text: "This was such a fun challenge! The team and I really bonded while working together to solve the tasks. It's definitely one of the best experiences I've had." },
-            { id_challenge: challenges[3].id, id_account: accounts[3].id, text: "What an amazing sports challenge! I gave it my all, and even though I didn't win, it was an experience I will never forget. The adrenaline was real!" }
+            { challenge_id: challenges[0].id, account_id: accounts[0].id, text: "Great challenge! I absolutely loved taking part in it. The creativity required was amazing, and I feel like I learned a lot from this experience." },
+            { challenge_id: challenges[1].id, account_id: accounts[1].id, text: "I love this concept! The competition was intense, and every round pushed me to my limits. I look forward to participating in more challenges like this." },
+            { challenge_id: challenges[2].id, account_id: accounts[2].id, text: "This was such a fun challenge! The team and I really bonded while working together to solve the tasks. It's definitely one of the best experiences I've had." },
+            { challenge_id: challenges[3].id, account_id: accounts[3].id, text: "What an amazing sports challenge! I gave it my all, and even though I didn't win, it was an experience I will never forget. The adrenaline was real!" }
         ]);
 
         // 📌 Add badges
@@ -65,11 +65,12 @@ async function populateDatabase() {
 
         // 📌 Add badge receptions
         await Receive.bulkCreate([
-            { id_account: accounts[0].id, id_badge: badges[0].id },
-            { id_account: accounts[1].id, id_badge: badges[1].id },
-            { id_account: accounts[2].id, id_badge: badges[2].id },
-            { id_account: accounts[3].id, id_badge: badges[3].id }
+            { account_id: accounts[0].id, badges_id: badges[0].id },
+            { account_id: accounts[1].id, badges_id: badges[1].id },
+            { account_id: accounts[2].id, badges_id: badges[2].id },
+            { account_id: accounts[3].id, badges_id: badges[3].id }
         ]);
+        
 
         console.log("✅ Database populated successfully!");
     } catch (error) {

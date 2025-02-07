@@ -4,7 +4,7 @@ import { sequelize } from './sequelize-client.js';
 export class Vote extends Model {}
 
 Vote.init({
-  id_account: {
+  account_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -14,7 +14,7 @@ Vote.init({
     primaryKey: true,
     onDelete: 'CASCADE' // Suppression en cascade si Account est supprimé
   },
-  id_participation: {
+  participation_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {

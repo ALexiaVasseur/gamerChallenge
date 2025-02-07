@@ -4,7 +4,7 @@ import { sequelize } from './sequelize-client.js';
 export class Comment extends Model {}
 
 Comment.init({
-  id_challenge: {
+  challenge_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -14,7 +14,7 @@ Comment.init({
     primaryKey: true,
     onDelete: 'CASCADE' // Suppression en cascade si Challenge est supprimé
   },
-  id_account: {
+  account_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {

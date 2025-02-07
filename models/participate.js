@@ -4,12 +4,7 @@ import { sequelize } from './sequelize-client.js';
 export class Participate extends Model {}
 
 Participate.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  id_challenge: {
+  challenge_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {

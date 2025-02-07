@@ -4,12 +4,7 @@ import { sequelize } from './sequelize-client.js';
 export class Challenge extends Model {}
 
 Challenge.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  id_game: {
+  game_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -37,7 +32,7 @@ Challenge.init({
     type: DataTypes.STRING(255),
     allowNull: true
   },
-  id_account: {
+  account_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
