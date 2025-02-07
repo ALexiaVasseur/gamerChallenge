@@ -33,10 +33,10 @@ async function populateDatabase() {
 
         // 📌 Add participations
         const participations = await Participate.bulkCreate([
-            { challenge_id: challenges[0].id, video_url: "https://example.com/video1", image_url: "https://images.pexels.com/photos/856091/pexels-photo-856091.jpeg", score: 10, description: "Successfully completed the challenge! I put in a lot of effort and the experience was unforgettable." },
-            { challenge_id: challenges[1].id, video_url: "https://example.com/video2", image_url: "https://images.pexels.com/photos/1339746/pexels-photo-1339746.jpeg", score: 20, description: "An incredible participation! I gave my best and the results show my dedication." },
-            { challenge_id: challenges[2].id, video_url: "https://example.com/video3", image_url: "https://images.pexels.com/photos/1339835/pexels-photo-1339835.jpeg", score: 15, description: "Teamwork made this challenge so much fun. We worked together to reach our goal, and it was a great experience!" },
-            { challenge_id: challenges[3].id, video_url: "https://example.com/video4", image_url: "https://images.pexels.com/photos/1574566/pexels-photo-1574566.jpeg", score: 18, description: "What a challenge! I pushed my limits, and even though I didn't win, I had a fantastic time competing." }
+            { challenge_id: challenges[0].id, video_url: "https://example.com/video1", image_url: "https://images.pexels.com/photos/856091/pexels-photo-856091.jpeg", score: 10, description: "Successfully completed the challenge! I put in a lot of effort and the experience was unforgettable." , account_id: accounts[0].id},
+            { challenge_id: challenges[1].id, video_url: "https://example.com/video2", image_url: "https://images.pexels.com/photos/1339746/pexels-photo-1339746.jpeg", score: 20, description: "An incredible participation! I gave my best and the results show my dedication.", account_id: accounts[1].id },
+            { challenge_id: challenges[2].id, video_url: "https://example.com/video3", image_url: "https://images.pexels.com/photos/1339835/pexels-photo-1339835.jpeg", score: 15, description: "Teamwork made this challenge so much fun. We worked together to reach our goal, and it was a great experience!", account_id: accounts[2].id },
+            { challenge_id: challenges[3].id, video_url: "https://example.com/video4", image_url: "https://images.pexels.com/photos/1574566/pexels-photo-1574566.jpeg", score: 18, description: "What a challenge! I pushed my limits, and even though I didn't win, I had a fantastic time competing.", account_id: accounts[3].id }
         ]);
 
         // 📌 Add votes

@@ -23,7 +23,8 @@ Participate.init({
   },
   score: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0
   },
   description: {
     type: DataTypes.TEXT,

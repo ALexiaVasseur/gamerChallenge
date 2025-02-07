@@ -47,12 +47,12 @@ Vote.belongsTo(Account, {
 
 Participate.hasMany(Vote, {
   as: "votes",
-  foreignKey: "participate_id",
+  foreignKey: "participation_id",
   onDelete: "CASCADE"
 });
 Vote.belongsTo(Participate, {
   as: "participate",
-  foreignKey: "participate_id"
+  foreignKey: "participation_id"
 });
 
 // Account <-> Comment <-> Challenge (Many-to-Many via Comment)
