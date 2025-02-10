@@ -13,7 +13,7 @@ async function populateDatabase() {
             { pseudo: "PlayerTwo", email: "player2@example.com", password: "hashedpassword2", score_global: 0, role: "user", is_active: true },
             { pseudo: "PlayerThree", email: "player3@example.com", password: "hashedpassword3", score_global: 0, role: "user", is_active: true },
             { pseudo: "PlayerFour", email: "player4@example.com", password: "hashedpassword4", score_global: 0, role: "user", is_active: true }
-        ]);
+        ]); 
 
         // 📌 Add games
         const games = await Game.bulkCreate([
