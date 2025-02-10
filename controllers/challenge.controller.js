@@ -1,4 +1,4 @@
-import { Challenge } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
+import { Challenge, Account } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
 import { z } from "zod"; // Import de Zod
 import { hash, compare, generateJwtToken, verifyJwtToken } from "../crypto.js";
 
@@ -18,8 +18,15 @@ export async function getAllChallenges(req, res) {
 export async function getLastSixChallenges(req, res) {
   try {
     const challenges = await Challenge.findAll({
-      order: [['createdAt', 'DESC']],
-      limit: 6
+      order: [['created_at', 'DESC']],
+      limit: 6,
+      include: [
+        {
+          model: Account, // 🔥 Associe le modèle Account
+          as: "account", // 🔥 Assurez-vous que l'association est bien nommée
+          attributes: ["id", "pseudo"] // 🔥 Sélectionne uniquement "id" et "name"
+        }
+      ]
     });
 
     if (!challenges.length) {

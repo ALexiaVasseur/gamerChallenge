@@ -1,8 +1,12 @@
-import { Account } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
+import { Account, RefreshToken } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
 import { z } from "zod"; // Import de Zod
 import { hash, compare, generateJwtToken, verifyJwtToken,unsaltedHash } from "../crypto.js";
 import { generateAuthenticationTokens } from "../lib/tokens.js";
+import config from "../config.js";
+
 import { logger } from "../lib/logger.js";
+
+
 
 
 // =========================================
@@ -12,8 +16,9 @@ import { logger } from "../lib/logger.js";
 // 🔹 Définition du schéma de validation avec Zod
 const createUserBodySchema = z.object({
     pseudo: z.string().min(1, "Le pseudo est requis."),
-    email: z.string().email("L'email est invalide.").transform(email => email.toLowerCase()), // 🔄 Convertit l'email en minuscule
+    email: z.string().email("L'email est invalide."), // 🔄 Convertit l'email en minuscule
     password: z.string().min(6, "Le mot de passe doit comporter au moins 6 caractères."),
+    confirmPassword: z.string().min(6, "Le mot de passe doit comporter au moins 6 caractères."),
 });
 
 export async function signupUser(req, res) {
@@ -27,13 +32,12 @@ export async function signupUser(req, res) {
         }
 
         const { pseudo, email, password } = result.data;
-
         // 🔍 Vérifier si l'email existe déjà
         const existingUser = await Account.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ message: "Cet email est déjà utilisé." });
         }
-
+        
         // 🔒 Hachage du mot de passe
         const hashedPassword = await hash(password);
 
@@ -43,7 +47,7 @@ export async function signupUser(req, res) {
             email,
             password: hashedPassword, // 🔒 On stocke uniquement le hash
         });
-
+        
         // ✅ Réponse sans le mot de passe
         res.status(201).json({
             message: "Utilisateur créé avec succès.",
@@ -84,7 +88,6 @@ export async function loginUser(req,res) {
      // Génération des tokens
     const { accessToken, refreshToken, csrfToken } = generateAuthenticationTokens(account);
 
-
     // Invalidation des anciens Refresh Tokens et sauvegarde du nouveau
     await RefreshToken.destroy({ where: { userId: account.id } });
     await RefreshToken.create({
@@ -109,7 +112,12 @@ export async function loginUser(req,res) {
     res.json({
         accessToken,
         refreshToken,
-        ...(csrfToken && { csrfToken })
+        ...(csrfToken && { csrfToken }),
+        user: {
+            id: account.id,
+            pseudo: account.pseudo,  // 🔹 Ajoute le pseudo
+            email: account.email
+        }
     });
     
 }
@@ -168,3 +176,11 @@ export async function logoutUser(req,res) {
     authorization.clearToken(res) ;
     res.redirect('/') ;
 }
+
+function getCookieSecuritySettings() {
+    return {
+      httpOnly: true, // Client code cannot access cookie
+      secure: config.auth.cookies.secure, // Only send cookie via HTTPS
+      sameSite: config.auth.sameSiteCookiePolicy // Allow cookie to be sent to cross-origin servers
+    };
+  }

@@ -3,7 +3,7 @@ const server = {
     host: process.env.HOST || "localhost",
     port: process.env.PORT || 3000,
     cors: {
-      allowedDomains: process.env.CORS_ALLOWED_DOMAINS || ["http://localhost:5173", "http://127.0.0.1:5173"],
+      allowedDomains: process.env.CORS_ALLOWED_DOMAINS || ["http://localhost:5173", "http://127.0.0.1:5173", "http://192.168.91.58"],
       credentials: process.env.CORS_CREDENTIALS || true
     },
     logLevel: process.env.LOG_LEVEL || "DEBUG",

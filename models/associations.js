@@ -6,11 +6,22 @@ import { Comment } from "./comment.js";
 import { Participate } from "./participate.js";
 import { Badge } from "./badge.js";
 import { Receive } from "./receive.js";
-
+import { RefreshToken } from "./refreshToken.js";
 // Doc : https://sequelize.org/docs/v6/core-concepts/assocs/
 // One-To-One : hasOne + belongsTo
 // One-To-Many : hasMany + belongsTo
 // Many-To-Many : belongsToMany + belongsToMany
+
+// User <-> RefreshToken (One-To-Many)
+Account.hasMany(RefreshToken, {
+  foreignKey: "userId", 
+  as: "refreshToken" 
+});
+RefreshToken.belongsTo(Account, { 
+  foreignKey: "userId", 
+  as: "user" 
+});
+
 
 // Game <-> Challenge (One-to-Many)
 Game.hasMany(Challenge, {
@@ -118,4 +129,4 @@ Receive.belongsTo(Badge, {
   foreignKey: "badge_id"
 });
 
-export { Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive };
+export { Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive, RefreshToken };

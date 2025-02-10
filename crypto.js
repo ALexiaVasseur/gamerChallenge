@@ -1,5 +1,7 @@
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
+import config from "./config.js";
+import crypto from 'crypto';
 
 export async function hash(password) {
   return await argon2.hash(password);
