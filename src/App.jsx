@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import ChallengeCard from './components/ChallengeCard';
 import Header from './components/HeaderCard';
 import Footer from './components/FooterCard';
+import Particles from './components/magicui/particles';
 
 const HomePage = () => {
   const [challenges, setChallenges] = useState([]);
-
+  const [color, setColor] = useState("#FFFFFF");
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
@@ -22,8 +23,8 @@ const HomePage = () => {
     fetchChallenges();
   }, []);
 
-  // Fetch => API => GET Challenge récents
   return (
+    
     <div  className="text-white min-h-screen">
       <Header />
 
@@ -61,6 +62,13 @@ const HomePage = () => {
 
       {/* Footer */}
       <Footer />
+
+      <Particles
+            className="fixed top-0 left-0 w-full h-screen z-[-1]"
+            quantity={200}
+            color={color}
+            refresh
+        />
   </div>
   );
 };
