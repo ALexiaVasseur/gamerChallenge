@@ -21,3 +21,8 @@ export function verifyJwtToken(token) {
     return null;
   }
 }
+
+export function unsaltedHash(data) {
+  const { unsaltedHashAlgorithm } = config.auth.crypto;
+  return crypto.hash(unsaltedHashAlgorithm, data);
+}
