@@ -32,7 +32,12 @@ Account.init({
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: true
+  },
+  refresh_token: {  // Ajout du champ refresh token
+    type: DataTypes.STRING(255),
+    allowNull: true
   }
+
 }, {
   sequelize,
   modelName: 'account',

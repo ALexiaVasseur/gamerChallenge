@@ -1,6 +1,8 @@
 import { Account } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
 import { z } from "zod"; // Import de Zod
-import { hash, compare, generateJwtToken, verifyJwtToken } from "../crypto.js";
+import { hash, compare, generateJwtToken, verifyJwtToken,unsaltedHash } from "../crypto.js";
+import { generateAuthenticationTokens } from "../lib/tokens.js";
+import { logger } from "../lib/logger.js";
 
 
 // =========================================
@@ -79,9 +81,87 @@ export async function loginUser(req,res) {
       return res.status(401).json({ status: 401, message: "Invalid credentials" });
     }
 
-    const token = generateJwtToken({ accountId: account.id });
-    res.json({ token, expiresIn: "1d" });
+     // Génération des tokens
+    const { accessToken, refreshToken, csrfToken } = generateAuthenticationTokens(account);
+
+
+    // Invalidation des anciens Refresh Tokens et sauvegarde du nouveau
+    await RefreshToken.destroy({ where: { userId: account.id } });
+    await RefreshToken.create({
+      userId: account.id,
+      token: unsaltedHash(refreshToken.token),
+      expiresAt: refreshToken.expiresAt
+    });
+
+      // Définition des cookies de sécurité
+    res.cookie("x-auth-token", accessToken.token, {
+        maxAge: accessToken.expiresInMS,
+        ...getCookieSecuritySettings()
+    });
+
+    res.cookie("x-auth-refresh-token", refreshToken.token, {
+        maxAge: refreshToken.expiresInMS,
+        path: "/api/auth/refresh",
+        ...getCookieSecuritySettings()
+    });
+
+    // Envoi de la réponse avec tous les tokens nécessaires
+    res.json({
+        accessToken,
+        refreshToken,
+        ...(csrfToken && { csrfToken })
+    });
+    
 }
+
+// export async function refreshAccessToken(req, res) {
+//   // Récupération du refresh token depuis les cookies ou le body
+//   const rawToken = req.cookies?.["x-auth-refresh-token"] || req.body?.refreshToken;
+
+//   // Validation du token
+//   const Schema = z.object({ refreshToken: z.string() });
+//   const result = Schema.safeParse({ refreshToken: rawToken });
+//   if (!result.success) {
+//     throw new BadRequestError("Invalid refresh token format.");
+//   }
+
+//   const token = result.data.refreshToken;
+
+//   // Recherche du token existant et de l'utilisateur associé
+//   const existingAccount = await Account.findOne({
+//     where: { refresh_token: unsaltedHash(token) }
+//   });
+
+//   if (!existingAccount) {
+//     throw new BadRequestError("Invalid refresh token provided");
+//   }
+
+//   // Génération des nouveaux tokens
+//   const { accessToken, refreshToken, csrfToken } = generateAuthenticationTokens(existingAccount);
+
+//   // Mise à jour du token dans la base de données
+//   await existingAccount.update({ refresh_token: unsaltedHash(refreshToken.token) });
+
+//   // Définition des cookies sécurisés
+//   res.cookie("x-auth-token", accessToken.token, {
+//     maxAge: accessToken.expiresInMS,
+//     ...getCookieSecuritySettings()
+//   });
+
+//   res.cookie("x-auth-refresh-token", refreshToken.token, {
+//     maxAge: refreshToken.expiresInMS,
+//     path: "/api/auth/refresh",
+//     ...getCookieSecuritySettings()
+//   });
+
+//   // Envoi de la réponse avec tous les tokens
+//   res.json({
+//     accessToken,
+//     refreshToken,
+//     ...(csrfToken && { csrfToken })
+//   });
+// }
+
 
 
 export async function logoutUser(req,res) { 
