@@ -58,14 +58,20 @@ const ModalConnexion = ({ isOpen, onClose }) => {
 
       console.log("📥 Réponse serveur :", data); // ✅ DEBUG - Vérifier la réponse du serveur
 
-      if (!response.ok) {
-        setErrorMessage(data.message || "Une erreur est survenue.");
-      } else {
+      if (response.ok) {
         setErrorMessage("✅ Connexion réussie !");
+        
+        // 🔹 Stocker l'utilisateur dans le localStorage
+        localStorage.setItem("user", JSON.stringify(data.user));
+      
+        console.log("✅ Utilisateur stocké :", localStorage.getItem("user")); // DEBUG
+        
         setTimeout(() => {
           onClose();
-        }, 2000); 
+          window.location.reload(); // 🔄 Recharge la page pour mettre à jour UserInfo
+        }, 2000);
       }
+      
     } catch (error) {
       setErrorMessage("Impossible de se connecter au serveur.");
       console.error("❌ Erreur réseau :", error);
