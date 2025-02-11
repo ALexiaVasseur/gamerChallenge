@@ -1,12 +1,71 @@
-import { Account, RefreshToken } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
+import { Account, RefreshToken, Badge, Challenge, Receive, Participate } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
 import { z } from "zod"; // Import de Zod
 import { hash, compare, generateJwtToken, verifyJwtToken,unsaltedHash } from "../crypto.js";
 import { generateAuthenticationTokens } from "../lib/tokens.js";
 import config from "../config.js";
 
+
 import { logger } from "../lib/logger.js";
 
 
+export async function getOneUser(req, res) {
+    try {
+        const { id }= req.params;
+        const idUser = parseInt(id);
+      // Utiliser Sequelize avec un paramètre dynamique
+      const user = await Account.findOne({
+        where: { id: idUser },
+        attributes: ['id', 'pseudo', 'email', 'score_global'], // Assure-toi que le score est bien inclus
+        include: [
+            {
+              model: Receive,
+              as: 'receivedBadges',
+              include: [
+                {
+                  model: Badge,
+                  as: 'badge',
+                  attributes: ['id', 'name', 'description']
+                }
+              ]
+            },
+            {
+                model: Challenge,
+                as: 'challenges',
+                attributes: ['id', 'title', 'description', 'rules', 'type', 'video_url']
+            },
+            {
+                model: Participate,
+                as: 'participations',
+                include: [
+                  {
+                    model: Challenge,
+                    as: 'challenge',
+                    attributes: ['id', 'title', 'description', 'rules', 'type', 'video_url']
+                  }
+                ]
+              },
+          ]
+        });
+  
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur non trouvé." });
+      }
+  
+      res.status(200).json({
+        id: user.id,
+        pseudo: user.pseudo,
+        email: user.email,
+        score_global: user.score_global,
+        badges: user.receivedBadges.map(r => r.badge), // Les badges associés
+        challenges: user.challenges.map(r => r.challenge), // Les challenges fait associés
+        participate: user.participations.map(r => r.participateChallenge) // Les challenges participé fait associés
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'utilisateur:", error);
+      res.status(500).json({ message: "Erreur interne du serveur." });
+    }
+  }
+  
 
 
 // =========================================
@@ -15,8 +74,8 @@ import { logger } from "../lib/logger.js";
 
 // 🔹 Définition du schéma de validation avec Zod
 const createUserBodySchema = z.object({
-    pseudo: z.string().min(1, "Le pseudo est requis."),
     email: z.string().email("L'email est invalide."), // 🔄 Convertit l'email en minuscule
+    pseudo: z.string().min(1, "Le pseudo est requis."),
     password: z.string().min(6, "Le mot de passe doit comporter au moins 6 caractères."),
     confirmPassword: z.string().min(6, "Le mot de passe doit comporter au moins 6 caractères."),
 });
