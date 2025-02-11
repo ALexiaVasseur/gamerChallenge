@@ -67,7 +67,7 @@ export default function Header() {
                         <div>
                             <div className="flex items-center justify-center">
                                 {/* Bouton rond avec initiales */}
-                                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="w-12 h-12 bg-blue-500 text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-blue-700 transition">
+                                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="w-20 h-20 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[#FF8C00] transition">
                                     {getInitials(user.pseudo)}
                                 </button>
                             </div>
