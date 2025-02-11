@@ -36,6 +36,10 @@ Account.init({
   refresh_token: {  // Ajout du champ refresh token
     type: DataTypes.STRING(255),
     allowNull: true
+  },
+  description: {  // ✅ Ajout du champ description
+    type: DataTypes.TEXT,
+    allowNull: true
   }
 
 }, {

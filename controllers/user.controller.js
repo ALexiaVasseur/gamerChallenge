@@ -15,7 +15,7 @@ export async function getOneUser(req, res) {
       // Utiliser Sequelize avec un paramètre dynamique
       const user = await Account.findOne({
         where: { id: idUser },
-        attributes: ['id', 'pseudo', 'email', 'score_global'], // Assure-toi que le score est bien inclus
+        attributes: ['id', 'pseudo', 'email', 'score_global', 'description'], // Assure-toi que le score est bien inclus
         include: [
             {
               model: Receive,
@@ -24,7 +24,7 @@ export async function getOneUser(req, res) {
                 {
                   model: Badge,
                   as: 'badge',
-                  attributes: ['id', 'name', 'description']
+                  attributes: ['id', 'name', 'description', 'imageUrl']
                 }
               ]
             },
@@ -50,12 +50,13 @@ export async function getOneUser(req, res) {
       if (!user) {
         return res.status(404).json({ message: "Utilisateur non trouvé." });
       }
-  
+    
       res.status(200).json({
         id: user.id,
         pseudo: user.pseudo,
         email: user.email,
         score_global: user.score_global,
+        description: user.description, // 🔥 Ajout de la description ici
         badges: user.receivedBadges.map(r => r.badge), // Les badges associés
         challenges: user.challenges.map(r => r.challenge), // Les challenges fait associés
         participate: user.participations.map(r => r.participateChallenge) // Les challenges participé fait associés
@@ -78,7 +79,8 @@ const createUserBodySchema = z.object({
     pseudo: z.string().min(1, "Le pseudo est requis."),
     password: z.string().min(6, "Le mot de passe doit comporter au moins 6 caractères."),
     confirmPassword: z.string().min(6, "Le mot de passe doit comporter au moins 6 caractères."),
-});
+    description: z.string().min(1, "Une description est requise."),
+  });
 
 export async function signupUser(req, res) {
     try {
@@ -90,7 +92,7 @@ export async function signupUser(req, res) {
             return res.status(400).json({ error: result.error.format() });
         }
 
-        const { pseudo, email, password } = result.data;
+        const { pseudo, email, password, description } = result.data;
         // 🔍 Vérifier si l'email existe déjà
         const existingUser = await Account.findOne({ where: { email } });
         if (existingUser) {
@@ -105,6 +107,7 @@ export async function signupUser(req, res) {
             pseudo,
             email,
             password: hashedPassword, // 🔒 On stocke uniquement le hash
+            description
         });
         
         // ✅ Réponse sans le mot de passe
@@ -114,6 +117,7 @@ export async function signupUser(req, res) {
                 id: newUser.id,
                 pseudo: newUser.pseudo,
                 email: newUser.email,
+                description: newUser.description
             },
         });
     } catch (error) {
@@ -175,7 +179,7 @@ export async function loginUser(req,res) {
         user: {
             id: account.id,
             pseudo: account.pseudo,  // 🔹 Ajoute le pseudo
-            email: account.email
+            email: account.email,
         }
     });
     
