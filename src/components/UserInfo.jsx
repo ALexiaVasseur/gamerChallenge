@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
+
 const UserInfo = () => {
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+   
 
     useEffect(() => {
         // 🔹 Récupérer les infos utilisateur du localStorage
@@ -22,12 +24,7 @@ const UserInfo = () => {
         : "";
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("user");
-        setUser(null);
-        setIsMenuOpen(false);
-    }
-
+  
     if (!user) {
         return;
     }
@@ -41,21 +38,8 @@ const UserInfo = () => {
                 </button>
             </div>
 
-            {isMenuOpen && (
-                <div className="absolute right-5 mt-14 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                    <button
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                        Modifier mon profil
-                    </button>
-                    <button  onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                        Déconnexion
-                    </button>
-                </div>
-            )}
+
+            
         </>
     );
 };

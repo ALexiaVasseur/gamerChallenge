@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import logoGamer from "../assets/images/logo-gamer.webp";
 import AuthModal from "../components/ModalConnexion";
+import { useNavigate } from "react-router-dom";
+
 
 
 export default function Header() {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
     // 🔹 Récupérer l'utilisateur depuis localStorage au chargement du composant
     useEffect(() => {
@@ -25,7 +28,18 @@ export default function Header() {
             .join("")
         : "";
     };
-    
+        // Fonction pour rediriger vers la page de profil
+        const handleProfileRedirect = () => {
+            setIsMenuOpen(false); // Fermer le menu
+            navigate("/profile"); // Rediriger vers la page du profil
+        };
+
+                // Fonction pour rediriger vers la page de profil
+        const handleHomePageRedirect = () => {
+            setIsMenuOpen(false); // Fermer le menu
+            navigate("/"); // Rediriger vers la page du profil
+                };
+
     const handleLogout = () => {
         localStorage.removeItem("user");
         setUser(null);
@@ -61,15 +75,19 @@ export default function Header() {
                             {isMenuOpen && (
                                 <div className="absolute right-5 mt-14 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                                     <button
-                                        onClick={() => setIsMenuOpen(false)}
+                                        onClick={handleProfileRedirect}
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                     >
-                                        Modifier mon profil
+                                        Voir mon profil
                                     </button>
-                                    <button  onClick={handleLogout}
-                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    <button 
+                                        onClick={() => { 
+                                            handleLogout(); 
+                                            handleHomePageRedirect(); 
+                                        }}
+                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                     >
-                                        Déconnexion
+                                    Déconnexion
                                     </button>
                                 </div>
                             )}

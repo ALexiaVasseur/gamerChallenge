@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
+ import { useEffect, useState } from 'react';
 import ChallengeCard from '../components/ChallengeCard';
 
 const HomePage = () => {

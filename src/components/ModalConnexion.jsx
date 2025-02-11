@@ -7,6 +7,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState("");
   const [pseudo, setPseudo] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [description, setDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +19,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
     setErrorMessage("");
 
     // 🔹 Vérification des champs obligatoires
-    if (!email || !password || (!isLogin && (!pseudo || !confirmPassword))) {
+    if (!email || !password || (!isLogin && (!pseudo || !confirmPassword || !description))) {
       setErrorMessage("Veuillez remplir tous les champs.");
       setLoading(false);
       return;
@@ -35,7 +36,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
     const body = {
       email,
       password,
-      ...(isLogin ? {} : { pseudo, confirmPassword }),
+      ...(isLogin ? {} : { pseudo, confirmPassword, description }),
     };
 
     console.log("📤 Données envoyées :", body); // ✅ DEBUG - Vérifier les données envoyées
@@ -92,6 +93,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {!isLogin && (
+            <>
             <input
               type="text"
               placeholder="Pseudo"
@@ -99,6 +101,13 @@ const ModalConnexion = ({ isOpen, onClose }) => {
               value={pseudo}
               onChange={(e) => setPseudo(e.target.value)}
             />
+            <textarea
+                placeholder="Décrivez-vous en quelques mots..."
+                className="p-2 rounded bg-gray-300 text-black h-20 resize-none"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </>
           )}
           <input
             type="email"
