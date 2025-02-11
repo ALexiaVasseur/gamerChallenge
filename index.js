@@ -14,7 +14,7 @@ app.use(cors({
     const allowedDomains = [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
-      "http://192.168.91.58:5173" // Vérifie bien que le port est bon
+      "http://192.168.92.107:5173" // Vérifie bien que le port est bon
     ];
 
     if (!origin || allowedDomains.includes(origin)) {

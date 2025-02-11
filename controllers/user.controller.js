@@ -8,6 +8,8 @@ import config from "../config.js";
 import { logger } from "../lib/logger.js";
 
 
+
+
 export async function getOneUser(req, res) {
     try {
         const { id }= req.params;
