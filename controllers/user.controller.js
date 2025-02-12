@@ -12,6 +12,7 @@ import { logger } from "../lib/logger.js";
 
 export async function getOneUser(req, res) {
     try {
+      console.log("ID reçu dans req.params:", req.params);
         const { id }= req.params;
         const idUser = parseInt(id);
       // Utiliser Sequelize avec un paramètre dynamique
@@ -130,7 +131,7 @@ export async function signupUser(req, res) {
 
 export async function loginUser(req,res) {
     const Schema = z.object({
-        email: z.string().email("L'email est invalide.").transform(email => email.toLowerCase()), // 🔄 Convertit l'email en minuscule
+        email: z.string().email("L'email est invalide."),
         password: z.string().min(6, "Le mot de passe doit comporter au moins 6 caractères."),
     });
 

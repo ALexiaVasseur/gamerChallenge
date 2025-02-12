@@ -171,3 +171,19 @@ export async function deleteChallenge(req,res) {
   res.status(204).end();
 
 }
+
+export async function getAllChallengesFromCategory(req, res) {
+  try {
+    const challengeType = req.params.type;
+    const challenges = await Challenge.findAll( { where : {type: challengeType}})
+
+    if (!challenges.length) {
+      return res.status(404).json({ message: "Aucun challenge trouvé." });
+    }
+
+    res.status(200).json(challenges);
+  } catch (error) {
+    console.error("🔥 Erreur serveur:", error);
+    res.status(500).json({ message: "Erreur interne du serveur." });
+  }
+}

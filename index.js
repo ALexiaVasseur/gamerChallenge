@@ -7,14 +7,13 @@ import { router as apiRouter } from "./routers/index.js";
 import { notFoundMiddleware, errorHandler } from "./middlewares/index.middleware.js";
 
 const app = express();
-console.log(process.env.PORT)
 
 app.use(cors({
   origin: (origin, callback) => {
     const allowedDomains = [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
-      "http://192.168.92.107:5173" // Vérifie bien que le port est bon
+      "http://192.168.91.58:5173" // Vérifie bien que le port est bon
     ];
 
     if (!origin || allowedDomains.includes(origin)) {
