@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import Profile from './pages/UserPage';
 import CategoriesPage from './pages/CategoriesPage';
 import CreateChallengePage from './pages/CreateChallengePage'
+import LeaderBoard from './pages/LeaderBoard';
 
 const App = () => {
   const [user, setUser] = useState(null);  // Si tu veux gérer l'état de l'utilisateur ici aussi
@@ -27,6 +28,9 @@ const App = () => {
 
             {/* Définir la route pour la page de création de challenge */}
             <Route path="/create-challenge" element={<CreateChallengePage />} />
+
+
+            <Route path="/leaderboard" element={<LeaderBoard />} />
           </Routes>
           
         </main>

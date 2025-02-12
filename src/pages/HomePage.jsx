@@ -26,7 +26,8 @@ const HomePage = () => {
       section_title="Les derniers challenges"
       challengesList={challenges}
     >
-      <p>
+      
+      <p className='text-2xl text-[#898989] mb-8'>
         GamerChallenges est une plateforme <span className="text-[#9f8b20]">ambitieuse</span> qui vise à rassembler les joueurs autour de <span className="text-[#9f8b20]">défis ludiques</span> et <span className="text-[#9f8b20]">compétitifs</span>. 
         Ce projet permet de mettre en application diverses <span className="text-[#9f8b20]">compétences techniques</span> et <span className="text-[#9f8b20]">organisationnelles</span> tout en offrant une <span className="text-[#9f8b20]">expérience immersive</span> à la communauté gaming.
       </p>

@@ -1,10 +1,19 @@
 import ChallengeCard from './ChallengeCard';
 import LargeButton from './LargeButton';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 /* eslint-disable react/prop-types */
 
 const BaseChallenge = ({title, children, name_button, section_title, challengesList}) => {
+  const [connected, setConnected] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user")
+    if (userData) {
+      setConnected(true)
+    }
+  }, [])
 
   // Fonction pour rediriger vers la page de création de challenge
   const goToCreateChallengePage = () => {
@@ -18,9 +27,7 @@ const BaseChallenge = ({title, children, name_button, section_title, challengesL
         <section className="text-center py-16 px-4">
           <div className="bg-[rgba(57,57,57,0.5)] rounded-xl p-6 mx-96 mt-4">
             <h1 className="text-8xl font-bold mb-8">{title}</h1>
-            <p className="text-2xl text-[#898989] mb-8">
-              {children}
-            </p>
+            {children}
             <LargeButton
               idToHref={`#challenges-${title}`}
               nameButton={name_button}
@@ -38,12 +45,14 @@ const BaseChallenge = ({title, children, name_button, section_title, challengesL
             <h2 className="text-5xl font-semibold pt-6 pb-2 my-24">{section_title}</h2>
 
             {/* Bouton en dessous de "Les challenges" */}
-            <button
-              className="bg-[#FF8C00] hover:bg-orange-600 hover:scale-102 transition-all duration-500 text-white px-4 py-2 h-10 rounded-lg text-lg font-semibold w-auto mt-4"
-              onClick={goToCreateChallengePage} // Appel de la fonction sur le clic
-            >
-        Créer un Challenge
-      </button>
+            { connected && (
+                <button
+                  className="bg-[#FF8C00] hover:bg-orange-600 hover:scale-102 transition-all duration-500 text-white px-4 py-2 h-10 rounded-lg text-lg font-semibold w-auto mt-4"
+                  onClick={goToCreateChallengePage} // Appel de la fonction sur le clic
+                >
+                Créer un Challenge
+              </button>
+            )}
           </div>
 
           {/* Affichage des challenges */}

@@ -10,7 +10,6 @@ const CategoriesPage = () => {
         try {
             const response = await fetch(`http://localhost:3000/api/challenges/category/${type}`);
             const data = await response.json();
-            console.log(data)
 
             setChallenges(data);
         } catch (error) {

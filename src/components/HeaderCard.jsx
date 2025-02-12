@@ -88,7 +88,7 @@ export default function Header() {
                         )}
                     </div>
 
-                    <a href="#" className="hover:scale-125 hover:text-[#9f8b20] transition-all duration-500">Leaderboard</a>
+                    <a href="/leaderboard" className="hover:scale-125 hover:text-[#9f8b20] transition-all duration-500">Leaderboard</a>
                 </div>
 
                 {/* Icône Connexion / Avatar */}

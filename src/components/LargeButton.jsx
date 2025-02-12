@@ -2,7 +2,6 @@
 /* eslint-disable react/prop-types */
 
 export default function LargeButton({idToHref, nameButton}) {
-    console.log(idToHref);
     return (
         <>
             <a
