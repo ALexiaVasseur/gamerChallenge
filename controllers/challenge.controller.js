@@ -64,7 +64,7 @@ const createChallengeBodySchema = z.object({
   rules: z.string().min(0),  // Validation des règles
   type: z.string().min(1, "Le type est requis."),  // Validation du type (min 1 caractère)
   video_url: z.string().url("L'URL vidéo est invalide.").optional(),  // URL vidéo, optionnelle, valide si présente
-  account_id: z.string().min(1, "L'identifiant du compte est requis."),  // Validation de l'account_id (min 1 caractère)
+  account_id: z.number().int().min(0, "L'identifiant du compte est requis."),  // Validation de l'account_id (min 1 caractère)
 });
 
 // 🔹 Définition du schéma de validation avec Zod
@@ -93,7 +93,7 @@ export async function createOneChallenge(req, res){
 
     const { game_id, title, description, rules, type, video_url, account_id  } = result.data;
 
-    const existingChallenge = await Challenge.findOne({ where: { title } });
+    const existingChallenge = await Challenge.findOne({ where: { title, game_id } });
     if (existingChallenge) {
         return res.status(400).json({ message: "Ce nom de déjà existe déjà" });
     }

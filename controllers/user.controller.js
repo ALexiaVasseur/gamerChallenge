@@ -250,3 +250,20 @@ function getCookieSecuritySettings() {
       sameSite: config.auth.sameSiteCookiePolicy // Allow cookie to be sent to cross-origin servers
     };
   }
+
+  export async function getLeaderboard(req, res) {
+    try {
+      const leaderboard = await Account.findAll({
+        order: [['score_global', 'DESC']],
+        limit: 50
+      });
+ 
+      if (!leaderboard) {
+        return res.status(404).json({message:"Aucun leaderboard trouvé."});
+      }
+      res.status(200).json(leaderboard);
+    } catch (error) {
+      console.error("🔥 Erreur serveur:", error);
+      res.status(500).json({ message: "Erreur interne du serveur." });
+    }
+  }

@@ -8,3 +8,6 @@ router.get("/user/:id", cw(userController.getOneUser))
 router.post("/auth/signup", cw(userController.signupUser));
 router.post("/auth/login", cw(userController.loginUser));
 router.post("/auth/logout", cw(userController.logoutUser));
+
+
+router.get("/leaderboard", cw(userController.getLeaderboard));

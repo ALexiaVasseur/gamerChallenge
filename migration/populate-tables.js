@@ -8,10 +8,10 @@ async function populateDatabase() {
         await sequelize.sync({ alter: true }); // Utilisez force: true pour supprimer et recréer les tables
 
         const accounts = await Account.bulkCreate([
-            { pseudo: "PlayerOne", email: "player1@example.com", password: "hashedpassword1", score_global: 0, role: "user", is_active: true },
-            { pseudo: "PlayerTwo", email: "player2@example.com", password: "hashedpassword2", score_global: 0, role: "user", is_active: true },
-            { pseudo: "PlayerThree", email: "player3@example.com", password: "hashedpassword3", score_global: 0, role: "user", is_active: true },
-            { pseudo: "PlayerFour", email: "player4@example.com", password: "hashedpassword4", score_global: 0, role: "user", is_active: true }
+            { pseudo: "PlayerOne", email: "player1@example.com", password: "hashedpassword1", score_global: 5, role: "user", is_active: true },
+            { pseudo: "PlayerTwo", email: "player2@example.com", password: "hashedpassword2", score_global: 10, role: "user", is_active: true },
+            { pseudo: "PlayerThree", email: "player3@example.com", password: "hashedpassword3", score_global: 20, role: "user", is_active: true },
+            { pseudo: "PlayerFour", email: "player4@example.com", password: "hashedpassword4", score_global: 25, role: "user", is_active: true }
         ]);
         
         const games = await Game.bulkCreate([
