@@ -9,20 +9,33 @@
   --background: linear-gradient(180deg, #505050 0%, #212121 49%);
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 body {
   background: var(--background);
+  background-attachment: fixed; /* Fixe le gradient sur toute la page */
+  display: flex;
+  flex-direction: column;
   font-family: 'JetBrains Mono', monospace;
 }
+
 html, body, #root {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-main {
+#root {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
-
 
 /* @media (prefers-color-scheme: dark) {
   :root {

@@ -2,14 +2,18 @@ import { useEffect, useState } from "react";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [badges, setBadges] = useState([]);
   const [completedChallenges, setCompletedChallenges] = useState([]);
   const [onlineChallenges, setOnlineChallenges] = useState([]);
-
-  const userId = Number(localStorage.getItem("userId")) || 1;
+  let userId;
+  const userData = localStorage.getItem("user");
+  if (userData) {
+    const userInformations = JSON.parse(userData);
+    userId = userInformations.id;
+  }
 
   useEffect(() => {
     if (!userId || isNaN(userId)) {
+      console.log(userId);
       console.error("ID utilisateur invalide !");
       return;
     }
@@ -18,16 +22,14 @@ const Profile = () => {
       .then(response => response.json())
       .then(data => {
         setUser(data);
-        setBadges(data.badges || []);
         setCompletedChallenges(data.completedChallenges || []);
         setOnlineChallenges(data.onlineChallenges || []);
       })
       .catch(error => console.error("Erreur lors du chargement du profil:", error));
   }, [userId]);
 
-  if (!user) return <p className="text-center mt-10 text-white">Chargement du profil...</p>;
 
-  console.log("user", user);
+  if (!user) return <p className="text-center mt-10 text-white">Vous ne possédez aucun compte.</p>;
 
   const getInitials = (name) => {
     return name ? name.substring(0, 2).toUpperCase() : "??";
