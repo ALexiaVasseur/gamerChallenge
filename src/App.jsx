@@ -5,6 +5,7 @@ import ChallengeCard from './components/ChallengeCard';
 import HomePage from './pages/HomePage';
 import Profile from './pages/UserPage';
 import CategoriesPage from './pages/CategoriesPage';
+import NotFoundPage from './pages/404';
 import CreateChallengePage from './pages/CreateChallengePage'
 import LeaderBoard from './pages/LeaderBoard';
 
@@ -31,6 +32,10 @@ const App = () => {
 
 
             <Route path="/leaderboard" element={<LeaderBoard />} />
+
+            {/* Route pour la page 404 */}
+            <Route path="*" element={<NotFoundPage />} />
+            
           </Routes>
           
         </main>

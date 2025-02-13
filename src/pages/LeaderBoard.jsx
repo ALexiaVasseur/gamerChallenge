@@ -13,31 +13,33 @@ const Leaderboard = () => {
   return (
     <div className="flex flex-col items-center min-h-screen py-10">
       <h1 className="text-3xl font-bold text-yellow-500 mb-6">🏆 Leaderboard</h1>
-      <div className="w-full max-w-4xl overflow-hidden border-4 border-[#9f8b20] rounded-lg shadow-lg">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-[#9f8b20] text-white">
-              <th className="px-4 py-3">Position</th>
-              <th className="px-4 py-3">Pseudo</th>
-              <th className="px-4 py-3">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((player, index) => (
-              <tr
-                key={index}
-                className={`text-white bg-[#9f8b20] transition`}
-              >
-                <td className="px-4 py-3 font-bold">#{index + 1}</td>
-                <td className="px-4 py-3">{player.pseudo}</td>
-                <td className="px-4 py-3">{player.score_global}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="w-full max-w-4xl overflow-hidden rounded-lg shadow-lg">
+        <div className="flex flex-col">
+          {/* En-tête doré */}
+          <div className="flex items-center justify-between p-4 bg-[#9f8b20] text-white rounded-lg mb-1">
+            <div className="w-1/4 text-left font-bold">Position</div>
+            <div className="w-1/2 text-left">Pseudo</div>
+            <div className="w-1/4 text-left">Score</div>
+          </div>
+
+          {/* Liste des joueurs */}
+          {players.map((player, index) => (
+            <div
+              key={index}
+              className={`flex items-center justify-between p-4 bg-[#9f8b20] text-white ${index !== players.length - 1 && 'mb-1'} rounded-lg`}
+            >
+              <div className="w-1/4 font-bold">#{index + 1}</div>
+              <div className="w-1/2">{player.pseudo}</div>
+              <div className="w-1/4">{player.score_global}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
 export default Leaderboard;
+
+
+
