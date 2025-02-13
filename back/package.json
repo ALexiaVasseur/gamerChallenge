@@ -1,0 +1,31 @@
+{
+  "name": "gamerchallenger-back",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "dev": "node --watch index.js",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "db:create": "node migration/create-tables.js",
+    "db:populate": "node migration/populate-tables.js",
+    "db:reset": "npm run db:create && npm run db:populate",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "argon2": "^0.41.1",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "pino": "^9.6.0",
+    "sequelize": "^6.37.5",
+    "zod": "^3.24.1"
+  }
+}
