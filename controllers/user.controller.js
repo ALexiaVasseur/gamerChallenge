@@ -96,12 +96,17 @@ export async function signupUser(req, res) {
         }
 
         const { pseudo, email, password, description } = result.data;
-        // 🔍 Vérifier si l'email existe déjà
-        const existingUser = await Account.findOne({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({ message: "Cet email est déjà utilisé." });
-        }
-        
+          // 🔍 Vérifier si l'email existe déjà
+          const existingEmail = await Account.findOne({ where: { email } });
+          if (existingEmail) {
+              return res.status(400).json({ message: "Cet email est déjà utilisé." });
+          }
+  
+          // 🔍 Vérifier si le pseudo existe déjà
+          const existingPseudo = await Account.findOne({ where: { pseudo } });
+          if (existingPseudo) {
+              return res.status(400).json({ message: "Ce pseudo est déjà utilisé." });
+          }
         // 🔒 Hachage du mot de passe
         const hashedPassword = await hash(password);
 
