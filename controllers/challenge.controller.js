@@ -22,8 +22,8 @@ export async function getLastSixChallenges(req, res) {
       limit: 6,
       include: [
         {
-          model: Account, // 🔥 Associe le modèle Account
-          as: "account", // 🔥 Assurez-vous que l'association est bien nommée
+          model: Account, //  Associe le modèle Account
+          as: "account", //  Assurez-vous que l'association est bien nommée
           attributes: ["id", "pseudo"] // 🔥 Sélectionne uniquement "id" et "name"
         }
       ]
