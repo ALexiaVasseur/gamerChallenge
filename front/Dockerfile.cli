@@ -1,0 +1,22 @@
+# ./front/Dockerfile.cli
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copie des fichiers de dépendances
+COPY package*.json ./
+
+# Installation des dépendances
+RUN npm install
+
+# Copie du reste du code source
+COPY . .
+
+# Build de l'application
+RUN npm run build
+
+# Exposition du port
+EXPOSE 4173
+
+# Commande de démarrage (ajustez selon votre configuration)
+CMD ["npm", "run", "preview"]

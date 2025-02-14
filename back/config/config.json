@@ -1,0 +1,10 @@
+{
+  "development": {
+    "host": "gamerchallenge-database",
+    "database": "gamerchallenge", 
+    "username": "gamerchallenge", 
+    "password": "gamerchallenge",
+    "dialect": "postgres",  
+    "port": 5432
+  }
+}
