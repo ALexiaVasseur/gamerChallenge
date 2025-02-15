@@ -5,13 +5,30 @@ import { hash, compare, generateJwtToken, verifyJwtToken } from "../crypto.js";
 // récupérer tous les votes
 export async function getAllComments(req, res) {
   try {
-    const comments = await Comment.findAll();
+    // Récupère l'ID du challenge depuis la requête (paramètre ou query)
+    const { challengeId } = req.query; // Utilise `challengeId` comme paramètre de requête
+    
+    if (!challengeId) {
+      return res.status(400).json({ message: "L'ID du challenge est requis." });
+    }
+
+    // Trouve les commentaires pour ce challenge
+    const comments = await Comment.findAll({
+      where: { challenge_id: challengeId }, // Filtrer par `challenge_id`
+    });
+
+    if (!comments.length) {
+      return res.status(404).json({ message: "Aucun commentaire trouvé pour ce challenge." });
+    }
+
+    // Retourne les commentaires associés au challenge
     res.status(200).json(comments);
-  }catch (error) {
+  } catch (error) {
     console.error("🔥 Erreur serveur:", error);
     res.status(500).json({ message: "Erreur interne du serveur." });
   }
 }
+
 
 // recupérer un vote
 

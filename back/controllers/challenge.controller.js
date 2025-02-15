@@ -1,4 +1,4 @@
-import { Challenge, Account } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
+import { Challenge, Account, Comment, Participate, Vote, Game } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
 import { z } from "zod"; // Import de Zod
 import { hash, compare, generateJwtToken, verifyJwtToken } from "../crypto.js";
 
@@ -43,18 +43,52 @@ export async function getLastSixChallenges(req, res) {
 // recupérer un challenge
 
 export async function getOneChallenge(req, res) {
-
   try {
-    const challenge = await Challenge.findByPk(req.params.id);
-    if(!challenge) return res.status(404).json({ message: "Challenge non trouvé."})
+    const challenge = await Challenge.findByPk(req.params.id, {
+      include: [
+        {
+          model: Comment,
+          as: "comments",
+          include: [{ model: Account, as: "account", attributes: ["id", "pseudo"] }],
+        },
+        {
+          model: Participate,
+          as: "participations",
+          include: [
+            { model: Account, as: "account", attributes: ["id", "pseudo"] },
+            {
+              model: Vote,
+              as: "votes",
+              include: [{ model: Account, as: "account", attributes: ["id", "pseudo"] }],
+            },
+          ],
+        },
+        {
+          model: Account,
+          as: "account",
+          attributes: ["id", "pseudo", "email"],
+        },
+        // Inclure le modèle Game
+        {
+          model: Game,
+          as: "game", // Le nom de l'association entre Challenge et Game
+          attributes: ["id_igdb", "title", "description", "genre", "url_video_game"], // Les champs à récupérer
+        },
+      ],
+    });
+
+    if (!challenge) {
+      return res.status(404).json({ message: "Challenge non trouvé." });
+    }
+
     res.status(200).json(challenge);
-
-}catch (error) {
-console.error("🔥 Erreur serveur:", error);
-res.status(500).json({ message: "Erreur interne du serveur." });
+  } catch (error) {
+    console.error("🔥 Erreur serveur:", error);
+    res.status(500).json({ message: "Erreur interne du serveur." });
+  }
 }
 
-}
+
 
 // 🔹 Définition du schéma de validation avec Zod
 const createChallengeBodySchema = z.object({

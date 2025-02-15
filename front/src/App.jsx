@@ -8,6 +8,7 @@ import CategoriesPage from './pages/CategoriesPage';
 import NotFoundPage from './pages/404';
 import CreateChallengePage from './pages/CreateChallengePage'
 import LeaderBoard from './pages/LeaderBoard';
+import ChallengePage from './pages/ChallengePage'
 
 const App = () => {
   const [user, setUser] = useState(null);  // Si tu veux gérer l'état de l'utilisateur ici aussi
@@ -35,6 +36,8 @@ const App = () => {
 
             {/* Route pour la page 404 */}
             <Route path="*" element={<NotFoundPage />} />
+
+            <Route path="/challenge/:id" element={<ChallengePage />} />
             
           </Routes>
           
