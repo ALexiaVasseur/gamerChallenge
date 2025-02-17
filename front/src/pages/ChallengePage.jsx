@@ -9,6 +9,7 @@ const ChallengePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState("");
+  const [userPseudo, setUserPseudo] = useState("User123"); // Remplacez ceci par votre logique pour obtenir le pseudo
 
   const getYouTubeEmbedUrl = (url) => {
     const match = url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -22,16 +23,23 @@ const ChallengePage = () => {
         if (!challengeResponse.ok) throw new Error("Challenge introuvable");
         const challengeData = await challengeResponse.json();
         setChallenge(challengeData);
-
-        const commentsResponse = await fetch(`http://localhost:3000/api/comments?challengeId=${id}`);
-        if (!commentsResponse.ok) throw new Error("Commentaires introuvables");
-        const commentsData = await commentsResponse.json();
-        setComments(commentsData);
-
+  
+        // Modifier l'URL pour obtenir les commentaires d'un challenge spécifique
+        const commentsResponse = await fetch(`http://localhost:3000/api/challenges/${id}/comments`);
+        if (commentsResponse.ok) {
+          const commentsData = await commentsResponse.json();
+          setComments(commentsData);
+        } else {
+          setComments([]);
+        }
+  
         const participationsResponse = await fetch(`http://localhost:3000/api/participations/${id}`);
-        if (!participationsResponse.ok) throw new Error("Participations introuvables");
-        const participationsData = await participationsResponse.json();
-        setParticipations(participationsData);
+        if (participationsResponse.ok) {
+          const participationsData = await participationsResponse.json();
+          setParticipations(participationsData);
+        } else {
+          setParticipations([]);
+        }
       } catch (error) {
         setError(error.message);
       } finally {
@@ -45,14 +53,14 @@ const ChallengePage = () => {
     e.preventDefault();
     if (!newComment.trim()) return;
     try {
-      const response = await fetch(`http://localhost:3000/api/challenge/${id}/comment`, {
+      const response = await fetch(`http://localhost:3000/api/challenges/${id}/comment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: newComment }),
+        body: JSON.stringify({ text: newComment, pseudo: userPseudo }), // Inclure le pseudo ici
       });
       if (!response.ok) throw new Error("Erreur lors de l'ajout du commentaire");
       const newCommentData = await response.json();
-      setComments([...comments, newCommentData]);
+      setComments([...comments, { ...newCommentData, account: { pseudo: userPseudo } }]); // Ajoutez le pseudo au commentaire
       setNewComment("");
     } catch (error) {
       console.error("Erreur lors de l'ajout du commentaire :", error);
@@ -69,6 +77,11 @@ const ChallengePage = () => {
         <img src={challenge.image_url} alt="Challenge Image" className="w-full h-[400px] object-cover rounded-lg shadow-2xl mb-6" />
       )}
       <h1 className="text-6xl font-bold text-center mt-6 mb-10">{challenge.title}</h1>
+      {challenge.account && (
+        <p className="text-center text-lg text-gray-400 mb-6">
+          Créé par: <strong>{challenge.account.pseudo}</strong>
+        </p>
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div>
           {challenge.game?.url_video_game && (
@@ -118,8 +131,19 @@ const ChallengePage = () => {
               )}
             </div>
             <form onSubmit={handleCommentSubmit} className="mt-6">
-              <textarea className="w-full border bg-transparent p-4 rounded text-white text-lg" placeholder="Ajoutez un commentaire..." value={newComment} onChange={(e) => setNewComment(e.target.value)} required />
-              <button type="submit" className="bg-orange-500 hover:bg-orange-600 transition-all duration-500 text-white px-6 py-3 h-14 rounded-lg text-xl font-semibold w-auto mt-5">Publier</button>
+              <textarea
+                className="w-full border bg-transparent p-4 rounded text-white text-lg"
+                placeholder="Ajoutez un commentaire..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                className="bg-orange-500 hover:bg-orange-600 transition-all duration-500 text-white px-6 py-3 h-14 rounded-lg text-xl font-semibold w-auto mt-5"
+              >
+                Publier
+              </button>
             </form>
           </div>
         </div>

@@ -1,33 +1,33 @@
-import { Comment, Challenge } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
+import { Comment, Challenge, Account } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
 import { z } from "zod"; // Import de Zod
 import { hash, compare, generateJwtToken, verifyJwtToken } from "../crypto.js";
 
 // récupérer tous les votes
-export async function getAllComments(req, res) {
+// récupérer tous les commentaires
+export const getAllComments = async (req, res) => {
   try {
-    // Récupère l'ID du challenge depuis la requête (paramètre ou query)
-    const { challengeId } = req.query; // Utilise `challengeId` comme paramètre de requête
-    
-    if (!challengeId) {
-      return res.status(400).json({ message: "L'ID du challenge est requis." });
-    }
-
-    // Trouve les commentaires pour ce challenge
     const comments = await Comment.findAll({
-      where: { challenge_id: challengeId }, // Filtrer par `challenge_id`
+      include: [
+        {
+          model: Account,
+          as: 'account', // Utiliser l'alias défini
+          attributes: ['pseudo'], // Inclure uniquement le pseudo pour alléger la réponse
+        },
+        {
+          model: Challenge,
+          as: 'challenge', // Inclure le challenge lié
+          attributes: ['title'], // Inclure le titre du challenge par exemple
+        }
+      ],
     });
-
-    if (!comments.length) {
-      return res.status(404).json({ message: "Aucun commentaire trouvé pour ce challenge." });
-    }
-
-    // Retourne les commentaires associés au challenge
-    res.status(200).json(comments);
+    res.json(comments);
   } catch (error) {
-    console.error("🔥 Erreur serveur:", error);
-    res.status(500).json({ message: "Erreur interne du serveur." });
+    console.error(error);
+    res.status(500).json({ error: 'Une erreur est survenue lors de la récupération des commentaires.' });
   }
-}
+};
+
+
 
 
 // recupérer un vote
@@ -87,5 +87,32 @@ export async function createComment(req, res) {
 }
 
 
+// Fonction pour récupérer les commentaires d'un challenge spécifique
+export const getCommentsForChallenge = async (req, res) => {
+  const { challengeId } = req.params; // Récupérer l'ID du challenge depuis les paramètres de la requête
 
+  try {
+    // Trouver les commentaires pour le challenge spécifié
+    const comments = await Comment.findAll({
+      where: { challenge_id: challengeId }, // Filtrer par challenge_id
+      include: [
+        {
+          model: Account,
+          as: 'account', // Utiliser l'alias défini
+          attributes: ['pseudo'], // Inclure uniquement le pseudo
+        }
+      ],
+    });
+
+    // Vérifier si des commentaires ont été trouvés
+    if (comments.length === 0) {
+      return res.status(404).json({ message: 'Aucun commentaire trouvé pour ce challenge.' });
+    }
+
+    res.json(comments); // Retourner les commentaires
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Une erreur est survenue lors de la récupération des commentaires.' });
+  }
+};
 

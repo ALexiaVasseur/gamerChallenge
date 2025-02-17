@@ -147,7 +147,7 @@ export async function createOneChallenge(req, res) {
     }
 
     // Créer le challenge en ajoutant une valeur par défaut pour "type"
-    await Challenge.create({
+    const newChallenge = await Challenge.create({
       game_id,
       title,
       description,
@@ -158,14 +158,26 @@ export async function createOneChallenge(req, res) {
       category_id  // Grâce à z.coerce.number(), ce sera un nombre
     });
 
+    // Récupérer les détails du challenge, y compris l'auteur
+    const createdChallenge = await Challenge.findOne({
+      where: { id: newChallenge.id },
+      include: [{
+        model: Account,
+        as: 'account', // Assurez-vous que c'est le bon alias
+        attributes: ['id', 'pseudo'] // Attributs à récupérer pour l'auteur
+      }]
+    });
+
     res.status(201).json({
       message: "Challenge créé avec succès.",
+      challenge: createdChallenge // Inclure le challenge créé dans la réponse
     });
   } catch (error) {
     console.error("🔥 Erreur serveur:", error);
     res.status(500).json({ message: "Erreur interne du serveur." });
   }
 }
+
 
 
 // mettre à jour un challenge
