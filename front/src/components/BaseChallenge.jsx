@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 /* eslint-disable react/prop-types */
 
-const BaseChallenge = ({title, children, name_button, section_title, challengesList}) => {
+const BaseChallenge = ({title, children, name_button, section_title, challengesList, description}) => {
   const [connected, setConnected] = useState(false);
   const navigate = useNavigate();
 
@@ -28,13 +28,17 @@ const BaseChallenge = ({title, children, name_button, section_title, challengesL
           <div className="bg-[rgba(57,57,57,0.5)] rounded-xl p-6 mx-96 mt-4">
             <h1 className="text-8xl font-bold mb-8">{title}</h1>
             {children}
-            <LargeButton
-              idToHref={`#challenges-${title}`}
-              nameButton={name_button}
-            />
-            {/* <button className="mt-6 bg-[#FF8C00] hover:bg-orange-600 hover:scale-102 transition-all duration-500 text-white px-6 py-3 rounded-lg text-lg font-semibold w-full">
-              {name_button}
-            </button> */}
+
+            {/* Ajout de la description de la catégorie */}
+            <p className="text-lg text-gray-300 mt-4">{description}</p>
+
+{/* Ajout de l'espace entre la description et le bouton */}
+<div className="mt-6">
+  <LargeButton
+    idToHref={`#challenges-${title}`}
+    nameButton={name_button}
+  />
+</div>
           </div>
         </section>
 
@@ -68,7 +72,7 @@ const BaseChallenge = ({title, children, name_button, section_title, challengesL
                   id={challenge.id}
                   title={challenge.title}
                   author={challenge.account?.pseudo || 'Anonyme'}
-                  image={challenge.video_url}  // Ajoute l'image/vidéo liée au challenge
+                  image={challenge.image_url}  // Ajoute l'image/vidéo liée au challenge
                 />
               ))}
             </div>

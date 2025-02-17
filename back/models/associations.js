@@ -7,6 +7,8 @@ import { Participate } from "./participate.js";
 import { Badge } from "./badge.js";
 import { Receive } from "./receive.js";
 import { RefreshToken } from "./refreshToken.js";
+import { Category } from "./category.js"; // Importation du modèle Category
+
 // Doc : https://sequelize.org/docs/v6/core-concepts/assocs/
 // One-To-One : hasOne + belongsTo
 // One-To-Many : hasMany + belongsTo
@@ -21,7 +23,6 @@ RefreshToken.belongsTo(Account, {
   foreignKey: "userId", 
   as: "user" 
 });
-
 
 // Game <-> Challenge (One-to-Many)
 Game.hasMany(Challenge, {
@@ -129,4 +130,15 @@ Receive.belongsTo(Badge, {
   foreignKey: "badge_id"
 });
 
-export { Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive, RefreshToken };
+// Category <-> Challenge (One-to-Many)
+Category.hasMany(Challenge, {
+  as: 'challenges', // Quand je demande une catégorie, je veux récupérer "ses challenges"
+  foreignKey: 'category_id', // Ajout du champ category_id dans le modèle Challenge
+  onDelete: 'SET NULL' // En cas de suppression d'une catégorie, on met le champ category_id à NULL
+});
+Challenge.belongsTo(Category, {
+  as: 'category',
+  foreignKey: 'category_id'
+});
+
+export { Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive, RefreshToken, Category };

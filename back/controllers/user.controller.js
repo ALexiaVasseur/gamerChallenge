@@ -34,7 +34,7 @@ export async function getOneUser(req, res) {
             {
                 model: Challenge,
                 as: 'challenges',
-                attributes: ['id', 'title', 'description', 'rules', 'type', 'video_url']
+                attributes: ['id', 'title', 'description', 'rules', 'type', 'image_url']
             },
             {
                 model: Participate,
@@ -43,7 +43,7 @@ export async function getOneUser(req, res) {
                   {
                     model: Challenge,
                     as: 'challenge',
-                    attributes: ['id', 'title', 'description', 'rules', 'type', 'video_url']
+                    attributes: ['id', 'title', 'description', 'rules', 'type', 'image_url']
                   }
                 ]
               },

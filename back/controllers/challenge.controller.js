@@ -1,18 +1,25 @@
-import { Challenge, Account, Comment, Participate, Vote, Game } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
+import { Challenge, Account, Comment, Participate, Vote, Game, Category } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
 import { z } from "zod"; // Import de Zod
 import { hash, compare, generateJwtToken, verifyJwtToken } from "../crypto.js";
 
 // récupérer tous les challenges 
 export async function getAllChallenges(req, res) {
-    try {
-        const challenges = await Challenge.findAll();
-        res.status(200).json(challenges);
+  try {
+    const challenges = await Challenge.findAll({
+      include: [
+        {
+          model: Category,  // Inclure la catégorie
+          as: 'category',   // Le nom de l'association
+          attributes: ['id', 'name', 'description'], // Les champs à récupérer
+        },
+      ],
+    });
 
-    }catch (error) {
-  console.error("🔥 Erreur serveur:", error);
-  res.status(500).json({ message: "Erreur interne du serveur." });
-}
- 
+    res.status(200).json(challenges);
+  } catch (error) {
+    console.error("🔥 Erreur serveur:", error);
+    res.status(500).json({ message: "Erreur interne du serveur." });
+  }
 }
 
 export async function getLastSixChallenges(req, res) {
@@ -68,11 +75,15 @@ export async function getOneChallenge(req, res) {
           as: "account",
           attributes: ["id", "pseudo", "email"],
         },
-        // Inclure le modèle Game
         {
           model: Game,
-          as: "game", // Le nom de l'association entre Challenge et Game
-          attributes: ["id_igdb", "title", "description", "genre", "url_video_game"], // Les champs à récupérer
+          as: "game",
+          attributes: ["id_igdb", "title", "description", "genre", "url_video_game"],
+        },
+        {
+          model: Category,  // Inclure la catégorie
+          as: 'category',
+          attributes: ['id', 'name', 'description'],
         },
       ],
     });
@@ -90,56 +101,61 @@ export async function getOneChallenge(req, res) {
 
 
 
-// 🔹 Définition du schéma de validation avec Zod
+// Définition du schéma de validation avec Zod pour la création d'un challenge
 const createChallengeBodySchema = z.object({
   game_id: z.number().int().min(0),
-  title: z.string().min(1, "Le titre est requis."),  // Validation du titre (min 1 caractère)
-  description: z.string().min(1, "La description est requise."),  // Validation de la description
-  rules: z.string().min(0),  // Validation des règles
-  type: z.string().min(1, "Le type est requis."),  // Validation du type (min 1 caractère)
-  video_url: z.string().url("L'URL vidéo est invalide.").optional(),  // URL vidéo, optionnelle, valide si présente
-  account_id: z.number().int().min(0, "L'identifiant du compte est requis."),  // Validation de l'account_id (min 1 caractère)
+  title: z.string().min(1, "Le titre est requis."),
+  description: z.string().min(1, "La description est requise."),
+  rules: z.string().min(0),
+  // Vous pouvez retirer "type" du schéma si vous ne le souhaitez pas,
+  // mais dans ce cas, vous devez l'ajouter manuellement dans votre code.
+  image_url: z.string().url("L'URL de l'image est invalide.").optional(),
+  account_id: z.number().int().min(0, "L'identifiant du compte est requis."),
+  category_id: z.coerce.number().int().min(1, "L'identifiant de la catégorie est requis."),
 });
 
-// 🔹 Définition du schéma de validation avec Zod
+
+// Définition du schéma de validation pour la mise à jour d'un challenge
 const updateChallengeBodySchema = z.object({
   game_id: z.number().int().min(0),
-  title: z.string().min(1, "Le titre est requis."),  // Validation du titre (min 1 caractère)
-  description: z.string().min(1, "La description est requise."),  // Validation de la description
-  rules: z.string().min(0),  // Validation des règles
-  type: z.string().min(1, "Le type est requis."),  // Validation du type (min 1 caractère)
-  video_url: z.string().url("L'URL vidéo est invalide.").optional()  // URL vidéo, optionnelle, valide si présente
+  title: z.string().min(1, "Le titre est requis."),
+  description: z.string().min(1, "La description est requise."),
+  rules: z.string().min(0),
+  type: z.string().min(1, "Le type est requis."),
+  image_url: z.string().url("L'URL de l'image est invalide.").optional(),
+  category_id: z.number().int().min(1, "L'identifiant de la catégorie est requis."), // Ajout de category_id
 });
-
 
 // créer un challenge 
 
-export async function createOneChallenge(req, res){
-
+export async function createOneChallenge(req, res) {
   try {
     console.log("🛠 Requête reçue:", req.body);
 
-    // 🔍 Validation avec safeParse()
+    // Validation avec safeParse()
     const result = createChallengeBodySchema.safeParse(req.body);
     if (!result.success) {
-        return res.status(400).json({ error: result.error.format() });
+      return res.status(400).json({ error: result.error.format() });
     }
 
-    const { game_id, title, description, rules, type, video_url, account_id  } = result.data;
+    // Extraction des données validées
+    const { game_id, title, description, rules, image_url, account_id, category_id } = result.data;
 
     const existingChallenge = await Challenge.findOne({ where: { title, game_id } });
     if (existingChallenge) {
-        return res.status(400).json({ message: "Ce nom de déjà existe déjà" });
+      return res.status(400).json({ message: "Ce nom de challenge existe déjà." });
     }
-    
-   await Challenge.create({
+
+    // Créer le challenge en ajoutant une valeur par défaut pour "type"
+    await Challenge.create({
       game_id,
       title,
       description,
       rules,
-      type,
-      video_url,
-      account_id
+      type: "default",  // Valeur par défaut pour le champ "type"
+      image_url,
+      account_id,
+      category_id  // Grâce à z.coerce.number(), ce sera un nombre
     });
 
     res.status(201).json({
@@ -150,6 +166,7 @@ export async function createOneChallenge(req, res){
     res.status(500).json({ message: "Erreur interne du serveur." });
   }
 }
+
 
 // mettre à jour un challenge
 

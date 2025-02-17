@@ -8,7 +8,7 @@ Challenge.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'games', // Nom de la table du modèle Game
+      model: 'games',
       key: 'id'
     }
   },
@@ -28,7 +28,7 @@ Challenge.init({
     type: DataTypes.STRING(50),
     allowNull: false
   },
-  video_url: {
+  image_url: {
     type: DataTypes.STRING(255),
     allowNull: true
   },
@@ -36,14 +36,22 @@ Challenge.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'accounts', // Nom de la table du modèle Account
+      model: 'accounts',
+      key: 'id'
+    }
+  },
+  category_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'categories',
       key: 'id'
     }
   }
 }, {
   sequelize,
   modelName: 'challenge',
-  tableName: 'challenges', // Nom de la table dans la base de données
-  timestamps: true, // Ajoute createdAt et updatedAt
-  underscored: true // Si tu préfères le format snake_case pour les noms de colonnes
+  tableName: 'challenges',
+  timestamps: true,
+  underscored: true
 });

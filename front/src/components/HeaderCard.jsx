@@ -8,6 +8,7 @@ export default function Header() {
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false); // État du menu Catégories
+    const [categories, setCategories] = useState([]); // État pour stocker les catégories
     const navigate = useNavigate();
 
     // 🔹 Récupérer l'utilisateur depuis localStorage
@@ -16,6 +17,23 @@ export default function Header() {
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+    }, []);
+
+    // 🔹 Récupérer les catégories depuis l'API
+    useEffect(() => {
+        fetch("http://localhost:3000/api/categories") // Assure-toi que l'URL de ton API est correcte
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Erreur lors de la récupération des catégories");
+                }
+                return response.json(); // Transformation de la réponse en JSON
+            })
+            .then((data) => {
+                setCategories(data); // Stocke les catégories dans l'état
+            })
+            .catch((error) => {
+                console.error("Erreur lors de la récupération des catégories:", error);
+            });
     }, []);
 
     // Fonction pour récupérer les initiales du pseudo
@@ -43,8 +61,8 @@ export default function Header() {
     };
 
     // Sélection d'une catégorie et fermeture du menu
-    const handleCategorySelect = (category) => {
-        navigate(`/category/${category}`);
+    const handleCategorySelect = (categoryId) => {
+        navigate(`/category/${categoryId}`); // Redirige vers la page de la catégorie sélectionnée
         setIsCategoryOpen(false);
     };
 
@@ -75,15 +93,19 @@ export default function Header() {
 
                         {isCategoryOpen && (
                             <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-10">
-                                {["Solo", "Competitive", "Team"].map((category) => (
-                                    <button 
-                                        key={category}
-                                        onClick={() => handleCategorySelect(category)}
-                                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
-                                    >
-                                        {category}
-                                    </button>
-                                ))}
+                                {categories.length === 0 ? (
+                                    <div className="px-4 py-2 text-sm text-gray-700">Aucune catégorie disponible</div>
+                                ) : (
+                                    categories.map((category) => (
+                                        <button 
+                                            key={category.id}  // Utilisation de l'ID unique pour chaque catégorie
+                                            onClick={() => handleCategorySelect(category.id)}
+                                            className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                                        >
+                                            {category.name}  {/* Affiche le nom de la catégorie */}
+                                        </button>
+                                    ))
+                                )}
                             </div>
                         )}
                     </div>

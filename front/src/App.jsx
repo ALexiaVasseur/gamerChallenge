@@ -26,7 +26,7 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             
             
-            <Route path="/category/:type" element={<CategoriesPage />} />
+            <Route path="/category/:id" element={<CategoriesPage />} />
 
             {/* Définir la route pour la page de création de challenge */}
             <Route path="/create-challenge" element={<CreateChallengePage />} />

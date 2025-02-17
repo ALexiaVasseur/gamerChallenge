@@ -16,29 +16,40 @@ export const getParticipationsForChallenge = async (req, res) => {
   try {
     const challengeId = req.params.idChallenge;
 
-    // On cherche toutes les participations associées à ce challenge
+    // Récupération des participations
     const participations = await Participate.findAll({
       where: { challenge_id: challengeId },
       include: [
         {
-          model: Account, // Inclure le modèle Account pour récupérer les informations des participants
-          as: 'account', // Assurez-vous que le modèle est bien lié dans votre association
-          attributes: ['pseudo'] // Ici, on inclut juste le pseudo de l'utilisateur, mais vous pouvez ajouter plus d'attributs
+          model: Account,
+          as: 'account',
+          attributes: ['pseudo']
         }
       ],
-      attributes: ['id', 'video_url', 'image_url', 'description', 'score'] // Sélectionner les attributs de Participation
+      attributes: ['id', 'video_url', 'image_url', 'description', 'score']
     });
+
+    console.log("🔍 Participations trouvées (avant transformation) :", participations);
 
     if (!participations || participations.length === 0) {
       return res.status(404).json({ message: "Aucune participation trouvée pour ce challenge." });
     }
 
-    res.status(200).json(participations);
+    // Extraction des valeurs pour éviter le format Sequelize
+    const formattedParticipations = participations.map(participation => ({
+      ...participation.dataValues,
+      account: participation.account ? participation.account.dataValues : null
+    }));
+
+    console.log("✅ Participations envoyées :", formattedParticipations);
+
+    res.status(200).json(formattedParticipations);
   } catch (error) {
-    console.error("Erreur lors de la récupération des participations:", error);
+    console.error("❌ Erreur lors de la récupération des participations:", error);
     res.status(500).json({ message: "Erreur interne du serveur" });
   }
 };
+
 
 
 
