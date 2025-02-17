@@ -13,7 +13,8 @@ app.use(cors({
     const allowedDomains = [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
-      "http://192.168.91.58:5173", // Vérifie bien que le port est bon
+      "http://192.168.91.58:5173", // Mettez à jour cette adresse si nécessaire
+      "http://192.168.92.107:5173", // Ajoutez l'adresse IP pour le front-end
       "http://172.18.0.4:4173",
       "http://localhost:4173",
     ];

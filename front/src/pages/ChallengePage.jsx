@@ -9,36 +9,38 @@ const ChallengePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState("");
-  const [userPseudo, setUserPseudo] = useState("User123"); // Remplacez ceci par votre logique pour obtenir le pseudo
+  const [userId, setUserId] = useState(null); // Pour stocker l'ID de l'utilisateur
+  const token = localStorage.getItem("token"); // Récupérer le token du localStorage
 
+  // Fonction pour récupérer l'URL d'intégration YouTube
   const getYouTubeEmbedUrl = (url) => {
     const match = url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     return match ? `https://www.youtube.com/embed/${match[1]}` : null;
   };
 
+  // Récupérer les données du défi et les commentaires
   useEffect(() => {
     const fetchChallengeData = async () => {
+      setLoading(true);
       try {
-        const challengeResponse = await fetch(`http://localhost:3000/api/challenge/${id}`);
+        const [challengeResponse, commentsResponse, participationsResponse] = await Promise.all([
+          fetch(`http://localhost:3000/api/challenge/${id}`),
+          fetch(`http://localhost:3000/api/challenges/${id}/comments`),
+          fetch(`http://localhost:3000/api/participations/${id}`),
+        ]);
+
         if (!challengeResponse.ok) throw new Error("Challenge introuvable");
         const challengeData = await challengeResponse.json();
         setChallenge(challengeData);
-  
-        // Modifier l'URL pour obtenir les commentaires d'un challenge spécifique
-        const commentsResponse = await fetch(`http://localhost:3000/api/challenges/${id}/comments`);
+
         if (commentsResponse.ok) {
           const commentsData = await commentsResponse.json();
           setComments(commentsData);
-        } else {
-          setComments([]);
         }
-  
-        const participationsResponse = await fetch(`http://localhost:3000/api/participations/${id}`);
+
         if (participationsResponse.ok) {
           const participationsData = await participationsResponse.json();
           setParticipations(participationsData);
-        } else {
-          setParticipations([]);
         }
       } catch (error) {
         setError(error.message);
@@ -46,27 +48,73 @@ const ChallengePage = () => {
         setLoading(false);
       }
     };
+
     fetchChallengeData();
   }, [id]);
 
-  const handleCommentSubmit = async (e) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
-    try {
-      const response = await fetch(`http://localhost:3000/api/challenges/${id}/comment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: newComment, pseudo: userPseudo }), // Inclure le pseudo ici
-      });
-      if (!response.ok) throw new Error("Erreur lors de l'ajout du commentaire");
-      const newCommentData = await response.json();
-      setComments([...comments, { ...newCommentData, account: { pseudo: userPseudo } }]); // Ajoutez le pseudo au commentaire
-      setNewComment("");
-    } catch (error) {
-      console.error("Erreur lors de l'ajout du commentaire :", error);
+  // Fonction de connexion (mettez à jour les détails si nécessaire)
+  const handleLogin = async (credentials) => {
+    const response = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("token", data.token); // Stocker le token
+      setUserId(data.userId); // Mettre à jour l'ID utilisateur
+      console.log("Utilisateur connecté, token enregistré :", data.token);
+    } else {
+      console.error("Erreur de connexion");
     }
   };
 
+  // Fonction pour soumettre un commentaire
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    const challengeId = parseInt(id, 10);
+    const accountId = userId; // Utiliser l'ID utilisateur
+
+    if (!token) {
+      console.error("Token non trouvé, utilisateur non authentifié");
+      setError("Vous devez être connecté pour laisser un commentaire.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/challenge/${challengeId}/comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          challenge_id: challengeId,
+          text: newComment,
+          account_id: accountId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erreur lors de l'ajout du commentaire:", errorData);
+        throw new Error(errorData.message || "Erreur inconnue");
+      }
+
+      const addedComment = await response.json();
+      setComments([...comments, addedComment]);
+      setNewComment("");
+    } catch (error) {
+      console.error("Erreur lors de la soumission du commentaire:", error.message);
+    }
+  };
+
+  // Chargement et affichage des erreurs
   if (loading) return <p className="text-center text-gray-500 text-2xl">Chargement...</p>;
   if (error) return <p className="text-center text-red-500 text-2xl">{error}</p>;
   if (!challenge) return <p className="text-center text-gray-500 text-2xl">Challenge introuvable.</p>;

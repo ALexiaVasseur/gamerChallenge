@@ -2,6 +2,7 @@ import { Account, RefreshToken, Badge, Challenge, Receive, Participate } from ".
 import { z } from "zod"; // Import de Zod
 import { hash, compare, generateJwtToken, verifyJwtToken,unsaltedHash } from "../crypto.js";
 import { generateAuthenticationTokens } from "../lib/tokens.js";
+
 import config from "../config.js";
 
 

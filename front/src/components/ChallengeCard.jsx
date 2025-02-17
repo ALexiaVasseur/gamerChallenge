@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 
 export default function ChallengeCard({ id, title, author, image }) {
-    const navigate = useNavigate(); // Initialisez useNavigate
+    const navigate = useNavigate();
 
     const isYouTubeLink = (url) => {
         const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
@@ -17,21 +17,21 @@ export default function ChallengeCard({ id, title, author, image }) {
     };
 
     const handleCardClick = () => {
-        navigate(`/challenge/${id}`); // Redirection vers la route souhaitée
+        navigate(`/challenge/${id}`);
     };
 
     return (
         <div 
             key={id} 
-            className="bg-[#907c10] p-4 rounded-lg shadow-lg border-2 border-[#9f8b20] flex flex-col items-center text-center cursor-pointer" 
-            onClick={handleCardClick} // Ajoutez l'événement onClick
+            className="bg-[rgba(159,139,32,0.7)] backdrop-blur-sm p-3 rounded-lg shadow-lg border border-[#9f8b20] flex flex-col items-center text-center cursor-pointer transition transform hover:scale-105 duration-300"
+            onClick={handleCardClick}
         >
             {image && (
                 isYouTubeLink(image) ? (
                     <iframe 
                         src={getYouTubeEmbedUrl(image)} 
                         title={title}
-                        className="w-full h-80 rounded"
+                        className="w-full aspect-video rounded-t-lg"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                     />
@@ -39,12 +39,15 @@ export default function ChallengeCard({ id, title, author, image }) {
                     <img 
                         src={image} 
                         alt={title} 
-                        className="w-full h-80 object-cover rounded" 
+                        className="w-full h-56 object-cover object-center rounded-t-lg"
                     />
                 )
             )}
-            <h3 className="mt-4 text-2xl font-semibold">{title}</h3>
-            <p className="text-xl text-white text-gray-400">Auteur : {author}</p>
+            {/* Section du bas avec titre + auteur */}
+            <div className="w-full py-6 flex flex-col justify-center items-center">
+                <h3 className="text-4xl font-bold text-white uppercase">{title}</h3>
+                <p className="text-2xl text-white">Auteur : {author}</p>
+            </div>
         </div>
     );
 }

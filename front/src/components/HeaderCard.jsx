@@ -2,16 +2,17 @@ import { useState, useEffect } from "react";
 import logoGamer from "../assets/images/logo-gamer.webp";
 import AuthModal from "../components/ModalConnexion";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 
-export default function Header() { 
+export default function HeaderCard() { 
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isCategoryOpen, setIsCategoryOpen] = useState(false); // État du menu Catégories
-    const [categories, setCategories] = useState([]); // État pour stocker les catégories
+    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
 
-    // 🔹 Récupérer l'utilisateur depuis localStorage
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -19,78 +20,59 @@ export default function Header() {
         }
     }, []);
 
-    // 🔹 Récupérer les catégories depuis l'API
     useEffect(() => {
-        fetch("http://localhost:3000/api/categories") // Assure-toi que l'URL de ton API est correcte
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Erreur lors de la récupération des catégories");
-                }
-                return response.json(); // Transformation de la réponse en JSON
-            })
-            .then((data) => {
-                setCategories(data); // Stocke les catégories dans l'état
-            })
-            .catch((error) => {
-                console.error("Erreur lors de la récupération des catégories:", error);
-            });
+        fetch("http://localhost:3000/api/categories")
+            .then((response) => response.ok ? response.json() : Promise.reject("Erreur API"))
+            .then(setCategories)
+            .catch(console.error);
     }, []);
 
-    // Fonction pour récupérer les initiales du pseudo
-    const getInitials = (pseudo) => {
-        return pseudo ? pseudo.substring(0, 2).toUpperCase() : "";
-    };
+    const getInitials = (pseudo) => pseudo ? pseudo.substring(0, 2).toUpperCase() : "";
 
-    // Redirection vers le profil
     const handleProfileRedirect = () => {
         setIsMenuOpen(false);
         navigate("/profile");
     };
 
-    // Redirection vers l'accueil
     const handleHomePageRedirect = () => {
         setIsMenuOpen(false);
         navigate("/");
     };
 
-    // Déconnexion utilisateur
     const handleLogout = () => {
         localStorage.removeItem("user");
         setUser(null);
         setIsMenuOpen(false);
     };
 
-    // Sélection d'une catégorie et fermeture du menu
     const handleCategorySelect = (categoryId) => {
-        navigate(`/category/${categoryId}`); // Redirige vers la page de la catégorie sélectionnée
+        navigate(`/category/${categoryId}`);
         setIsCategoryOpen(false);
     };
 
     return (
-        <header>
-            <nav className="flex justify-between items-center px-8 py-6 mb-14">
-                {/* Logo à gauche */}
+        <header className="top-0 left-0 w-full h-16 sm:h-20 lg:h-24 flex flex-col justify-center bg-[rgba(48,46,46,0.9)] z-50">
+            <nav className="relative flex justify-between items-center px-6 py-4 w-full max-w-screen-xl mx-auto">
+                
+                {/* Logo */}
                 <div>
                     <img 
                         src={logoGamer} 
                         alt="Logo" 
-                        className="w-16 h-16 rounded-full cursor-pointer" 
+                        className="w-14 h-14 rounded-full cursor-pointer" 
                         onClick={handleHomePageRedirect} 
                     />
                 </div>
 
-                {/* Menu centré */}
-                <div className="flex space-x-6 px-60 py-4 bg-[rgba(48,46,46,0.5)] rounded-full text-white font-mono text-3xl gap-x-52">
-
-                    {/* 🔹 Catégories - Menu déroulant */}
+                {/* MENU NAVIGATION - Desktop */}
+                <div className="hidden sm:flex space-x-40 px-10 py-2 text-white text-xl">
                     <div className="relative">
                         <button 
                             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                            className="hover:scale-125 hover:text-[#9f8b20] transition-all duration-500"
+                            className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
                         >
                             Catégories ▾
                         </button>
-
                         {isCategoryOpen && (
                             <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-10">
                                 {categories.length === 0 ? (
@@ -98,37 +80,34 @@ export default function Header() {
                                 ) : (
                                     categories.map((category) => (
                                         <button 
-                                            key={category.id}  // Utilisation de l'ID unique pour chaque catégorie
+                                            key={category.id}  
                                             onClick={() => handleCategorySelect(category.id)}
                                             className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
                                         >
-                                            {category.name}  {/* Affiche le nom de la catégorie */}
+                                            {category.name}
                                         </button>
                                     ))
                                 )}
                             </div>
                         )}
                     </div>
-
-                    <a href="/leaderboard" className="hover:scale-125 hover:text-[#9f8b20] transition-all duration-500">Leaderboard</a>
+                    <a href="/leaderboard" className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500">Leaderboard</a>
                 </div>
 
-                {/* Icône Connexion / Avatar */}
-                <div className="flex justify-end px-8 pt-4">
+                {/* Icône Connexion / Avatar - Desktop */}
+                <div className="hidden sm:flex items-center">
                     {user ? (
-                        <div>
-                            <div className="flex items-center justify-center">
-                                {/* Bouton rond avec initiales */}
-                                <button 
-                                    onClick={() => setIsMenuOpen(!isMenuOpen)} 
-                                    className="w-20 h-20 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[#FF8C00] transition"
-                                >
-                                    {getInitials(user.pseudo)}
-                                </button>
-                            </div>
-                
+                        <div className="relative">
+                            <button 
+                                onClick={() => setIsMenuOpen(!isMenuOpen)} 
+                                className="w-16 h-16 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[#FF8C00] transition"
+                            >
+                                {getInitials(user.pseudo)}
+                            </button>
+
+                            {/* Menu déroulant utilisateur */}
                             {isMenuOpen && (
-                                <div className="absolute right-5 mt-14 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
                                     <button
                                         onClick={handleProfileRedirect}
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -150,13 +129,38 @@ export default function Header() {
                     ) : (
                         <button
                             onClick={() => setIsAuthModalOpen(true)}
-                            className="w-40 h-16 border border-white rounded-full flex items-center justify-center text-white font-bold hover:bg-[#FF8C00] transition"
+                            className="w-40 h-16 border border-white rounded-full flex items-center justify-center text-white font-bold hover:bg-[#FF8C00] transition hidden sm:flex"
                         >
                             Connexion
                         </button>
                     )}
                 </div>
+
+                {/* Menu Burger - Mobile */}
+                <div className="sm:hidden">
+                    <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                        {isMobileMenuOpen ? <AiOutlineClose size={30} color="white" /> : <AiOutlineMenu size={30} color="white" />}
+                    </button>
+                </div>
             </nav>
+
+            {/* Mobile Menu */}
+            {isMobileMenuOpen && (
+                <div className="sm:hidden flex flex-col items-center py-6 bg-[rgba(48,46,46,0.9)] text-white text-xl space-y-6">
+                    <a href="/" onClick={() => setIsMobileMenuOpen(false)}>Accueil</a>
+                    <a href="/leaderboard" onClick={() => setIsMobileMenuOpen(false)}>Leaderboard</a>
+                    {user ? (
+                        <>
+                            <button onClick={handleProfileRedirect} className="text-white">Mon Profil</button>
+                            <button onClick={handleLogout} className="text-white">Déconnexion</button>
+                        </>
+                    ) : (
+                        <button onClick={() => setIsAuthModalOpen(true)} className="text-white border border-white rounded-full px-6 py-3">
+                            Connexion
+                        </button>
+                    )}
+                </div>
+            )}
 
             {/* Modale d'authentification */}
             <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
