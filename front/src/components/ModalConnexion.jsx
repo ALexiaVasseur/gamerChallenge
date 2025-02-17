@@ -82,9 +82,8 @@ const ModalConnexion = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-opacity-60 backdrop-blur-lg z-50">
-      {/* Contenu de la modale */}
-      <div className="bg-[#222] text-white p-8 rounded-lg shadow-lg w-[400px] relative animate-fadeIn scale-95 transition-transform duration-300">
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 backdrop-blur-lg transition-opacity duration-300">
+      <div className="bg-[#222] text-white p-6 rounded-lg shadow-lg w-[400px] relative animate-fadeIn">
         <h2 className="text-3xl font-bold text-center mb-4">
           {isLogin ? "Connexion" : "Inscription"}
         </h2>
@@ -95,14 +94,14 @@ const ModalConnexion = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {!isLogin && (
             <>
-              <input
-                type="text"
-                placeholder="Pseudo"
-                className="p-2 rounded bg-gray-300 text-black"
-                value={pseudo}
-                onChange={(e) => setPseudo(e.target.value)}
-              />
-              <textarea
+            <input
+              type="text"
+              placeholder="Pseudo"
+              className="p-2 rounded bg-gray-300 text-black"
+              value={pseudo}
+              onChange={(e) => setPseudo(e.target.value)}
+            />
+            <textarea
                 placeholder="Décrivez-vous en quelques mots..."
                 className="p-2 rounded bg-gray-300 text-black h-20 resize-none"
                 value={description}
@@ -157,7 +156,6 @@ const ModalConnexion = ({ isOpen, onClose }) => {
           </span>
         </p>
 
-        {/* Bouton pour fermer la modale */}
         <button onClick={onClose} className="absolute top-2 right-2 text-white text-lg">
           ✖
         </button>
