@@ -52,20 +52,20 @@ async function populateDatabase() {
             ]);
 
             // Ajouter les participations
-            const participations = await Participate.bulkCreate([
-                { challenge_id: challenges[0].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/856091/pexels-photo-856091.jpeg", score: 10, description: "Successfully completed the challenge!", account_id: accounts[0].id },
-                { challenge_id: challenges[1].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1339746/pexels-photo-1339746.jpeg", score: 20, description: "An incredible participation!", account_id: accounts[1].id },
-                { challenge_id: challenges[2].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1339835/pexels-photo-1339835.jpeg", score: 15, description: "Teamwork made this challenge fun!", account_id: accounts[2].id },
-                { challenge_id: challenges[3].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1574566/pexels-photo-1574566.jpeg", score: 18, description: "What a challenge!", account_id: accounts[3].id }
-            ]);
+            // const participations = await Participate.bulkCreate([
+            //     { challenge_id: challenges[0].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/856091/pexels-photo-856091.jpeg", score: 10, description: "Successfully completed the challenge!", account_id: accounts[0].id },
+            //     { challenge_id: challenges[1].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1339746/pexels-photo-1339746.jpeg", score: 20, description: "An incredible participation!", account_id: accounts[1].id },
+            //     { challenge_id: challenges[2].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1339835/pexels-photo-1339835.jpeg", score: 15, description: "Teamwork made this challenge fun!", account_id: accounts[2].id },
+            //     { challenge_id: challenges[3].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1574566/pexels-photo-1574566.jpeg", score: 18, description: "What a challenge!", account_id: accounts[3].id }
+            // ]);
 
             // Ajouter des votes
-            await Vote.bulkCreate([
-                { account_id: accounts[0].id, participation_id: participations[0].id, vote: 5 },
-                { account_id: accounts[1].id, participation_id: participations[1].id, vote: 4 },
-                { account_id: accounts[2].id, participation_id: participations[2].id, vote: 3 },
-                { account_id: accounts[3].id, participation_id: participations[3].id, vote: 4 }
-            ]);
+            // await Vote.bulkCreate([
+            //     { account_id: accounts[0].id, participation_id: participations[0].id, vote: 5 },
+            //     { account_id: accounts[1].id, participation_id: participations[1].id, vote: 4 },
+            //     { account_id: accounts[2].id, participation_id: participations[2].id, vote: 3 },
+            //     { account_id: accounts[3].id, participation_id: participations[3].id, vote: 4 }
+            // ]);
 
             // Ajouter des commentaires
             await Comment.bulkCreate([

@@ -69,41 +69,46 @@ export async function createParticipation(req, res) {
   try {
     console.log("🛠 Requête reçue:", req.body);
 
-    // Validation avec Zod
+    // Validation des données avec Zod (ou autre librairie)
     const result = participationSchema.safeParse(req.body);
 
     if (!result.success) {
-      return res.status(400).json({ error: result.error.errors });
+      console.error("Validation échouée:", result.error.errors);
+      return res.status(400).json({ error: result.error.errors }); // Renvoie un message d'erreur détaillé
     }
 
-    // Destructurer les données validées
+    // Destructuration des données validées
     const { challenge_id, video_url, image_url, score, description } = result.data;
 
-    // Récupérer le challenge par ID
+    console.log(challenge_id);
+    // Vérification que le challenge existe dans la base de données
     const challenge = await Challenge.findByPk(challenge_id);
     if (!challenge) {
       return res.status(404).json({ message: "Challenge non trouvé." });
     }
 
     // Création de la participation
-    await Participate.create({
+    const participation = await Participate.create({
       challenge_id,
       video_url,
       image_url,
       score,
-      description
+      description,
     });
 
-    res.status(201).json({
+    console.log("Participation créée avec succès:", participation);
+
+    // Renvoie une réponse avec un message et les détails de la participation
+    return res.status(201).json({
       message: "Participation créée avec succès.",
+      participation: participation, // Renvoie la participation créée pour plus d'infos
     });
 
   } catch (error) {
     console.error("🔥 Erreur serveur:", error);
-    res.status(500).json({ message: "Erreur interne du serveur." });
+    return res.status(500).json({ message: "Erreur interne du serveur." });
   }
 }
-
 
 
 
