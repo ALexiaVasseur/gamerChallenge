@@ -3,25 +3,24 @@ import { UnauthorizedError } from "../lib/errors.js";
 import { verifyJwtToken } from "../lib/tokens.js";
 
 
-export function isAuthenticated(req, _, next) {
-  try {
+export const isAuthenticated = (req, res, next) => {
+  const authorizationHeaders = req.headers?.["Authorization"] || req.headers?.["authorization"];
+  const token = req.cookies?.["x-auth-token"] || authorizationHeaders?.split("Bearer ")[1];
 
-    // Retrieve user data from token payload, cache and/or database.
-    const payload = authentify(req);
 
-    // Because this middleware is often used, we avoid fetching all user data systematically in database. The userId should be enough to retrieve information in the following controllers
-    const userId = payload.userId; 
-    
-    // Append user data to req object to be used in following middlewares
-    req.userId = userId;
-
-    // Call next middlewares
-    next();
-
-  } catch (error) {
-    next(error);
+  if (!token) {
+    return res.status(401).json({ message: "Token manquant, veuillez vous connecter." });
   }
-}
+
+  const decoded = verifyJwtToken(token);
+
+  if (!decoded) {
+    return res.status(401).json({ message: "Token invalide ou expiré." });
+  }
+
+  req.userId = decoded.userId; // Ajouter l'ID utilisateur au `req` pour qu'il soit accessible dans la route
+  next(); // Passer à la route suivante (la fonction du contrôleur)
+};
 
 
 export function authentify(req) {

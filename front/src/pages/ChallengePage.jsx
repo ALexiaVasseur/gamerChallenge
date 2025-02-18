@@ -9,8 +9,10 @@ const ChallengePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState("");
-  const [userId, setUserId] = useState(null); // Pour stocker l'ID de l'utilisateur
-  const token = localStorage.getItem("token"); // Récupérer le token du localStorage
+  // const token = localStorage.getItem("token"); // Récupérer le token du localStorage
+  const userData = JSON.parse(localStorage.getItem("user")); // Assurez-vous que l'objet contient userId
+const userId = userData?.id; // Remplacez `id` par la clé correcte
+
 
   // Fonction pour récupérer l'URL d'intégration YouTube
   const getYouTubeEmbedUrl = (url) => {
@@ -52,67 +54,46 @@ const ChallengePage = () => {
     fetchChallengeData();
   }, [id]);
 
-  // Fonction de connexion (mettez à jour les détails si nécessaire)
-  const handleLogin = async (credentials) => {
-    const response = await fetch("http://localhost:3000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem("token", data.token); // Stocker le token
-      setUserId(data.userId); // Mettre à jour l'ID utilisateur
-      console.log("Utilisateur connecté, token enregistré :", data.token);
-    } else {
-      console.error("Erreur de connexion");
-    }
-  };
 
   // Fonction pour soumettre un commentaire
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
-
+  
     const challengeId = parseInt(id, 10);
     const accountId = userId; // Utiliser l'ID utilisateur
-
-    if (!token) {
-      console.error("Token non trouvé, utilisateur non authentifié");
-      setError("Vous devez être connecté pour laisser un commentaire.");
-      return;
-    }
-
+  
     try {
       const response = await fetch(`http://localhost:3000/api/challenge/${challengeId}/comment`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
+        credentials: "include",
         body: JSON.stringify({
           challenge_id: challengeId,
           text: newComment,
           account_id: accountId,
         }),
+        
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Erreur lors de l'ajout du commentaire:", errorData);
         throw new Error(errorData.message || "Erreur inconnue");
       }
-
+  
       const addedComment = await response.json();
       setComments([...comments, addedComment]);
-      setNewComment("");
+      setNewComment(""); // Réinitialiser le champ du commentaire
     } catch (error) {
       console.error("Erreur lors de la soumission du commentaire:", error.message);
+      setError(error.message); // Affichage de l'erreur dans l'UI
     }
   };
+  
+  
 
   // Chargement et affichage des erreurs
   if (loading) return <p className="text-center text-gray-500 text-2xl">Chargement...</p>;
@@ -122,7 +103,12 @@ const ChallengePage = () => {
   return (
     <main className="mx-auto p-12 text-white">
       {challenge.image_url && (
-        <img src={challenge.image_url} alt="Challenge Image" className="w-full h-[400px] object-cover rounded-lg shadow-2xl mb-6" />
+        <img 
+        src={challenge.image_url} 
+        alt="Challenge Image" 
+        className="max-w-[800px] h-auto object-cover rounded-lg shadow-2xl mx-auto mb-6"
+      />      
+
       )}
       <h1 className="text-6xl font-bold text-center mt-6 mb-10">{challenge.title}</h1>
       {challenge.account && (
@@ -133,7 +119,15 @@ const ChallengePage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div>
           {challenge.game?.url_video_game && (
-            <iframe className="w-full h-[300px] rounded-lg shadow-2xl" src={getYouTubeEmbedUrl(challenge.game.url_video_game)} title="Game Video" frameBorder="0" allowFullScreen></iframe>
+            <iframe 
+            className="w-full max-w-[960px] h-[540px] rounded-lg shadow-2xl mx-auto"
+            src={`${getYouTubeEmbedUrl(challenge.game.url_video_game)}?controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`}
+            title="Game Video"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen>
+          </iframe>
+          
           )}
           <details className="mt-10 bg-white/10 p-5 rounded-lg">
             <summary className="cursor-pointer text-3xl font-semibold">Voir les participations</summary>
@@ -188,7 +182,7 @@ const ChallengePage = () => {
               />
               <button
                 type="submit"
-                className="bg-orange-500 hover:bg-orange-600 transition-all duration-500 text-white px-6 py-3 h-14 rounded-lg text-xl font-semibold w-auto mt-5"
+                className="bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,1)] transition-all duration-500 text-white px-6 py-3 h-14 rounded-lg text-xl font-semibold w-auto mt-5"
               >
                 Publier
               </button>

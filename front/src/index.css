@@ -37,6 +37,27 @@ html, body, #root {
   flex-direction: column;
 }
 
+/* Customisation de la scrollbar */
+::-webkit-scrollbar {
+  width: 10px; /* Largeur de la barre */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Fond transparent */
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(159, 139, 32, 0.7);
+  border-radius: 5px; /* Bords arrondis */
+  border: 2px solid transparent; /* Pour un effet de profondeur */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(159, 139, 32, 0.7); /* Légèrement plus foncé au survol */
+}
+
+
 /* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

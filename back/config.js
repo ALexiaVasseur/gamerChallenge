@@ -15,7 +15,7 @@ const auth = {
     type: process.env.ACCESS_TOKEN_TYPE || "Bearer",
     algorithm: process.env.ACCESS_TOKEN_ALGORITHM || "HS256",
     secret: process.env.ACCESS_TOKEN_SECRET || "Acc3ssTok3nS3c3t!",
-    expiresInMS: process.env.ACCESS_TOKEN_EXPIRES_IN_MS || 15 * 60 * 1000, // 15 minutes
+    expiresInMS: process.env.ACCESS_TOKEN_EXPIRES_IN_MS || 1 * 60 * 1000, // 1 minute
     audience: process.env.ACCESS_TOKEN_AUDIENCE || "my_backend_api", // Audience claim of the JWT
     issuer: process.env.ACCESS_TOKEN_ISSUER || "my_authentication_server" // Issuer claim of the JWT
   },

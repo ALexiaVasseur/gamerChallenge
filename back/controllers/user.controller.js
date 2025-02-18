@@ -117,16 +117,45 @@ export async function signupUser(req, res) {
             password: hashedPassword, // 🔒 On stocke uniquement le hash
             description
         });
-        
+
+        const account = await Account.findOne ({where: {email}});
+        if (!account) { return res.status(401).json({ status: 401, message: "Invalid credentials" }); }
+
+        // Génération des tokens
+        const { accessToken, refreshToken, csrfToken } = generateAuthenticationTokens(account);
+
+        // Invalidation des anciens Refresh Tokens et sauvegarde du nouveau
+        await RefreshToken.destroy({ where: { userId: account.id } });
+        await RefreshToken.create({
+          userId: account.id,
+          token: unsaltedHash(refreshToken.token),
+          expiresAt: refreshToken.expiresAt
+        });
+
+          // Définition des cookies de sécurité
+        res.cookie("x-auth-token", accessToken.token, {
+            maxAge: accessToken.expiresInMS,
+            ...getCookieSecuritySettings()
+        });
+
+        res.cookie("x-auth-refresh-token", refreshToken.token, {
+            maxAge: refreshToken.expiresInMS,
+            path: "/api/auth/refresh",
+            ...getCookieSecuritySettings()
+        });
+
         // ✅ Réponse sans le mot de passe
         res.status(201).json({
             message: "Utilisateur créé avec succès.",
+            accessToken,
+            refreshToken,
+            ...(csrfToken && { csrfToken }),
             user: {
-                id: newUser.id,
-                pseudo: newUser.pseudo,
-                email: newUser.email,
+                id: account.id,
+                pseudo: account.pseudo,  // 🔹 Ajoute le pseudo
+                email: account.email,
                 description: newUser.description
-            },
+            }
         });
     } catch (error) {
         console.error("🔥 Erreur serveur:", error);

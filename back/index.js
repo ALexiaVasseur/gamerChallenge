@@ -8,6 +8,8 @@ import { notFoundMiddleware, errorHandler } from "./middlewares/index.middleware
 
 const app = express();
 
+app.use(cookieParser());
+
 app.use(cors({
   origin: (origin, callback) => {
     console.log("🔍 Origine de la requête :", origin); // Pour le débogage
@@ -37,7 +39,6 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(cookieParser());
 
 app.use("/api", apiRouter);
 

@@ -50,7 +50,7 @@ const BaseChallenge = ({ title, children, name_button, section_title, challenges
             {/* Bouton "Créer un Challenge" visible uniquement si connecté */}
             {connected && (
               <button
-                className="bg-[#FF8C00] hover:bg-orange-600 hover:scale-105 transition-all duration-500 text-white px-6 py-3 rounded-lg text-xl font-semibold"
+                className="bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,1)] hover:scale-105 transition-all duration-500 text-white px-6 py-3 rounded-lg text-xl font-semibold"
                 onClick={goToCreateChallengePage}
               >
                 Créer un Challenge

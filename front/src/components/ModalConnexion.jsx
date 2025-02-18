@@ -52,7 +52,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
-        //credentials: "include",
+        credentials: "include",
       });
       
       const data = await response.json();
@@ -135,7 +135,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
 
           <button
             type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white py-2 rounded font-semibold disabled:bg-gray-500"
+            className="bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,1)] text-white py-2 rounded font-semibold disabled:bg-gray-500"
             disabled={loading}
           >
             {loading ? "Chargement..." : isLogin ? "Se connecter" : "S'inscrire"}

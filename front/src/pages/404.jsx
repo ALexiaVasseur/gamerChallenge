@@ -15,7 +15,7 @@ export default function NotFoundPage() {
       </p>
       <button
         onClick={handleHomePageRedirect}
-        className="mt-8 px-6 py-3 bg-[#FF8C00] hover:bg-orange-600 hover:scale-102 transition-all duration-500 text-white rounded-lg shadow-lg"
+        className="mt-8 px-6 py-3 bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,1)] hover:scale-102 transition-all duration-500 text-white rounded-lg shadow-lg"
       >
         Retour à l&apos;accueil
       </button>
