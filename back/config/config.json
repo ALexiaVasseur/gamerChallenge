@@ -1,6 +1,6 @@
 {
   "development": {
-    "host": "gamerchallenge-database",
+    "host": "db",
     "database": "gamerchallenge", 
     "username": "gamerchallenge", 
     "password": "gamerchallenge",

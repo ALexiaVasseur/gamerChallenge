@@ -19,4 +19,4 @@ RUN npm run build
 EXPOSE 4173
 
 # Commande de démarrage (ajustez selon votre configuration)
-CMD ["npm", "run", "preview"]
+CMD ["npm", "run", "preview", "--host"]

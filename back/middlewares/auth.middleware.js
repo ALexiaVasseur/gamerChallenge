@@ -25,6 +25,11 @@ export function isAuthenticated(req, _, next) {
 
 
 export function authentify(req) {
+
+  console.log("🔍 Headers :", req.headers);
+  console.log("🔍 Cookies :", req.cookies);
+
+  
   // Get access token from either cookies (browsers) or Authorization headers (any service)
   const authorizationHeaders = req.headers?.["Authorization"] || req.headers?.["authorization"];
   const accessToken = req.cookies?.["x-auth-token"] || authorizationHeaders?.split("Bearer ")[1];

@@ -18,17 +18,21 @@ app.use(cors({
       "http://192.168.92.107:5173",
       "http://172.18.0.4:4173",
       "http://localhost:4173",
+      "http://192.168.91.196:5173",
+      "guillaume-dut-server.eddi.cloud",
+      "http://guillaume-dut-server.eddi.cloud",
+      "https://guillaume-dut-server.eddi.cloud"
     ];
 
-    if (!origin || allowedDomains.includes(origin)) {
-      callback(null, origin);
+    if (!origin || allowedDomains.includes(origin) || origin === "null") {
+
+      callback(null, true);
     } else {
       callback(new Error("CORS non autorisé"));
     }
   },
-  credentials: config.server.cors.credentials
+  credentials: true
 }));
-
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

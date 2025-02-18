@@ -52,7 +52,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
-        credentials: "include",
+        //credentials: "include",
       });
       
       const data = await response.json();
@@ -82,7 +82,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 backdrop-blur-lg transition-opacity duration-300">
+    <div className="fixed inset-0 flex justify-center items-center bg-opacity-40 backdrop-blur-lg transition-opacity duration-300">
       <div className="bg-[#222] text-white p-6 rounded-lg shadow-lg w-[400px] relative animate-fadeIn">
         <h2 className="text-3xl font-bold text-center mb-4">
           {isLogin ? "Connexion" : "Inscription"}

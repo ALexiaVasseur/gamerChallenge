@@ -249,12 +249,12 @@ export async function logoutUser(req,res) {
 }
 
 function getCookieSecuritySettings() {
-    return {
-      httpOnly: true, // Client code cannot access cookie
-      secure: config.auth.cookies.secure, // Only send cookie via HTTPS
-      sameSite: config.auth.sameSiteCookiePolicy // Allow cookie to be sent to cross-origin servers
-    };
-  }
+  return {
+    httpOnly: true,  // ✅ Sécurise contre le JS
+    secure: false,   // ✅ Ne pas forcer HTTPS en local
+    sameSite: "Lax"  // ✅ Compatible avec les requêtes locales
+  };
+}
 
   export async function getLeaderboard(req, res) {
     try {

@@ -8,18 +8,9 @@ services:
       dockerfile: Dockerfile.api
     ports:
       - "3000:3000"
-    environment:
-      - DB_HOST=gamerchallenge-database
-      - DB_PORT=5432
-      - DB_USER=gamerchallenge
-      - DB_PASSWORD=gamerchallenge
-      - DB_NAME=gamerchallenge
-      - PG_URL=postgres://gamerchallenge:gamerchallenge@gamerchallenge-database:5432/gamerchallenge  # Ajouter cette ligne
     depends_on:
       - db
     container_name: gamerchallenge-api
-    networks:
-      - gamerchallenge-network
 
   # Service Client (Frontend)
   client:
@@ -31,8 +22,6 @@ services:
     depends_on:
       - api
     container_name: gamerchallenge-cli
-    networks:
-      - gamerchallenge-network
 
   # Service Base de Données (PostgreSQL)
   db:
@@ -43,17 +32,10 @@ services:
       - POSTGRES_PASSWORD=gamerchallenge
       - POSTGRES_DB=gamerchallenge
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - pg-gamerchallenge:/var/lib/postgresql/data
-    networks:
-      - gamerchallenge-network
 
 # Déclaration du volume pour la persistance des données de la base de données
 volumes:
   pg-gamerchallenge:
-
-# Déclaration du réseau pour que tous les services puissent se connecter entre eux
-networks:
-  gamerchallenge-network:
-    driver: bridge
