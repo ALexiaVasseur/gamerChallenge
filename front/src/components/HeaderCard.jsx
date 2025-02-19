@@ -65,7 +65,8 @@ export default function HeaderCard() {
     };
 
     return (
-        <header className="top-0 left-0 w-full h-16 sm:h-20 lg:h-24 flex flex-col justify-center bg-[rgba(48,46,46,0.9)] z-50">
+        <header className="relative top-0 left-0 w-full h-16 sm:h-20 lg:h-24 flex flex-col justify-center bg-[rgba(48,46,46,0.9)] z-50">
+
             <nav className="relative flex justify-between items-center px-6 py-4 w-full max-w-screen-xl mx-auto">
                 
                 {/* Logo */}

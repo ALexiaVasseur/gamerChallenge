@@ -7,9 +7,9 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
   const [description, setDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [newScore, setNewScore] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
-
 
   // Si la modale n'est pas ouverte, on retourne null (ne l'affiche pas)
   if (!isOpen) return null;
@@ -56,7 +56,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ challenge_id: challengeId, video_url: videoUrl, description, vote }), // Ou toute autre donnée que tu veux envoyer
+          body: JSON.stringify({ challenge_id: challengeId, video_url: videoUrl, description, vote, account_id: userId, }), // Ou toute autre donnée que tu veux envoyer
         }
       );
   
@@ -98,6 +98,33 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
         throw new Error(voteError.message || "Erreur lors de l'envoi du vote");
       }
   
+       // 3. Mise à jour du score de l'utilisateur
+    // 3. Mise à jour du score de l'utilisateur
+const updateScoreResponse = await fetch(
+  `http://localhost:3000/api/user/${userId}/updateScore`, // Assurez-vous que l'URL correspond à celle que tu utilises pour la mise à jour du score
+  {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ point: vote }), // Le vote sera utilisé comme nombre de points
+  }
+);
+
+if (!updateScoreResponse.ok) {
+  const updateScoreError = await updateScoreResponse.json();
+  console.error("Erreur lors de la mise à jour du score :", updateScoreError);
+  throw new Error(updateScoreError.message || "Erreur lors de la mise à jour du score");
+}
+
+// Récupérer les données après avoir validé la réponse
+const updateScoreData = await updateScoreResponse.json();
+console.log("Score mis à jour avec succès :", updateScoreData.newScore);
+
+// Mettre à jour l'état newScore
+setNewScore(updateScoreData.newScore);
+
+
       // Réinitialisation du formulaire après soumission
       setVideoUrl("");
       setVote(1);
@@ -174,6 +201,13 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
             {loading ? "Envoi en cours..." : "Soumettre"}
           </button>
         </form>
+
+        {/* Affichage du nouveau score */}
+      {newScore !== null && (
+        <div className="mt-4 text-center">
+          <p>Votre nouveau score est : <strong>{newScore}</strong></p>
+        </div>
+      )}
 
         {/* Bouton ✖ qui ferme immédiatement la modale */}
         <button

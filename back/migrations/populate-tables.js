@@ -40,7 +40,7 @@ async function populateDatabase() {
                 { id_igdb: 12345, title: "Jeu 1", description: "A thrilling adventure game where every decision impacts the world. Explore vast environments and solve challenging puzzles.", genre: "Action", url_video_game: "https://www.youtube.com/watch?v=rBg69tpjAzQ&pp=ygUXc21hbGwgdmlkZW8gb2YgZ2FtZXBsYXk%3D" },
                 { id_igdb: 67890, title: "Jeu 2", description: "An immersive RPG with an epic storyline, travel through various realms and uncover hidden secrets.", genre: "RPG", url_video_game: "https://www.youtube.com/watch?v=rBg69tpjAzQ&pp=ygUXc21hbGwgdmlkZW8gb2YgZ2FtZXBsYXk%3D" },
                 { id_igdb: 11223, title: "Jeu 3", description: "A fast-paced competitive game where strategy and quick reflexes are key to victory.", genre: "Shooter", url_video_game: "https://www.youtube.com/watch?v=rBg69tpjAzQ&pp=ygUXc21hbGwgdmlkZW8gb2YgZ2FtZXBsYXk%3D" },
-                { id_igdb: 44556, title: "Jeu 4", description: "A sports simulation game where players compete in high-stakes matches across various disciplines.", genre: "Sports", url_video_game: "https://preview.redd.it/563u5bozpcb91.jpg?width=640&crop=smart&auto=webp&s=cea192d42b6cddbeffcd5870dd89b30a2be6ab1c" }
+                { id_igdb: 44556, title: "Jeu 4", description: "A sports simulation game where players compete in high-stakes matches across various disciplines.", genre: "Sports", url_video_game: "https://www.youtube.com/watch?v=rBg69tpjAzQ&pp=ygUXc21hbGwgdmlkZW8gb2YgZ2FtZXBsYXk%3D" }
             ]);
 
             // Ajouter des défis avec un `category_id` valide
@@ -52,20 +52,19 @@ async function populateDatabase() {
             ]);
 
             // Ajouter les participations
-            // const participations = await Participate.bulkCreate([
-            //     { challenge_id: challenges[0].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/856091/pexels-photo-856091.jpeg", score: 10, description: "Successfully completed the challenge!", account_id: accounts[0].id },
-            //     { challenge_id: challenges[1].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1339746/pexels-photo-1339746.jpeg", score: 20, description: "An incredible participation!", account_id: accounts[1].id },
-            //     { challenge_id: challenges[2].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1339835/pexels-photo-1339835.jpeg", score: 15, description: "Teamwork made this challenge fun!", account_id: accounts[2].id },
-            //     { challenge_id: challenges[3].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", image_url: "https://images.pexels.com/photos/1574566/pexels-photo-1574566.jpeg", score: 18, description: "What a challenge!", account_id: accounts[3].id }
-            // ]);
+            const participations = await Participate.bulkCreate([
+                { challenge_id: challenges[0].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 10, description: "Successfully completed the challenge!", account_id: accounts[0].id },
+                { challenge_id: challenges[1].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 20, description: "An incredible participation!", account_id: accounts[1].id },
+                 { challenge_id: challenges[2].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 15, description: "Teamwork made this challenge fun!", account_id: accounts[2].id },
+                 { challenge_id: challenges[3].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 18, description: "What a challenge!", account_id: accounts[3].id }
+             ]);
 
-            // Ajouter des votes
-            // await Vote.bulkCreate([
-            //     { account_id: accounts[0].id, participation_id: participations[0].id, vote: 5 },
-            //     { account_id: accounts[1].id, participation_id: participations[1].id, vote: 4 },
-            //     { account_id: accounts[2].id, participation_id: participations[2].id, vote: 3 },
-            //     { account_id: accounts[3].id, participation_id: participations[3].id, vote: 4 }
-            // ]);
+             await Vote.bulkCreate([
+                { account_id: accounts[0].id, participation_id: participations[1].id, vote: 5 },
+                { account_id: accounts[1].id, participation_id: participations[2].id, vote: 4 },
+                { account_id: accounts[2].id, participation_id: participations[3].id, vote: 3 },
+                { account_id: accounts[3].id, participation_id: participations[0].id, vote: 4 }
+            ]);
 
             // Ajouter des commentaires
             await Comment.bulkCreate([

@@ -6,6 +6,7 @@ import config from "../config.js";
 
 
 import { logger } from "../lib/logger.js";
+import { givePoint } from "../lib/voteGive.js";
 
 
 
@@ -299,5 +300,23 @@ function getCookieSecuritySettings() {
     } catch (error) {
       console.error("🔥 Erreur serveur:", error);
       res.status(500).json({ message: "Erreur interne du serveur." });
+    }
+  }
+
+  export async function updateScore(req, res) {
+    try {
+      const { userId } = req.params;
+      const { point } = req.body;
+
+      const newScore = await givePoint(userId, point);
+
+      res.status(200).json({
+        message: "Points ajoutés avec succès !",
+        newScore
+      });
+    } catch(error) {
+      res.status(400).json({
+        message: error.message
+      });
     }
   }
