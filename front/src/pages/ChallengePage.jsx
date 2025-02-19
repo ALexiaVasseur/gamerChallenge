@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ModalParticipation from "../components/ModalParticipation";
+import { FaStar, FaRegStar } from "react-icons/fa";
+
 
 const ChallengePage = () => {
   const { id } = useParams();
@@ -149,28 +151,44 @@ const ChallengePage = () => {
             </iframe>
           )}
           <details className="mt-10 bg-white/10 p-5 rounded-lg">
-            <summary className="cursor-pointer text-3xl font-semibold">Voir les participations</summary>
-            <div className="max-h-[500px] overflow-y-auto space-y-6 mt-4">
-              {participations.length > 0 ? (
-                participations.map((participation) => (
-                  <div key={participation.id} className="bg-white/10 p-5 rounded-lg shadow-xl text-lg">
-                    {participation.video_url && getYouTubeEmbedUrl(participation.video_url) ? (
-                      <iframe className="w-full h-[250px] rounded-lg shadow-2xl mb-4" src={getYouTubeEmbedUrl(participation.video_url)} title="Participation Video" frameBorder="0" allowFullScreen></iframe>
-                    ) : (
-                      <p className="text-red-500">Vidéo introuvable.</p>
-                    )}
-                    {participation.image_url && (
-                      <img src={participation.image_url} alt="Image de participation" className="w-full h-[250px] object-cover rounded-lg shadow-2xl mb-4" />
-                    )}
-                    <p><strong>Description:</strong> {participation.description}</p>
-                    <p><strong>Score:</strong> {participation.score}</p>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-300 text-lg">Aucune participation.</p>
-              )}
-            </div>
-          </details>
+  <summary className="cursor-pointer text-3xl font-semibold">Voir les participations</summary>
+  <div className="max-h-[500px] overflow-y-auto space-y-6 mt-4">
+    {participations.length > 0 ? (
+      participations.map((participation) => (
+        <div key={participation.id} className="bg-white/10 p-5 rounded-lg shadow-xl text-lg">
+          {participation.video_url && getYouTubeEmbedUrl(participation.video_url) ? (
+            <iframe 
+              className="w-full h-[250px] rounded-lg shadow-2xl mb-4" 
+              src={getYouTubeEmbedUrl(participation.video_url)} 
+              title="Participation Video" 
+              frameBorder="0" 
+              allowFullScreen
+            ></iframe>
+          ) : (
+            <p className="text-red-500">Vidéo introuvable.</p>
+          )}
+
+          {participation.image_url && (
+            <img src={participation.image_url} alt="Image de participation" className="w-full h-[250px] object-cover rounded-lg shadow-2xl mb-4" />
+          )}
+
+          <p><strong>Description:</strong> {participation.description}</p>
+          <p><strong>Score:</strong> {participation.score}</p>
+          
+          <p><strong>Votes :</strong></p>
+          <div className="flex text-yellow-400">
+            {[...Array(5)].map((_, i) => (
+             i < (participation.votes[0]?.vote || 0) ? <FaStar key={i} /> : <FaRegStar key={i} />
+            ))}
+          </div>
+        </div>
+      ))
+    ) : (
+      <p className="text-gray-300 text-lg">Aucune participation.</p>
+    )}
+  </div>
+</details>
+
         </div>
         <div className="bg-white/10 p-10 rounded-lg shadow-2xl text-lg">
           <h2 className="text-5xl font-semibold mb-4">Description</h2>

@@ -1,4 +1,4 @@
-import { Challenge, Participate, Account} from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
+import { Challenge, Participate, Account, Vote} from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
 import { z } from "zod"; // Import de Zod
 import { hash, compare, generateJwtToken, verifyJwtToken } from "../crypto.js";
 
@@ -16,7 +16,7 @@ export const getParticipationsForChallenge = async (req, res) => {
   try {
     const challengeId = req.params.idChallenge;
 
-    // Récupération des participations
+    // Récupération des participations avec les comptes et votes associés
     const participations = await Participate.findAll({
       where: { challenge_id: challengeId },
       include: [
@@ -24,6 +24,11 @@ export const getParticipationsForChallenge = async (req, res) => {
           model: Account,
           as: 'account',
           attributes: ['pseudo']
+        },
+        {
+          model: Vote,
+          as: 'votes',
+          attributes: ['vote', 'account_id']
         }
       ],
       attributes: ['id', 'video_url', 'image_url', 'description', 'score']
@@ -38,7 +43,8 @@ export const getParticipationsForChallenge = async (req, res) => {
     // Extraction des valeurs pour éviter le format Sequelize
     const formattedParticipations = participations.map(participation => ({
       ...participation.dataValues,
-      account: participation.account ? participation.account.dataValues : null
+      account: participation.account ? participation.account.dataValues : null,
+      votes: participation.votes ? participation.votes.map(vote => vote.dataValues) : []
     }));
 
     console.log("✅ Participations envoyées :", formattedParticipations);
