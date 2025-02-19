@@ -1,9 +1,6 @@
 import { Account } from "../models/index.js";
 
 export async function givePoint(userId, point) {
-
-    console.log("userId : ", userId)
-    console.log("point : ", point)
     if (!userId || !point) {
         throw new Error("userId et point sont requis.");
     }

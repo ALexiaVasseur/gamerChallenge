@@ -11,28 +11,33 @@ const Leaderboard = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center min-h-screen py-10">
-      <h1 className="text-3xl font-bold text-yellow-500 mb-6">🏆 Leaderboard</h1>
-      <div className="w-full max-w-4xl overflow-hidden rounded-lg shadow-lg">
-        <div className="flex flex-col">
-          {/* En-tête doré */}
-          <div className="flex items-center justify-between p-4 bg-[#9f8b20] text-white rounded-lg mb-1">
-            <div className="w-1/4 text-left font-bold">Position</div>
-            <div className="w-1/2 text-left">Pseudo</div>
-            <div className="w-1/4 text-left">Score</div>
-          </div>
+    <div className="flex flex-col items-center min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+      <h1 className="text-4xl sm:text-5xl font-bold text-yellow-500 mb-8 text-center">🏆 Leaderboard</h1>
 
-          {/* Liste des joueurs */}
-          {players.map((player, index) => (
-            <div
-              key={index}
-              className={`flex items-center justify-between p-4 bg-[#9f8b20] text-white ${index !== players.length - 1 && 'mb-1'} rounded-lg`}
-            >
-              <div className="w-1/4 font-bold">#{index + 1}</div>
-              <div className="w-1/2">{player.pseudo}</div>
-              <div className="w-1/4">{player.score_global}</div>
-            </div>
-          ))}
+      <div className="w-full max-w-4xl overflow-hidden rounded-lg shadow-xl">
+        {/* En-tête */}
+        <div className="grid grid-cols-3 py-3 px-6 text-lg sm:text-xl text-white font-medium bg-[#9f8b20] rounded-lg mb-2 shadow-md">
+          <div className="text-left">Position</div>
+          <div className="text-center">Pseudo</div>
+          <div className="text-right">Score</div>
+        </div>
+
+        {/* Liste des joueurs */}
+        <div className="py-4 px-2 sm:px-4 rounded-b-lg">
+          {players.length > 0 ? (
+            players.map((player, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-3 py-3 px-6 text-lg sm:text-xl text-white font-medium bg-[#9f8b20] rounded-lg mb-2 shadow-md"
+              >
+                <div className="text-left">#{index + 1}</div>
+                <div className="text-center">{player.pseudo}</div>
+                <div className="text-right">{player.score_global}</div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-yellow-400 py-6 text-lg">Aucun joueur trouvé.</p>
+          )}
         </div>
       </div>
     </div>
@@ -40,6 +45,3 @@ const Leaderboard = () => {
 };
 
 export default Leaderboard;
-
-
-

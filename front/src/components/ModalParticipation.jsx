@@ -133,6 +133,7 @@ setNewScore(updateScoreData.newScore);
   
       // Fermeture de la modale après soumission
       onClose();
+       
   
       // Appel de la fonction de callback de soumission
       if (onSubmit) onSubmit();

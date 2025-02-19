@@ -25,7 +25,7 @@ export const getParticipationsForChallenge = async (req, res) => {
         {
           model: Account,
           as: 'account',
-          attributes: ['pseudo']
+          attributes: ['pseudo', "score_global"]
         },
         {
           model: Vote,
@@ -81,7 +81,7 @@ export const getAllVotesForChallenge = async (req, res) => {
         {
           model: Account,  // Ajouter des informations sur l'utilisateur qui a voté
           as: "account",
-          attributes: ["id", "pseudo"],  // Mettre les informations du compte
+          attributes: ["id", "pseudo", "score_global"],  // Mettre les informations du compte
         }
       ],
       attributes: ["account_id", "participation_id", "vote"],  // Récupérer les attributs des votes
@@ -160,7 +160,7 @@ const participationWithUser = await Participate.findByPk(participation.id, {
   include: {
     model: Account,
     as: "account",
-    attributes: ["pseudo"], // On ne récupère que le pseudo
+    attributes: ["pseudo", "score_global"], // On ne récupère que le pseudo
   },
 });
 

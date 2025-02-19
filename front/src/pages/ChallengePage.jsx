@@ -187,9 +187,10 @@ const ChallengePage = () => {
                       <img src={participation.image_url} alt="Image de participation" className="w-full h-[250px] object-cover rounded-lg shadow-2xl mb-4" />
                     )}
 
+                    {console.log(participation)}
                     <p><strong>Pseudo:</strong> {participation.account?.pseudo}</p>
                     <p><strong>Description:</strong> {participation.description}</p>
-                    <p><strong>Score:</strong> {participation.score}</p>
+                    <p><strong>Score:</strong> {participation.account?.score_global}</p>
 
                     <p><strong>Votes :</strong></p>
                     <div className="flex text-text-[#9f8b20]">
