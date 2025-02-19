@@ -7,6 +7,9 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
   const [description, setDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id;
+
 
   // Si la modale n'est pas ouverte, on retourne null (ne l'affiche pas)
   if (!isOpen) return null;
@@ -35,6 +38,13 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
       setLoading(false);
       return;
     }
+
+    if (!userId) {
+      setErrorMessage("Utilisateur non authentifié.");
+      setLoading(false);
+      return;
+    }
+    
   
     try {
       // 1. Créer la participation
@@ -57,7 +67,11 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
       }
   
       const participationData = await participationResponse.json();
-      const participationId = participationData.id; // Récupérer l'ID de la participation
+      if (!participationData.participation.id) {
+        throw new Error("ID de la participation manquant dans la réponse.");
+      }
+
+      const participationId = participationData.participation.id; // Récupérer l'ID de la participation
       console.log("Participation créée avec succès. ID de participation:", participationId);
   
       // 2. Créer un vote
@@ -69,9 +83,14 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ vote }), // L'objet de vote
+          body: JSON.stringify({
+            account_id: userId, // Remplacez `userId` par la vraie variable contenant l'ID du compte
+            participation_id: participationId,
+            vote,
+          }),
         }
       );
+      
   
       if (!voteResponse.ok) {
         const voteError = await voteResponse.json();
@@ -108,7 +127,9 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
     onClose(); // Ferme la modale
   };
 
-  return (
+  console.log("Votes : ", {vote});
+
+  return ( 
     <div className="fixed inset-0 flex justify-center items-center bg-opacity-40 backdrop-blur-lg transition-opacity duration-300 z-50">
       <div className="bg-[#222] text-white p-6 rounded-lg shadow-lg w-[400px] relative animate-fadeIn">
         <h2 className="text-3xl font-bold text-center mb-4">Publier ma participation</h2>
@@ -125,17 +146,18 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
             onChange={(e) => setVideoUrl(e.target.value)}
           />
 
-          <select
-            className="p-2 rounded bg-gray-300 text-black"
-            value={vote}
-            onChange={(e) => setVote(parseInt(e.target.value, 10))}
-          >
+          {/* Étoiles pour le vote */}
+          <div className="flex justify-center">
             {[1, 2, 3, 4, 5].map((num) => (
-              <option key={num} value={num}>
-                {num} {num === 1 ? "étoile" : "étoiles"}
-              </option>
+              <span
+                key={num}
+                className={`cursor-pointer text-3xl ${num <= vote ? "text-yellow-500" : "text-gray-400"}`}
+                onClick={() => setVote(num)}
+              >
+                ★
+              </span>
             ))}
-          </select>
+          </div>
 
           <textarea
             placeholder="Décrivez votre participation..."

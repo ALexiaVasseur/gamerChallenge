@@ -26,14 +26,14 @@ const BaseChallenge = ({ title, children, name_button, section_title, challenges
       <main className="w-full max-w-screen-2xl">
         <section className="text-center py-16 w-full">
           <div className="bg-[rgba(57,57,57,0.5)] rounded-xl p-10 mx-auto max-w-5xl mt-6">
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold mb-8">{title}</h1>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-4 w-full text-center leading-tight break-words">{title}</h1>
             {children}
 
             {/* Description de la catégorie */}
             <p className="text-lg sm:text-xl text-gray-300 mt-6">{description}</p>
 
             {/* Bouton pour voir les challenges */}
-            <div className="mt-8">
+            <div className="mt-8 flex justify-center">
               <LargeButton idToHref={`#challenges-${title}`} nameButton={name_button} />
             </div>
           </div>

@@ -38,33 +38,50 @@ const createVoteSchema = z.object({
 export async function createVote(req, res) {
   try {
     console.log("🛠 Requête reçue:", req.body);
+    console.log("🔍 Paramètres reçus:", req.params);
 
     // Validation avec Zod
     const { success, data, error } = createVoteSchema.safeParse(req.body);
 
     if (!success) {
+      console.error("❌ Erreur de validation:", error.errors);
       return res.status(400).json({ error: error.errors });
     }
 
-    // ici
-    const idChallenge = req.params.idChallenge;
-    const challenge = await Challenge.findByPk(idChallenge);
-    if(!challenge) return res.status(404).json({ message: "Challenge non trouvé."})
+    // Vérification des paramètres URL
+    const idChallenge = Number(req.params.idChallenge);
+    const idParticipation = Number(req.params.idParticipation);
 
-    const idParticipation = req.params.idParticipation;
+    if (isNaN(idChallenge) || isNaN(idParticipation)) {
+      return res.status(400).json({ message: "ID Challenge ou Participation invalide." });
+    }
+
+    console.log("✅ ID Challenge:", idChallenge, "ID Participation:", idParticipation);
+
+    // Vérifier si le challenge existe
+    const challenge = await Challenge.findByPk(idChallenge);
+    if (!challenge) {
+      console.error("❌ Challenge non trouvé:", idChallenge);
+      return res.status(404).json({ message: "Challenge non trouvé." });
+    }
+
+    // Vérifier si la participation existe
     const participation = await Participate.findByPk(idParticipation);
-    if(!participation) return res.status(404).json({ message: "Participation non trouvée."})
-    
+    if (!participation) {
+      console.error("❌ Participation non trouvée:", idParticipation);
+      return res.status(404).json({ message: "Participation non trouvée." });
+    }
+
     // Création du vote
-    await Vote.create({
-      account_id: data.account_id,
-      participation_id: data.participation_id,
+    const newVote = await Vote.create({
+      account_id: data.account_id, // Vérifiez si account_id est bien présent
+      participation_id: idParticipation, // Correction ici
       vote: data.vote
     });
 
-    res.status(201).json({
-      message: "Vote créé avec succès.",
-    });
+    console.log("✅ Vote créé avec succès:", newVote);
+
+    res.status(201).json({ message: "Vote créé avec succès." });
 
   } catch (error) {
     console.error("🔥 Erreur serveur:", error);
@@ -112,3 +129,4 @@ export async function updateVote(req,res) {
 
 
 
+ 

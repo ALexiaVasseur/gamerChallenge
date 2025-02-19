@@ -39,6 +39,7 @@ const ChallengePage = () => {
           fetch(`http://localhost:3000/api/challenge/${id}`),
           fetch(`http://localhost:3000/api/challenges/${id}/comments`),
           fetch(`http://localhost:3000/api/participations/${id}`),
+          
         ]);
 
         if (!challengeResponse.ok) throw new Error("Challenge introuvable");

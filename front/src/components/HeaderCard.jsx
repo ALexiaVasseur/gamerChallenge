@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import logoGamer from "../assets/images/logo-gamer.webp";
 import AuthModal from "../components/ModalConnexion";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 
-export default function HeaderCard() { 
+export default function HeaderCard() {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,6 +12,7 @@ export default function HeaderCard() {
     const [categories, setCategories] = useState([]);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const menuRef = useRef(null);
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -25,6 +26,19 @@ export default function HeaderCard() {
             .then((response) => response.ok ? response.json() : Promise.reject("Erreur API"))
             .then(setCategories)
             .catch(console.error);
+    }, []);
+
+    // 🔹 Fermer le menu burger en cliquant en dehors
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }, []);
 
     const getInitials = (pseudo) => pseudo ? pseudo.substring(0, 2).toUpperCase() : "";
@@ -74,7 +88,7 @@ export default function HeaderCard() {
                             Catégories ▾
                         </button>
                         {isCategoryOpen && (
-                            <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-10">
+                            <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-20">
                                 {categories.length === 0 ? (
                                     <div className="px-4 py-2 text-sm text-gray-700">Aucune catégorie disponible</div>
                                 ) : (
@@ -107,7 +121,7 @@ export default function HeaderCard() {
 
                             {/* Menu déroulant utilisateur */}
                             {isMenuOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20">
                                     <button
                                         onClick={handleProfileRedirect}
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -146,16 +160,16 @@ export default function HeaderCard() {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div className="sm:hidden flex flex-col items-center py-6 bg-[rgba(48,46,46,0.9)] text-white text-xl space-y-6">
+                <div ref={menuRef} className="sm:hidden flex flex-col items-center py-6 bg-[rgba(48,46,46,0.9)] text-white text-xl space-y-6 absolute top-16 left-0 w-full z-40">
                     <a href="/" onClick={() => setIsMobileMenuOpen(false)}>Accueil</a>
                     <a href="/leaderboard" onClick={() => setIsMobileMenuOpen(false)}>Leaderboard</a>
                     {user ? (
                         <>
-                            <button onClick={handleProfileRedirect} className="text-white">Mon Profil</button>
-                            <button onClick={handleLogout} className="text-white">Déconnexion</button>
+                            <button onClick={() => { handleProfileRedirect(); setIsMobileMenuOpen(false); }} className="text-white">Mon Profil</button>
+                            <button onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="text-white">Déconnexion</button>
                         </>
                     ) : (
-                        <button onClick={() => setIsAuthModalOpen(true)} className="text-white border border-white rounded-full px-6 py-3">
+                        <button onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }} className="text-white border border-white rounded-full px-6 py-3">
                             Connexion
                         </button>
                     )}

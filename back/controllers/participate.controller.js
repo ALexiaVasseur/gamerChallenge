@@ -80,7 +80,6 @@ export async function createParticipation(req, res) {
     // Destructuration des données validées
     const { challenge_id, video_url, image_url, score, description } = result.data;
 
-    console.log(challenge_id);
     // Vérification que le challenge existe dans la base de données
     const challenge = await Challenge.findByPk(challenge_id);
     if (!challenge) {

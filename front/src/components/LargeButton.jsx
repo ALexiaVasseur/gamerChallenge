@@ -6,7 +6,7 @@ export default function LargeButton({idToHref, nameButton}) {
         <>
             <a
                 href={idToHref}
-                className="mt-6 bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,1)] hover:scale-102 transition-all duration-500 text-white px-6 py-3 rounded-lg text-lg font-semibold w-full"
+                className="w-full sm:w-auto bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,1)] text-white px-4 py-2 rounded-lg text-sm sm:text-lg font-semibold"
             >
                 {nameButton}
             </a>
