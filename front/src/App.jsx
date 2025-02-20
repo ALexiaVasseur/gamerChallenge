@@ -11,8 +11,6 @@ import LeaderBoard from './pages/LeaderBoard';
 import ChallengePage from './pages/ChallengePage'
 
 const App = () => {
-  const [user, setUser] = useState(null);  // Si tu veux gérer l'état de l'utilisateur ici aussi
-
   return (
       <>
 

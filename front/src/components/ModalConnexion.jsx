@@ -10,6 +10,8 @@ const ModalConnexion = ({ isOpen, onClose }) => {
   const [description, setDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
 
   if (!isOpen) return null;
 
@@ -60,7 +62,8 @@ const ModalConnexion = ({ isOpen, onClose }) => {
       console.log("📥 Réponse serveur :", data); // ✅ DEBUG - Vérifier la réponse du serveur
 
       if (response.ok) {
-        setErrorMessage("✅ Connexion réussie !");
+        setSuccessMessage("✅ Connexion réussie !");
+
         
         // 🔹 Stocker l'utilisateur dans le localStorage
         localStorage.setItem("user", JSON.stringify(data.user));
@@ -83,7 +86,16 @@ const ModalConnexion = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-opacity-40 backdrop-blur-lg transition-opacity duration-300">
+      
+
       <div className="bg-[#222] text-white p-6 rounded-lg shadow-lg w-[400px] relative animate-fadeIn">
+      {/* Affichage du message de succès */}
+{successMessage && (
+  <div className="mb-6 p-4 text-green-500 bg-green-100 rounded-md text-center">
+    {successMessage}
+  </div>
+)}
+
         <h2 className="text-3xl font-bold text-center mb-4">
           {isLogin ? "Connexion" : "Inscription"}
         </h2>

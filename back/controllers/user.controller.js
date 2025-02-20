@@ -320,3 +320,8 @@ function getCookieSecuritySettings() {
       });
     }
   }
+
+  export async function checkUser(req, res) {
+    console.log("Route /auth/check atteinte");
+    res.status(200).json({ message: "Token valide" });
+}

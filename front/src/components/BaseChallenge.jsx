@@ -25,7 +25,7 @@ const BaseChallenge = ({ title, children, name_button, section_title, challenges
       {/* Section Hero - Présentation */}
       <main className="w-full max-w-screen-2xl">
         <section className="text-center py-16 w-full">
-          <div className="bg-[rgba(57,57,57,0.5)] rounded-xl p-10 mx-auto max-w-5xl mt-6">
+          <div className="bg-[rgba(57,57,57,0.5)] rounded-xl p-5 mx-auto max-w-5xl mt-6">
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-4 w-full text-center leading-tight break-words">{title}</h1>
             {children}
 

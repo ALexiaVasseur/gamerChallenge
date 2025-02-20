@@ -171,8 +171,10 @@ setNewScore(updateScoreData.newScore);
 
         {/* Affichage du message de succès */}
         {successMessage && (
-        <p className="text-green-500 text-center mt-2">{successMessage}</p>
-        )}
+        <div className="mb-6 p-4 text-green-500 bg-green-100 rounded-md text-center">
+        {successMessage}
+         </div>
+          )}
 
         {/* Affichage des erreurs */}
         {errorMessage && <p className="text-red-500 text-center mt-2">{errorMessage}</p>}

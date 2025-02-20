@@ -4,12 +4,16 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [completedChallenges, setCompletedChallenges] = useState([]);
   const [onlineChallenges, setOnlineChallenges] = useState([]);
-  let userId;
-  const userData = localStorage.getItem("user");
-  if (userData) {
-    const userInformations = JSON.parse(userData);
-    userId = userInformations.id;
-  }
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    window.dispatchEvent(new Event("userChanged"));
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const userInformations = JSON.parse(userData);
+      setUserId(userInformations.id);
+    }
+  }, [])
 
   useEffect(() => {
     if (!userId || isNaN(userId)) {
@@ -18,7 +22,10 @@ const Profile = () => {
       return;
     }
 
-    fetch(`http://localhost:3000/api/user/${userId}`)
+    fetch(`http://localhost:3000/api/user/${userId}`, {
+      credentials: 'include',
+    }
+    )
       .then((response) => response.json())
       .then((data) => {
         setUser(data);
@@ -61,7 +68,10 @@ const Profile = () => {
         <div className="text-center lg:text-left w-full max-w-md">
           <h1 className="text-3xl sm:text-4xl font-bold">{user.pseudo}</h1>
           <p className="text-lg mt-2 break-all">Email: {user.email}</p>
-          <p className="text-lg">Téléphone: {user.phone || "0000000000"}</p>
+
+          <p className="text-lg">Score Global: {user.score_global ?? 0}</p>
+          
+
           <p className="text-lg">Mot de passe: *******</p>
 
           {/* Bouton Modifier */}

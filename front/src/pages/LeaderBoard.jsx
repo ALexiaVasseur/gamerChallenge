@@ -4,6 +4,7 @@ const Leaderboard = () => {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
+    window.dispatchEvent(new Event("userChanged"));
     fetch("http://localhost:3000/api/leaderboard")
       .then((res) => res.json())
       .then((data) => setPlayers(data))

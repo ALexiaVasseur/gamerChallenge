@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useState, useEffect, useRef } from "react";
 import logoGamer from "../assets/images/logo-gamer.webp";
 import AuthModal from "../components/ModalConnexion";
@@ -15,11 +17,53 @@ export default function HeaderCard() {
     const menuRef = useRef(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
+        const updateUser = () => {
+            const storedUser = localStorage.getItem("user");
+            setUser(storedUser ? JSON.parse(storedUser) : null);
+        };
+    
+        updateUser(); // Exécute immédiatement au montage
+        window.addEventListener("userChanged", updateUser);
+    
+        return () => {
+            window.removeEventListener("userChanged", updateUser);
+        };
     }, []);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+          try {
+            const response = await fetch("http://localhost:3000/api/auth/check", {
+              credentials: "include",
+            });
+            
+            if (!response.ok) {
+                console.log(response);
+              console.warn("Token expiré, déconnexion...");
+              localStorage.removeItem("user");
+              window.dispatchEvent(new Event("userChanged"));
+            }
+          } catch (error) {
+            console.error("Erreur lors de la vérification du token :", error);
+          }
+        };
+        
+        const initialTimeout = setTimeout(() => {
+            checkAuth();
+        
+            // Ensuite, on continue avec un intervalle de 5 secondes
+            const intervalId = setInterval(() => {
+              checkAuth();
+            }, 5000); // Intervalle de 5 secondes
+        
+            // Cleanup de l'intervalle à la fin
+            return () => clearInterval(intervalId);
+          }, 3000); // 3 secondes pour le premier check
+
+          return () => clearTimeout(initialTimeout);
+    }, []);
+    
+    
 
     useEffect(() => {
         fetch("http://localhost:3000/api/categories")
@@ -55,6 +99,7 @@ export default function HeaderCard() {
 
     const handleLogout = () => {
         localStorage.removeItem("user");
+        window.dispatchEvent(new Event("userChanged"));
         setUser(null);
         setIsMenuOpen(false);
     };
@@ -115,7 +160,7 @@ export default function HeaderCard() {
                         <div className="relative">
                             <button 
                                 onClick={() => setIsMenuOpen(!isMenuOpen)} 
-                                className="w-16 h-16 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[#FF8C00] transition"
+                                className="w-16 h-16 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[rgba(159,139,32,0.7)] transition"
                             >
                                 {getInitials(user.pseudo)}
                             </button>
@@ -144,7 +189,7 @@ export default function HeaderCard() {
                     ) : (
                         <button
                             onClick={() => setIsAuthModalOpen(true)}
-                            className="w-40 h-16 border border-white rounded-full flex items-center justify-center text-white font-bold hover:bg-[#FF8C00] transition hidden sm:flex"
+                            className="w-40 h-16 border border-white rounded-full flex items-center justify-center text-white font-bold hover:bg-[rgba(159,139,32,0.7)] transition hidden sm:flex"
                         >
                             Connexion
                         </button>
@@ -164,11 +209,36 @@ export default function HeaderCard() {
                 <div ref={menuRef} className="sm:hidden flex flex-col items-center py-6 bg-[rgba(48,46,46,0.9)] text-white text-xl space-y-6 absolute top-16 left-0 w-full z-40">
                     <a href="/" onClick={() => setIsMobileMenuOpen(false)}>Accueil</a>
                     <a href="/leaderboard" onClick={() => setIsMobileMenuOpen(false)}>Leaderboard</a>
+
+                    {/* Menu déroulant des catégories */}
+                    <div className="relative w-full text-center">
+                        <button 
+                            onClick={() => setIsCategoryOpen(!isCategoryOpen)} 
+                            className="w-full py-2 text-white hover:text-[#9f8b20] transition-all duration-500"
+                        >
+                            Catégories ▾
+                        </button>
+                        {isCategoryOpen && (
+                            <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-20">
+                                {categories.length === 0 ? (
+                                    <div className="px-4 py-2 text-sm text-gray-700">Aucune catégorie disponible</div>
+                                ) : (
+                                    categories.map((category) => (
+                                        <button 
+                                            key={category.id}  
+                                            onClick={() => handleCategorySelect(category.id)}
+                                            className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                                        >
+                                            {category.name}
+                                        </button>
+                                    ))
+                                )}
+                            </div>
+                        )}
+                    </div>
+
                     {user ? (
-                        <>
-                            <button onClick={() => { handleProfileRedirect(); setIsMobileMenuOpen(false); }} className="text-white">Mon Profil</button>
-                            <button onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="text-white">Déconnexion</button>
-                        </>
+                        <button onClick={() => navigate("/profile")} className="text-white">Mon Profil</button>
                     ) : (
                         <button onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }} className="text-white border border-white rounded-full px-6 py-3">
                             Connexion

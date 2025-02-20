@@ -24,6 +24,7 @@ const ChallengePage = () => {
   };
 
   useEffect(() => {
+    window.dispatchEvent(new Event("userChanged"));
     const userData = localStorage.getItem("user");
     if (userData) {
       setConnected(true);
@@ -127,8 +128,13 @@ const ChallengePage = () => {
           return; // Ne pas continuer le processus si un commentaire existe déjà
         }
   
+        if (errorData.message === "Token manquant, veuillez vous connecter.") {
+          localStorage.removeItem("user")
+        }
+
         console.error("Erreur lors de l'ajout du commentaire:", errorData);
         throw new Error(errorData.message || "Erreur inconnue");
+
       }
   
       const addedComment = await response.json();
@@ -264,11 +270,11 @@ const ChallengePage = () => {
 </div>
 
 
-          <h2 className="text-5xl font-semibold mb-4">Description</h2>
-          <p className="mb-6 text-3xl">{challenge.description}</p>
+          <h2 className="text-3xl md:text-3xl font-bold mb-5">Description</h2>
+          <p className="mb-6 text-1xl">{challenge.description}</p>
 
-          <h2 className="text-5xl font-semibold mb-4">Règles</h2>
-          <p className="mb-6 text-3xl">{challenge.rules}</p>
+          <h2 className="text-3xl md:text-3xl font-bold mb-5">Règles</h2>
+          <p className="mb-6 text-1xl">{challenge.rules}</p>
           <button
             onClick={openModal}
             className="w-full sm:w-auto bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,1)] transition-all duration-500 text-white px-4 py-3 rounded-lg text-lg font-semibold"

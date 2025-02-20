@@ -19,6 +19,7 @@ export default function CreateChallengePage() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        window.dispatchEvent(new Event("userChanged"));
         const userData = localStorage.getItem("user");
         if (!userData) {
             navigate("/login");

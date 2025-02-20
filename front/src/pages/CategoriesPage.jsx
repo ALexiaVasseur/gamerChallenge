@@ -10,6 +10,7 @@ const CategoriesPage = () => {
 
   useEffect(() => {
     const fetchCategoryData = async () => {
+      window.dispatchEvent(new Event("userChanged"));
       try {
         const response = await fetch(`http://localhost:3000/api/category/${id}`);
         if (!response.ok) {
