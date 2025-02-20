@@ -70,6 +70,25 @@ const ChallengePage = () => {
     fetchChallengeData();
   }, [id]);
 
+  // Rafraîchir les participations après la fermeture de la modale
+  useEffect(() => {
+    if (!isModalOpen) {
+      const fetchParticipations = async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/api/participations/${id}`);
+          if (response.ok) {
+            const participationsData = await response.json();
+            setParticipations(participationsData);
+          }
+        } catch (error) {
+          console.error("Erreur lors du rafraîchissement des participations:", error);
+        }
+      };
+
+      fetchParticipations();
+    }
+  }, [isModalOpen, id]);
+
   // Calculer la moyenne des votes
   const calculateAverageVote = () => {
     if (votes.length === 0) return 0; // Eviter la division par zéro
@@ -81,10 +100,10 @@ const ChallengePage = () => {
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
-
+  
     const challengeId = parseInt(id, 10);
     const accountId = userId; // Utiliser l'ID utilisateur
-
+  
     try {
       const response = await fetch(`http://localhost:3000/api/challenge/${challengeId}/comment`, {
         method: 'POST',
@@ -98,13 +117,20 @@ const ChallengePage = () => {
           account_id: accountId,
         }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Si l'erreur est "Vous avez déjà commenté ce défi", on affiche l'erreur
+        if (errorData.message === "Vous avez déjà commenté ce défi.") {
+          setError(errorData.message); // Afficher l'erreur dans l'interface utilisateur
+          return; // Ne pas continuer le processus si un commentaire existe déjà
+        }
+  
         console.error("Erreur lors de l'ajout du commentaire:", errorData);
         throw new Error(errorData.message || "Erreur inconnue");
       }
-
+  
       const addedComment = await response.json();
       setComments([...comments, addedComment]);
       setNewComment(""); // Réinitialiser le champ du commentaire
@@ -113,6 +139,7 @@ const ChallengePage = () => {
       setError(error.message); // Affichage de l'erreur dans l'UI
     }
   };
+  
 
   // Fonction pour ouvrir la modale
   const openModal = () => setIsModalOpen(true);
@@ -132,6 +159,19 @@ const ChallengePage = () => {
   console.log("Participation soumise");
   return (
     <main className="mx-auto p-6 md:p-12 text-white">
+      {error && (
+  <div className="text-red-500 text-lg mt-4">
+    <p>{error}</p>
+    {/* Vous pouvez ajouter un bouton pour revenir à la page du challenge */}
+    <button
+      onClick={() => window.location.href = `/challenge/${id}`} // Navigue vers la page du challenge
+      className="mt-2 text-blue-500 hover:underline"
+    >
+      Retour au défi
+    </button>
+  </div>
+)}
+
       <div className="w-full flex justify-center">
         {challenge.image_url ? (
           <img

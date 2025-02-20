@@ -102,7 +102,6 @@ export default function CreateChallengePage() {
             account_id: JSON.parse(userData).id,
             type: "default", // ou la valeur par défaut que vous souhaitez
         };
-        
 
         try {
             const response = await fetch("http://localhost:3000/api/challenge", {
@@ -114,6 +113,7 @@ export default function CreateChallengePage() {
             const data = await response.json();
             if (response.ok) {
                 setSuccessMessage(data.message || "Challenge créé avec succès.");
+                window.scrollTo(0, 0); // Faire défiler la page jusqu'en haut
             } else {
                 alert(data.message || "Erreur lors de la création du challenge.");
             }
@@ -122,7 +122,19 @@ export default function CreateChallengePage() {
             alert("Erreur lors de la création du challenge.");
         }
     };
-    
+
+    // Effacer le message de succès après 5 secondes et rediriger vers la page d'accueil
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                setSuccessMessage(""); // Réinitialiser le message de succès après 5 secondes
+                navigate("/"); // Rediriger vers la page d'accueil
+            }, 5000); // Changer 5000 à 300000 pour 5 minutes
+
+            return () => clearTimeout(timer); // Nettoyer le timer au démontage du composant
+        }
+    }, [successMessage, navigate]);
+
     return (
         <div className="flex justify-center items-center min-h-screen text-white px-4">
             <div className="w-[70rem] max-w-5xl bg-opacity-60 p-14 rounded-lg shadow-xl">

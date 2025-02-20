@@ -8,6 +8,9 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [newScore, setNewScore] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+
+
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
 
@@ -130,9 +133,13 @@ setNewScore(updateScoreData.newScore);
       setVote(1);
       setDescription("");
       setLoading(false);
+      setSuccessMessage("Votre participation a été envoyée avec succès et votre vote a été pris en compte !");
   
-      // Fermeture de la modale après soumission
-      onClose();
+      // Attendre quelques secondes avant de fermer la modale pour permettre à l'utilisateur de voir le message
+    setTimeout(() => {
+      onClose(); // Ferme la modale après un délai
+    }, 3000); // Délai de 3 secondes
+  
        
   
       // Appel de la fonction de callback de soumission
@@ -161,6 +168,11 @@ setNewScore(updateScoreData.newScore);
     <div className="fixed inset-0 flex justify-center items-center bg-opacity-40 backdrop-blur-lg transition-opacity duration-300 z-50">
       <div className="bg-[#222] text-white p-6 rounded-lg shadow-lg w-[400px] relative animate-fadeIn">
         <h2 className="text-3xl font-bold text-center mb-4">Publier ma participation</h2>
+
+        {/* Affichage du message de succès */}
+        {successMessage && (
+        <p className="text-green-500 text-center mt-2">{successMessage}</p>
+        )}
 
         {/* Affichage des erreurs */}
         {errorMessage && <p className="text-red-500 text-center mt-2">{errorMessage}</p>}
