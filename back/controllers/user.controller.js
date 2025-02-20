@@ -12,64 +12,66 @@ import { givePoint } from "../lib/voteGive.js";
 
 
 export async function getOneUser(req, res) {
-    try {
-      console.log("ID reçu dans req.params:", req.params);
-        const { id }= req.params;
-        const idUser = parseInt(id);
-      // Utiliser Sequelize avec un paramètre dynamique
-      const user = await Account.findOne({
-        where: { id: idUser },
-        attributes: ['id', 'pseudo', 'email', 'score_global', 'description'], // Assure-toi que le score est bien inclus
-        include: [
-            {
-              model: Receive,
-              as: 'receivedBadges',
-              include: [
-                {
-                  model: Badge,
-                  as: 'badge',
-                  attributes: ['id', 'name', 'description', 'imageUrl']
-                }
-              ]
-            },
-            {
-                model: Challenge,
-                as: 'challenges',
-                attributes: ['id', 'title', 'description', 'rules', 'type', 'image_url']
-            },
-            {
-                model: Participate,
-                as: 'participations',
-                include: [
-                  {
-                    model: Challenge,
-                    as: 'challenge',
-                    attributes: ['id', 'title', 'description', 'rules', 'type', 'image_url']
-                  }
-                ]
-              },
-          ]
-        });
-  
-      if (!user) {
-        return res.status(404).json({ message: "Utilisateur non trouvé." });
-      }
+  try {
+    console.log("ID reçu dans req.params:", req.params);
+    const { id } = req.params;
+    const idUser = parseInt(id);
     
-      res.status(200).json({
-        id: user.id,
-        pseudo: user.pseudo,
-        email: user.email,
-        score_global: user.score_global,
-        description: user.description, // 🔥 Ajout de la description ici
-        badges: user.receivedBadges.map(r => r.badge), // Les badges associés
-        challenges: user.challenges.map(r => r.challenge), // Les challenges fait associés
-        participate: user.participations.map(r => r.participateChallenge) // Les challenges participé fait associés
-      });
-    } catch (error) {
-      console.error("Erreur lors de la récupération de l'utilisateur:", error);
-      res.status(500).json({ message: "Erreur interne du serveur." });
+    // Utiliser Sequelize avec un paramètre dynamique
+    const user = await Account.findOne({
+      where: { id: idUser },
+      attributes: ['id', 'pseudo', 'email', 'score_global', 'description'],
+      include: [
+        {
+          model: Receive,
+          as: 'receivedBadges',
+          include: [
+            {
+              model: Badge,
+              as: 'badge',
+              attributes: ['id', 'name', 'description', 'imageUrl']
+            }
+          ]
+        },
+        {
+          model: Challenge,
+          as: 'challenges',
+          attributes: ['id', 'title', 'description', 'rules', 'type', 'image_url']
+        },
+        {
+          model: Participate,
+          as: 'participations', // Assurez-vous que c'est le bon alias
+          include: [
+            {
+              model: Challenge,
+              as: 'challenge',
+              attributes: ['id', 'title', 'description', 'rules', 'type', 'image_url']
+            }
+          ]
+        },
+      ]
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
     }
+
+    res.status(200).json({
+      id: user.id,
+      pseudo: user.pseudo,
+      email: user.email,
+      score_global: user.score_global,
+      description: user.description,
+      badges: user.receivedBadges.map(r => r.badge), // Les badges associés
+      challenges: user.challenges, // Ici, on utilise directement les challenges
+      participate: user.participations // Ici, on utilise directement les participations
+    });
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'utilisateur:", error);
+    res.status(500).json({ message: "Erreur interne du serveur." });
   }
+}
+
   
 
 
