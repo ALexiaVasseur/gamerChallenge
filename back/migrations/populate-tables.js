@@ -54,7 +54,7 @@ async function populateDatabase() {
                 { id_igdb: 45678, title: "Jeu 6", description: "A sci-fi space shooter with intense dogfights and exploration.", genre: "Shooter", url_video_game: "https://www.youtube.com/watch?v=rBg69tpjAzQ&pp=ygUXc21hbGwgdmlkZW8gb2YgZ2FtZXBsYXk%3D" }
             ]);
 
-            // Ajouter des défis avec un `category_id` valide
+            // // Ajouter des défis avec un `category_id` valide
             const challenges = await Challenge.bulkCreate([
                 { game_id: games[0].id, account_id: accounts[0].id, title: "First Challenge", description: "Complete an exciting task in this virtual world. Show your skills and creativity!", rules: "No cheating, be respectful to others.", type: "Solo", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/379430/header.jpg", category_id: categories[0].id },
                 { game_id: games[1].id, account_id: accounts[1].id, title: "Second Challenge", description: "Join a competitive match against others. Win the game to become the champion!", rules: "Respect other players, no toxic behavior.", type: "Competitive", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/1174180/header.jpg", category_id: categories[1].id },
@@ -64,7 +64,7 @@ async function populateDatabase() {
                 { game_id: games[5].id, account_id: accounts[5].id, title: "Sixth Challenge", description: "Engage in intense space battles and come out on top!", rules: "Play fair, no exploits.", type: "Competitive", image_url: "https://www.journaldugeek.com/app/uploads/2023/03/mariobros.jpg", category_id: categories[4].id }
             ]);
 
-            // Ajouter les participations
+            // // Ajouter les participations
             const participations = await Participate.bulkCreate([
                 { challenge_id: challenges[0].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 10, description: "Successfully completed the challenge!", account_id: accounts[0].id },
                 { challenge_id: challenges[1].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 20, description: "An incredible participation!", account_id: accounts[1].id },

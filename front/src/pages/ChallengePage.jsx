@@ -152,9 +152,26 @@ const ChallengePage = () => {
   // Fonction pour fermer la modale
   const closeModal = () => setIsModalOpen(false);
 
-  const handleParticipationSubmit = async (e) => {
-    e.preventDefault();
+  const handleParticipationSubmit = async () => {
+    try {
+      // Rafraîchir les participations
+      const participationResponse = await fetch(`http://localhost:3000/api/participations/${id}`);
+      if (participationResponse.ok) {
+        const participationData = await participationResponse.json();
+        setParticipations(participationData);
+      }
+  
+      // Rafraîchir les votes
+      const votesResponse = await fetch(`http://localhost:3000/api/challenge/${id}/votes`);
+      if (votesResponse.ok) {
+        const votesData = await votesResponse.json();
+        setVotes(votesData);
+      }
+    } catch (error) {
+      console.error("Erreur lors du rafraîchissement des participations et votes:", error);
+    }
   };
+  
 
   console.log(participations);
 
@@ -162,32 +179,25 @@ const ChallengePage = () => {
   if (loading) return <p className="text-center text-gray-500 text-2xl">Chargement...</p>;
   if (error) return <p className="text-center text-red-500 text-2xl">{error}</p>;
   if (!challenge) return <p className="text-center text-gray-500 text-2xl">Challenge introuvable.</p>;
+
   console.log("Participation soumise");
+
   return (
     <main className="mx-auto p-6 md:p-12 text-white">
-      {error && (
-  <div className="text-red-500 text-lg mt-4">
-    <p>{error}</p>
-    {/* Vous pouvez ajouter un bouton pour revenir à la page du challenge */}
-    <button
-      onClick={() => window.location.href = `/challenge/${id}`} // Navigue vers la page du challenge
-      className="mt-2 text-blue-500 hover:underline"
-    >
-      Retour au défi
-    </button>
-  </div>
-)}
-
       <div className="w-full flex justify-center">
         {challenge.image_url ? (
           <img
             src={challenge.image_url}
             alt="Challenge Image"
             className="w-full max-w-[600px] h-auto max-h-[400px] object-cover rounded-lg shadow-2xl"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/path/to/default-image.png";
+            }}
           />
         ) : (
           <div className="w-full max-w-[600px] h-[400px] flex items-center justify-center bg-gray-800 rounded-lg shadow-2xl">
-            <p className="text-gray-400">Aucune image disponible</p>
+            <p className="text-white text-xl font-semibold">No Image</p>
           </div>
         )}
       </div>

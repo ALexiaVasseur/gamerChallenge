@@ -7,7 +7,8 @@ export const router = Router();
 
 
 router.get("/user/:id", cw(userController.getOneUser))
-router.patch("/user/:userId/updateScore", cw(userController.updateScore));
+router.patch("/user/:userId", isAuthenticated, cw(userController.updateUser));
+router.patch("/user/:userId/updateScore", isAuthenticated,cw(userController.updateScore));
 
 router.post("/auth/signup", cw(userController.signupUser));
 router.post("/auth/login", cw(userController.loginUser));

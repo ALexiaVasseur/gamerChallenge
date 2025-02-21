@@ -66,12 +66,13 @@ const BaseChallenge = ({ title, children, name_button, section_title, challenges
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mt-10">
               {challengesList.map((challenge) => (
+                
                 <ChallengeCard
-                  key={challenge.id}
-                  id={challenge.id}
-                  title={challenge.title}
-                  author={challenge.account?.pseudo || 'Anonyme'}
-                  image={challenge.image_url}
+                key={challenge.id}
+                id={challenge.id}
+                title={challenge.title}
+                author={challenge.account?.pseudo || 'Anonyme'}
+                image={challenge.image_url}
                 />
               ))}
             </div>

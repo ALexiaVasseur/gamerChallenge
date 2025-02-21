@@ -59,6 +59,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({ challenge_id: challengeId, video_url: videoUrl, description, vote, account_id: userId, }), // Ou toute autre donnée que tu veux envoyer
         }
       );
@@ -86,6 +87,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({
             account_id: userId, // Remplacez `userId` par la vraie variable contenant l'ID du compte
             participation_id: participationId,
@@ -110,6 +112,7 @@ const updateScoreResponse = await fetch(
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ point: vote }), // Le vote sera utilisé comme nombre de points
   }
 );

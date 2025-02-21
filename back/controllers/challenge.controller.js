@@ -121,9 +121,11 @@ const updateChallengeBodySchema = z.object({
   title: z.string().min(1, "Le titre est requis."),
   description: z.string().min(1, "La description est requise."),
   rules: z.string().min(0),
-  type: z.string().min(1, "Le type est requis."),
   image_url: z.string().url("L'URL de l'image est invalide.").optional(),
   category_id: z.number().int().min(1, "L'identifiant de la catégorie est requis."), // Ajout de category_id
+  account_id: z.number().int().min(0),
+  type: z.string().min(0).optional(),
+  video_url: z.string().url("L'URL de la vidéo est invalide.")
 });
 
 // créer un challenge 
@@ -132,49 +134,59 @@ export async function createOneChallenge(req, res) {
   try {
     console.log("🛠 Requête reçue:", req.body);
 
-    // Validation avec safeParse()
-    const result = createChallengeBodySchema.safeParse(req.body);
-    if (!result.success) {
-      return res.status(400).json({ error: result.error.format() });
+    const { game_id, title, description, rules, image_url, account_id, type, category_id, video_url } = req.body;
+
+    // 🔍 Vérifier si le jeu existe en interne
+    let existingGame = await Game.findByPk(game_id);
+
+    // 🛠 Si le jeu n'existe pas en interne, récupérer depuis l'API externe
+    if (!existingGame) {
+      console.log(`🔍 Le jeu ${game_id} n'est pas en base de données, récupération depuis l'API externe...`);
+
+      try {
+        const externalResponse = await fetch(`https://www.freetogame.com/api/game?id=${game_id}`);
+        
+        if (!externalResponse.ok) {
+          return res.status(404).json({ error: "Jeu introuvable dans l'API externe" });
+        }
+
+        const gameData = await externalResponse.json();
+
+        console.log(video_url)
+        // 🎮 Ajouter le jeu dans la base de données interne
+        existingGame = await Game.create({
+          id: gameData.id,
+          title: gameData.title,
+          genre: gameData.genre,
+          url_video_game: video_url, 
+          // Assure-toi que la colonne existe dans ta BDD
+        });
+
+        console.log(`✅ Jeu ${game_id} ajouté en base de données`);
+      } catch (error) {
+        console.error("❌ Erreur lors de la récupération du jeu depuis l'API externe :", error);
+        return res.status(500).json({ error: "Erreur lors de la récupération du jeu" });
+      }
     }
 
-    // Extraction des données validées
-    const { game_id, title, description, rules, image_url, account_id, category_id } = result.data;
-
-    const existingChallenge = await Challenge.findOne({ where: { title, game_id } });
-    if (existingChallenge) {
-      return res.status(400).json({ message: "Ce nom de challenge existe déjà." });
-    }
-
-    // Créer le challenge en ajoutant une valeur par défaut pour "type"
-    const newChallenge = await Challenge.create({
+    // ✅ Création du challenge après vérification du jeu
+    const challenge = await Challenge.create({
       game_id,
       title,
       description,
       rules,
-      type: "default",  // Valeur par défaut pour le champ "type"
+      type,
       image_url,
       account_id,
-      category_id  // Grâce à z.coerce.number(), ce sera un nombre
+      category_id,
     });
 
-    // Récupérer les détails du challenge, y compris l'auteur
-    const createdChallenge = await Challenge.findOne({
-      where: { id: newChallenge.id },
-      include: [{
-        model: Account,
-        as: 'account', // Assurez-vous que c'est le bon alias
-        attributes: ['id', 'pseudo'] // Attributs à récupérer pour l'auteur
-      }]
-    });
+    console.log(`🎉 Challenge créé avec succès pour le jeu ${game_id}`);
+    return res.status(201).json(challenge);
 
-    res.status(201).json({
-      message: "Challenge créé avec succès.",
-      challenge: createdChallenge // Inclure le challenge créé dans la réponse
-    });
   } catch (error) {
     console.error("🔥 Erreur serveur:", error);
-    res.status(500).json({ message: "Erreur interne du serveur." });
+    return res.status(500).json({ error: "Erreur serveur" });
   }
 }
 

@@ -1,10 +1,42 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import badgeImage1 from "../assets/images/badge_1.webp";
+import badgeImage2 from "../assets/images/badge_2.webp";
+import badgeImage3 from "../assets/images/badge_3.webp";
+import badgeImage4 from "../assets/images/badge_4.webp";
+
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [completedChallenges, setCompletedChallenges] = useState([]);
   const [participations, setParticipations] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); // Gérer l'état de l'édition
+  const [formData, setFormData] = useState({
+    pseudo: "",
+    email: "",
+    description: "",
+  });
+  const [badges, setBadges] = useState([]); // Nouvel état pour les badges
+  const assignBadges = useCallback((score) => {
+    const badgeList = [
+      { threshold: 5, name: "Badge 5 Points", imageUrl: badgeImage1 },
+      { threshold: 10, name: "Badge 10 Points", imageUrl: badgeImage2 },
+      { threshold: 15, name: "Badge 15 Points", imageUrl: badgeImage3 },
+      { threshold: 20, name: "Badge 20 Points", imageUrl: badgeImage4 }
+    ];
+  
+    const newBadges = badgeList
+      .filter(badge => score >= badge.threshold && !badges.some(b => b.badge.name === badge.name))
+      .map(badge => ({
+        id: Date.now() + Math.random(), // ID unique
+        badge,
+      }));
+  
+    if (newBadges.length > 0) {
+      setBadges(prevBadges => [...prevBadges, ...newBadges]);
+    }
+  }, [badges]);
+  
 
   useEffect(() => {
     window.dispatchEvent(new Event("userChanged"));
@@ -16,31 +48,37 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
-    if (!userId || isNaN(userId)) {
-      console.error("ID utilisateur invalide !");
-      return;
-    }
-
-    fetch(`http://localhost:3000/api/user/${userId}`, {
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchUserData = async () => {
+      if (!userId || isNaN(userId)) {
+        console.error("ID utilisateur invalide !");
+        return;
+      }
+  
+      try {
+        const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+        
         setUser(data);
-
-        // Récupérer les challenges réussis (participate -> challenge)
-        const completed = data.participate
-          ? data.participate.map((p) => p.challenge)
-          : [];
-        setCompletedChallenges(completed);
-
-        // Récupérer les participations
+        setFormData({
+          pseudo: data.pseudo,
+          email: data.email,
+          description: data.description || "",
+        });
+  
+        setCompletedChallenges(data.participate ? data.participate.map(p => p.challenge) : []);
         setParticipations(data.participate || []);
-      })
-      .catch((error) =>
-        console.error("Erreur lors du chargement du profil:", error)
-      );
-  }, [userId]);
+  
+        // Attribuer les badges en fonction du score global
+        assignBadges(data.score_global);
+      } catch (error) {
+        console.error("Erreur lors du chargement du profil:", error);
+      }
+    };
+  
+    fetchUserData();
+  }, [userId, assignBadges]);
 
   if (!user)
     return (
@@ -53,6 +91,57 @@ const Profile = () => {
     return name ? name.substring(0, 2).toUpperCase() : "??";
   };
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setFormData({
+      pseudo: user.pseudo,
+      email: user.email,
+      description: user.description || "",
+    });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSave = async () => {
+    console.log("Données envoyées :", formData);
+  
+    try {
+      const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include",
+      });
+  
+      const data = await response.json();
+      console.log("Réponse de l'API:", data);
+  
+      if (!data) {
+        console.error("Erreur lors de la mise à jour du profil:", data.message)
+      }
+      setUser(data.user);
+      setIsEditing(false);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.reload()
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du profil:", error);
+    }
+  };
+  
+  
+  
   return (
     <div className="flex flex-col items-center w-full px-6 py-10 text-white">
       {/* Avatar & Infos */}
@@ -71,9 +160,76 @@ const Profile = () => {
           <p className="text-lg mt-2 break-all">Email: {user.email}</p>
           <p className="text-lg">Score Global: {user.score_global ?? 0}</p>
           <p className="text-lg">Mot de passe: *******</p>
-          <button className="bg-orange-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-orange-600 w-full sm:w-auto">
-            Modifier le profil
-          </button>
+
+          {/* Affichage des badges */}
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold">Badges obtenus</h2>
+            <div className="flex space-x-4 mt-2">
+              {badges.length > 0 ? (
+                badges.map((badge) => (
+                  <div key={badge.id} className="flex flex-col items-center">
+                    <img
+                      src={badge.badge.imageUrl}
+                      alt={badge.badge.name}
+                      className="w-16 h-16"
+                    />
+                    <span className="text-sm text-gray-400">{badge.badge.name}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-400">Aucun badge obtenu</p>
+              )}
+            </div>
+          </div>
+
+          {isEditing ? (
+            <div className="mt-4">
+              <input
+                type="text"
+                name="pseudo"
+                value={formData.pseudo}
+                onChange={handleChange}
+                className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
+                placeholder="Pseudo"
+              />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
+                placeholder="Email"
+              />
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
+                placeholder="Description"
+              />
+              <div className="flex space-x-4 mt-4">
+                <button
+                  onClick={handleSave}
+                  className="bg-[rgba(159,139,32,0.7)] text-white px-4 py-2 rounded-lg hover:bg-[rgba(159,139,32,0.9)] w-full sm:w-auto"
+                >
+                  Sauvegarder
+                </button>
+                <button
+                  onClick={handleCancelEdit}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 w-full sm:w-auto"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleEditClick}
+              className="bg-[rgba(159,139,32,0.7)] text-white px-4 py-2 rounded-lg mt-4 hover:bg-[rgba(159,139,32,0.9)] w-full sm:w-auto"
+            >
+              Modifier le profil
+            </button>
+          )}
         </div>
       </div>
 
@@ -112,13 +268,25 @@ const Profile = () => {
           <ul className="text-lg mt-4 space-y-4">
             {participations.length > 0 ? (
               participations.map((participation) => (
-                <li key={participation.id} className="border border-gray-600 p-4 rounded-lg">
+                <li
+                  key={participation.id}
+                  className="border border-gray-600 p-4 rounded-lg"
+                >
                   <p className="font-semibold">
-                    A participé à : <span className="text-[#9F8B20]">{participation.challenge.title}</span>
+                    A participé à :{" "}
+                    <span className="text-[#9F8B20]">
+                      {participation.challenge.title}
+                    </span>
                   </p>
                   {participation.video_url && (
                     <p className="mt-2">
-                      🎥 <a href={participation.video_url} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
+                      🎥{" "}
+                      <a
+                        href={participation.video_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 underline"
+                      >
                         Voir la vidéo
                       </a>
                     </p>

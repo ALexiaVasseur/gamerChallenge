@@ -30,7 +30,8 @@ Challenge.init({
   },
   image_url: {
     type: DataTypes.STRING(255),
-    allowNull: true
+    allowNull: true,
+    defaultValue: "default",
   },
   account_id: {
     type: DataTypes.INTEGER,

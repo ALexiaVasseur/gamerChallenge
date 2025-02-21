@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import { useState, useEffect, useRef } from "react";
 import logoGamer from "../assets/images/logo-gamer.webp";
 import AuthModal from "../components/ModalConnexion";
@@ -21,10 +19,10 @@ export default function HeaderCard() {
             const storedUser = localStorage.getItem("user");
             setUser(storedUser ? JSON.parse(storedUser) : null);
         };
-    
-        updateUser(); // Exécute immédiatement au montage
+
+        updateUser();
         window.addEventListener("userChanged", updateUser);
-    
+
         return () => {
             window.removeEventListener("userChanged", updateUser);
         };
@@ -32,38 +30,34 @@ export default function HeaderCard() {
 
     useEffect(() => {
         const checkAuth = async () => {
-          try {
-            const response = await fetch("http://localhost:3000/api/auth/check", {
-              credentials: "include",
-            });
-            
-            if (!response.ok) {
-                console.log(response);
-              console.warn("Token expiré, déconnexion...");
-              localStorage.removeItem("user");
-              window.dispatchEvent(new Event("userChanged"));
+            try {
+                const response = await fetch("http://localhost:3000/api/auth/check", {
+                    credentials: "include",
+                });
+
+                if (!response.ok) {
+                    console.log(response);
+                    console.warn("Token expiré, déconnexion...");
+                    localStorage.removeItem("user");
+                    window.dispatchEvent(new Event("userChanged"));
+                }
+            } catch (error) {
+                console.error("Erreur lors de la vérification du token :", error);
             }
-          } catch (error) {
-            console.error("Erreur lors de la vérification du token :", error);
-          }
         };
-        
+
         const initialTimeout = setTimeout(() => {
             checkAuth();
-        
-            // Ensuite, on continue avec un intervalle de 5 secondes
-            const intervalId = setInterval(() => {
-              checkAuth();
-            }, 5000); // Intervalle de 5 secondes
-        
-            // Cleanup de l'intervalle à la fin
-            return () => clearInterval(intervalId);
-          }, 3000); // 3 secondes pour le premier check
 
-          return () => clearTimeout(initialTimeout);
+            const intervalId = setInterval(() => {
+                checkAuth();
+            }, 5000);
+
+            return () => clearInterval(intervalId);
+        }, 3000);
+
+        return () => clearTimeout(initialTimeout);
     }, []);
-    
-    
 
     useEffect(() => {
         fetch("http://localhost:3000/api/categories")
@@ -72,7 +66,6 @@ export default function HeaderCard() {
             .catch(console.error);
     }, []);
 
-    // 🔹 Fermer le menu burger en cliquant en dehors
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -111,23 +104,21 @@ export default function HeaderCard() {
 
     return (
         <header className="relative top-0 left-0 w-full h-16 sm:h-20 lg:h-24 flex flex-col justify-center bg-[rgba(48,46,46,0.9)] z-50">
-
             <nav className="relative flex justify-between items-center px-6 py-4 w-full max-w-screen-xl mx-auto">
-                
                 {/* Logo */}
                 <div>
-                    <img 
-                        src={logoGamer} 
-                        alt="Logo" 
-                        className="w-14 h-14 rounded-full cursor-pointer" 
-                        onClick={handleHomePageRedirect} 
+                    <img
+                        src={logoGamer}
+                        alt="Logo"
+                        className="w-14 h-14 rounded-full cursor-pointer"
+                        onClick={handleHomePageRedirect}
                     />
                 </div>
 
                 {/* MENU NAVIGATION - Desktop */}
-                <div className="hidden sm:flex space-x-40 px-10 py-2 text-white text-xl">
+                <div className="hidden lg:flex space-x-40 px-10 py-2 text-white text-xl">
                     <div className="relative">
-                        <button 
+                        <button
                             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                             className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
                         >
@@ -139,8 +130,8 @@ export default function HeaderCard() {
                                     <div className="px-4 py-2 text-sm text-gray-700">Aucune catégorie disponible</div>
                                 ) : (
                                     categories.map((category) => (
-                                        <button 
-                                            key={category.id}  
+                                        <button
+                                            key={category.id}
                                             onClick={() => handleCategorySelect(category.id)}
                                             className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
                                         >
@@ -152,14 +143,15 @@ export default function HeaderCard() {
                         )}
                     </div>
                     <a href="/leaderboard" className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500">Leaderboard</a>
+                    <a href="/externals/games" className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500">Games</a>
                 </div>
 
                 {/* Icône Connexion / Avatar - Desktop */}
-                <div className="hidden sm:flex items-center">
+                <div className="hidden lg:flex items-center">
                     {user ? (
                         <div className="relative">
-                            <button 
-                                onClick={() => setIsMenuOpen(!isMenuOpen)} 
+                            <button
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 className="w-16 h-16 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[rgba(159,139,32,0.7)] transition"
                             >
                                 {getInitials(user.pseudo)}
@@ -174,10 +166,10 @@ export default function HeaderCard() {
                                     >
                                         Voir mon profil
                                     </button>
-                                    <button 
-                                        onClick={() => { 
-                                            handleLogout(); 
-                                            handleHomePageRedirect(); 
+                                    <button
+                                        onClick={() => {
+                                            handleLogout();
+                                            handleHomePageRedirect();
                                         }}
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                     >
@@ -189,7 +181,7 @@ export default function HeaderCard() {
                     ) : (
                         <button
                             onClick={() => setIsAuthModalOpen(true)}
-                            className="w-40 h-16 border border-white rounded-full flex items-center justify-center text-white font-bold hover:bg-[rgba(159,139,32,0.7)] transition hidden sm:flex"
+                            className="w-40 h-16 border border-white rounded-full flex items-center justify-center text-white font-bold hover:bg-[rgba(159,139,32,0.7)] transition hidden lg:flex"
                         >
                             Connexion
                         </button>
@@ -197,7 +189,7 @@ export default function HeaderCard() {
                 </div>
 
                 {/* Menu Burger - Mobile */}
-                <div className="sm:hidden">
+                <div className="lg:hidden">
                     <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                         {isMobileMenuOpen ? <AiOutlineClose size={30} color="white" /> : <AiOutlineMenu size={30} color="white" />}
                     </button>
@@ -206,14 +198,15 @@ export default function HeaderCard() {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div ref={menuRef} className="sm:hidden flex flex-col items-center py-6 bg-[rgba(48,46,46,0.9)] text-white text-xl space-y-6 absolute top-16 left-0 w-full z-40">
+                <div ref={menuRef} className="lg:hidden flex flex-col items-center py-6 bg-[rgba(48,46,46,0.9)] text-white text-xl space-y-6 absolute top-16 left-0 w-full z-40">
                     <a href="/" onClick={() => setIsMobileMenuOpen(false)}>Accueil</a>
                     <a href="/leaderboard" onClick={() => setIsMobileMenuOpen(false)}>Leaderboard</a>
+                    <a href="/externals/games" onClick={() => setIsMobileMenuOpen(false)}>Games</a>
 
                     {/* Menu déroulant des catégories */}
                     <div className="relative w-full text-center">
-                        <button 
-                            onClick={() => setIsCategoryOpen(!isCategoryOpen)} 
+                        <button
+                            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                             className="w-full py-2 text-white hover:text-[#9f8b20] transition-all duration-500"
                         >
                             Catégories ▾
@@ -224,8 +217,8 @@ export default function HeaderCard() {
                                     <div className="px-4 py-2 text-sm text-gray-700">Aucune catégorie disponible</div>
                                 ) : (
                                     categories.map((category) => (
-                                        <button 
-                                            key={category.id}  
+                                        <button
+                                            key={category.id}
                                             onClick={() => handleCategorySelect(category.id)}
                                             className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
                                         >
@@ -240,7 +233,13 @@ export default function HeaderCard() {
                     {user ? (
                         <button onClick={() => navigate("/profile")} className="text-white">Mon Profil</button>
                     ) : (
-                        <button onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }} className="text-white border border-white rounded-full px-6 py-3">
+                        <button
+                            onClick={() => {
+                                setIsAuthModalOpen(true);
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className="text-white border border-white rounded-full px-6 py-3"
+                        >
                             Connexion
                         </button>
                     )}

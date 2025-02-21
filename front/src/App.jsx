@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import ChallengeCard from './components/ChallengeCard';
+import { Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import Profile from './pages/UserPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -9,6 +7,7 @@ import NotFoundPage from './pages/404';
 import CreateChallengePage from './pages/CreateChallengePage'
 import LeaderBoard from './pages/LeaderBoard';
 import ChallengePage from './pages/ChallengePage'
+import GameList from './pages/GamesPage';
 
 const App = () => {
   return (
@@ -36,6 +35,8 @@ const App = () => {
             <Route path="*" element={<NotFoundPage />} />
 
             <Route path="/challenge/:id" element={<ChallengePage />} />
+
+            <Route path="/externals/games" element={<GameList />} />
             
           </Routes>
           
