@@ -8,6 +8,9 @@ import CreateChallengePage from './pages/CreateChallengePage'
 import LeaderBoard from './pages/LeaderBoard';
 import ChallengePage from './pages/ChallengePage'
 import GameList from './pages/GamesPage';
+import ContactPage from './pages/ContactPage';
+import PolitiqueConfidentialite from './pages/PolitiqueConfid';
+import MentionsLegales from './pages/MentionsLegales';
 
 const App = () => {
   return (
@@ -37,6 +40,12 @@ const App = () => {
             <Route path="/challenge/:id" element={<ChallengePage />} />
 
             <Route path="/externals/games" element={<GameList />} />
+
+            <Route path="/contact" element={<ContactPage />} />
+
+            <Route path="/politique" element={<PolitiqueConfidentialite />} />
+
+            <Route path="/mentions" element={<MentionsLegales />} />
             
           </Routes>
           

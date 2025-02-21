@@ -19,16 +19,19 @@ const Profile = () => {
   const [badges, setBadges] = useState([]); // Nouvel état pour les badges
   const assignBadges = useCallback((score) => {
     const badgeList = [
-      { threshold: 5, name: "Badge 5 Points", imageUrl: badgeImage1 },
-      { threshold: 10, name: "Badge 10 Points", imageUrl: badgeImage2 },
-      { threshold: 15, name: "Badge 15 Points", imageUrl: badgeImage3 },
-      { threshold: 20, name: "Badge 20 Points", imageUrl: badgeImage4 }
+      { threshold: 5, name: "Débutant Ardant ", imageUrl: badgeImage1 },
+      { threshold: 10, name: "Étoile Montante", imageUrl: badgeImage2 },
+      { threshold: 15, name: "Champion Brillant ", imageUrl: badgeImage3 },
+      { threshold: 20, name: "Légende Ultime", imageUrl: badgeImage4 }
     ];
   
+    // Use a Set to track existing badge names and avoid duplicates
+    const existingBadgeNames = new Set(badges.map(b => b.badge.name));
+  
     const newBadges = badgeList
-      .filter(badge => score >= badge.threshold && !badges.some(b => b.badge.name === badge.name))
-      .map(badge => ({
-        id: Date.now() + Math.random(), // ID unique
+      .filter(badge => score >= badge.threshold && !existingBadgeNames.has(badge.name))
+      .map((badge) => ({
+        id: `${badge.name}-${Date.now()}`, // Unique ID using name and timestamp
         badge,
       }));
   
@@ -44,8 +47,10 @@ const Profile = () => {
     if (userData) {
       const userInformations = JSON.parse(userData);
       setUserId(userInformations.id);
+      console.log("ID utilisateur récupéré :", userInformations.id); // Ajoutez ceci
     }
   }, []);
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -165,20 +170,21 @@ const Profile = () => {
           <div className="mt-4">
             <h2 className="text-xl font-semibold">Badges obtenus</h2>
             <div className="flex space-x-4 mt-2">
-              {badges.length > 0 ? (
-                badges.map((badge) => (
-                  <div key={badge.id} className="flex flex-col items-center">
-                    <img
-                      src={badge.badge.imageUrl}
-                      alt={badge.badge.name}
-                      className="w-16 h-16"
-                    />
-                    <span className="text-sm text-gray-400">{badge.badge.name}</span>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-400">Aucun badge obtenu</p>
-              )}
+            {badges.length > 0 ? (
+  badges.map((badge) => (
+    <div key={badge.id} className="flex flex-col items-center">
+      <img
+        src={badge.badge.imageUrl}
+        alt={badge.badge.name}
+        className="w-16 h-16"
+      />
+      <span className="text-sm text-gray-400">{badge.badge.name}</span>
+    </div>
+  ))
+) : (
+  <p className="text-gray-400">Aucun badge obtenu</p>
+)}
+
             </div>
           </div>
 
@@ -241,23 +247,24 @@ const Profile = () => {
             Challenges réussis
           </h2>
           <ul className="text-lg mt-4 space-y-2">
-            {completedChallenges.length > 0 ? (
-              completedChallenges.map((challenge) => (
-                <li key={challenge.id} className="flex items-center space-x-3">
-                  {challenge.image_url && (
-                    <img
-                      src={challenge.image_url}
-                      alt={challenge.title}
-                      className="w-8 h-8 rounded-md"
-                    />
-                  )}
-                  <span>✅ {challenge.title}</span>
-                </li>
-              ))
-            ) : (
-              <p className="text-gray-400">Aucun challenge réussi</p>
-            )}
-          </ul>
+  {completedChallenges.length > 0 ? (
+    completedChallenges.map((challenge, index) => (
+      <li key={`${challenge.id}-${index}`} className="flex items-center space-x-3">
+        {challenge.image_url && (
+          <img
+            src={challenge.image_url}
+            alt={challenge.title}
+            className="w-8 h-8 rounded-md"
+          />
+        )}
+        <span>✅ {challenge.title}</span>
+      </li>
+    ))
+  ) : (
+    <p className="text-gray-400">Aucun challenge réussi</p>
+  )}
+</ul>
+
         </div>
 
         {/* Participations */}
@@ -266,37 +273,38 @@ const Profile = () => {
             Participations
           </h2>
           <ul className="text-lg mt-4 space-y-4">
-            {participations.length > 0 ? (
-              participations.map((participation) => (
-                <li
-                  key={participation.id}
-                  className="border border-gray-600 p-4 rounded-lg"
-                >
-                  <p className="font-semibold">
-                    A participé à :{" "}
-                    <span className="text-[#9F8B20]">
-                      {participation.challenge.title}
-                    </span>
-                  </p>
-                  {participation.video_url && (
-                    <p className="mt-2">
-                      🎥{" "}
-                      <a
-                        href={participation.video_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-400 underline"
-                      >
-                        Voir la vidéo
-                      </a>
-                    </p>
-                  )}
-                </li>
-              ))
-            ) : (
-              <p className="text-gray-400">Aucune participation enregistrée</p>
-            )}
-          </ul>
+  {participations.length > 0 ? (
+    participations.map((participation, index) => (
+      <li
+        key={`${participation.id}-${index}`} // Combinez l'id avec l'index pour l'unicité
+        className="border border-gray-600 p-4 rounded-lg"
+      >
+        <p className="font-semibold">
+          A participé à :{" "}
+          <span className="text-[#9F8B20]">
+            {participation.challenge.title}
+          </span>
+        </p>
+        {participation.video_url && (
+          <p className="mt-2">
+            🎥{" "}
+            <a
+              href={participation.video_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 underline"
+            >
+              Voir la vidéo
+            </a>
+          </p>
+        )}
+      </li>
+    ))
+  ) : (
+    <p className="text-gray-400">Aucune participation enregistrée</p>
+  )}
+</ul>
+
         </div>
       </div>
     </div>
