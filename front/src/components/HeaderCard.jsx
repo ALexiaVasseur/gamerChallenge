@@ -36,7 +36,6 @@ export default function HeaderCard() {
                 });
 
                 if (!response.ok) {
-                    console.log(response);
                     console.warn("Token expiré, déconnexion...");
                     localStorage.removeItem("user");
                     window.dispatchEvent(new Event("userChanged"));
@@ -117,15 +116,16 @@ export default function HeaderCard() {
 
                 {/* MENU NAVIGATION - Desktop */}
                 <div className="hidden lg:flex space-x-40 px-10 py-2 text-white text-xl">
-                    <div className="relative">
-                        <button
-                            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                            className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
-                        >
+                    <div
+                        className="relative"
+                        onMouseEnter={() => setIsCategoryOpen(true)}
+                        onMouseLeave={() => setIsCategoryOpen(false)}
+                    >
+                        <div className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500 cursor-pointer">
                             Catégories ▾
-                        </button>
+                        </div>
                         {isCategoryOpen && (
-                            <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-20">
+                            <div className="absolute mt-2 w-48 bg-[#2a2a2a] rounded-md shadow-lg py-1 text-white z-20">
                                 {categories.length === 0 ? (
                                     <div className="px-4 py-2 text-sm text-gray-700">Aucune catégorie disponible</div>
                                 ) : (
@@ -133,7 +133,7 @@ export default function HeaderCard() {
                                         <button
                                             key={category.id}
                                             onClick={() => handleCategorySelect(category.id)}
-                                            className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                                            className="block w-full text-left px-4 py-2 text-sm hover:bg-[#2a2a2a] hover:text-[#FFD700]"
                                         >
                                             {category.name}
                                         </button>
@@ -149,15 +149,17 @@ export default function HeaderCard() {
                 {/* Icône Connexion / Avatar - Desktop */}
                 <div className="hidden lg:flex items-center">
                     {user ? (
-                        <div className="relative">
+                        <div
+                            onMouseEnter={() => setIsMenuOpen(true)}
+                            onMouseLeave={() => setIsMenuOpen(false)}
+                            className="relative"
+                        >
                             <button
-                                onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 className="w-16 h-16 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[rgba(159,139,32,0.7)] transition"
                             >
                                 {getInitials(user.pseudo)}
                             </button>
 
-                            {/* Menu déroulant utilisateur */}
                             {isMenuOpen && (
                                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20">
                                     <button
@@ -203,14 +205,14 @@ export default function HeaderCard() {
                     <a href="/leaderboard" onClick={() => setIsMobileMenuOpen(false)}>Leaderboard</a>
                     <a href="/externals/games" onClick={() => setIsMobileMenuOpen(false)}>Games</a>
 
-                    {/* Menu déroulant des catégories */}
-                    <div className="relative w-full text-center">
-                        <button
-                            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                            className="w-full py-2 text-white hover:text-[#9f8b20] transition-all duration-500"
-                        >
+                    <div
+                        className="relative w-full text-center"
+                        onMouseEnter={() => setIsCategoryOpen(true)}
+                        onMouseLeave={() => setIsCategoryOpen(false)}
+                    >
+                        <div className="w-full py-2 text-white hover:text-[#9f8b20] transition-all duration-500 cursor-pointer">
                             Catégories ▾
-                        </button>
+                        </div>
                         {isCategoryOpen && (
                             <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-20">
                                 {categories.length === 0 ? (

@@ -10,7 +10,13 @@ Game.init({
   },
   title: {
     type: DataTypes.STRING(255),
-    allowNull: true
+    allowNull: false,  // Le titre ne peut pas être nul
+    unique: true,      // Le titre doit être unique
+    validate: {
+      notEmpty: {
+        msg: 'Le titre ne peut pas être vide' // Validation pour empêcher un titre vide
+      }
+    }
   },
   description: {
     type: DataTypes.TEXT,
@@ -18,7 +24,12 @@ Game.init({
   },
   genre: {
     type: DataTypes.STRING(50),
-    allowNull: false
+    allowNull: false,  // Genre obligatoire
+    validate: {
+      notEmpty: {
+        msg: 'Le genre ne peut pas être vide', // Validation pour éviter une chaîne vide
+      }
+    }
   },
   url_video_game: {
     type: DataTypes.STRING(255),

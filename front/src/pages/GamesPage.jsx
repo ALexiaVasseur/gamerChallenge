@@ -5,7 +5,6 @@ const GameList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedGenre, setSelectedGenre] = useState("");
   const [filteredGames, setFilteredGames] = useState([]);
 
   useEffect(() => {
@@ -21,10 +20,9 @@ const GameList = () => {
           title: game.title,
           thumbnail: game.thumbnail,
           game_url: game.game_url,
-          genre: game.genre, // Supposons que chaque jeu a un attribut 'genre'
         }));
         setGames(filteredGames);
-        setFilteredGames(filteredGames); // Initialiser avec tous les jeux
+        setFilteredGames(filteredGames);
       } catch (err) {
         console.error("Error fetching games:", err);
         setError(err.message);
@@ -39,12 +37,6 @@ const GameList = () => {
   useEffect(() => {
     let filtered = games;
 
-    // Appliquer le filtre sur le genre
-    if (selectedGenre) {
-      filtered = filtered.filter((game) => game.genre === selectedGenre);
-    }
-
-    // Appliquer la recherche
     if (searchQuery) {
       filtered = filtered.filter((game) =>
         game.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -52,14 +44,10 @@ const GameList = () => {
     }
 
     setFilteredGames(filtered);
-  }, [searchQuery, selectedGenre, games]);
+  }, [searchQuery, games]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-  };
-
-  const handleGenreChange = (e) => {
-    setSelectedGenre(e.target.value);
   };
 
   if (loading) {
@@ -76,32 +64,15 @@ const GameList = () => {
         Liste des Jeux
       </h1>
 
-      {/* Barre de recherche */}
+      {/* Barre de recherche avec style amélioré */}
       <div className="flex justify-center mb-6">
         <input
           type="text"
           placeholder="Rechercher un jeu"
           value={searchQuery}
           onChange={handleSearchChange}
-          className="px-4 py-2 rounded-lg text-black w-1/3"
+          className="px-4 py-2 rounded-lg text-white border-2 border-[rgba(159,139,32,0.7)] w-1/3 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[rgba(159,139,32,0.9]"
         />
-      </div>
-
-      {/* Filtre par genre */}
-      <div className="flex justify-center mb-6">
-        <select
-          value={selectedGenre}
-          onChange={handleGenreChange}
-          className="px-4 py-2 rounded-lg text-black"
-        >
-          <option value="">Tous les genres</option>
-          <option value="Action">Action</option>
-          <option value="Aventure">Aventure</option>
-          <option value="RPG">RPG</option>
-          <option value="Stratégie">Stratégie</option>
-          <option value="Simulation">Simulation</option>
-          {/* Ajoute d'autres genres si nécessaire */}
-        </select>
       </div>
 
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">

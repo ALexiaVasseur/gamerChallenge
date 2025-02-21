@@ -7,7 +7,12 @@ Account.init({
   pseudo: {
     type: DataTypes.STRING(50),
     allowNull: false,
-    unique: true
+    unique: true,
+    validate: {
+      notEmpty: {
+        msg: "Le pseudo ne peut pas être vide"
+      }
+    }
   },
   email: {
     type: DataTypes.STRING(100),
