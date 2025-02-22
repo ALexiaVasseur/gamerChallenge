@@ -369,3 +369,31 @@ export async function updateUser(req, res) {
     res.status(500).json({ message: "Erreur interne du serveur." });
   }
 }
+
+
+export async function deleteUser(req, res) {
+  try {
+    const { userId } = req.params;
+
+    // Vérifier si l'utilisateur existe
+    const user = await Account.findOne({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Anonymiser l'utilisateur en ajoutant l'ID au pseudo pour le rendre unique
+    user.pseudo = `Utilisateur supprimé-${user.id}`;  // Ajout de l'ID pour garantir l'unicité
+    user.email = `deleted-user-${user.id}@example.com`;
+    user.description = "Compte supprimé";
+    user.password = await hash("deleted"); // Hachage d'un mot de passe aléatoire
+
+    // Sauvegarde des modifications
+    await user.save();
+
+    res.status(200).json({ message: "Compte supprimé (anonymisé) avec succès." });
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'utilisateur:", error);
+    res.status(500).json({ message: "Erreur interne du serveur." });
+  }
+}
+

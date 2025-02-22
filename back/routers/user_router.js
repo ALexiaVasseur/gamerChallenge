@@ -18,3 +18,5 @@ router.get("/auth/check", isAuthenticated, cw(userController.checkUser));
 
 
 router.get("/leaderboard", cw(userController.getLeaderboard));
+
+router.delete("/user/:userId", isAuthenticated, cw(userController.deleteUser));

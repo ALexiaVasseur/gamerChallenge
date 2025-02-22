@@ -4,7 +4,6 @@ import badgeImage2 from "../assets/images/badge_2.webp";
 import badgeImage3 from "../assets/images/badge_3.webp";
 import badgeImage4 from "../assets/images/badge_4.webp";
 
-
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [completedChallenges, setCompletedChallenges] = useState([]);
@@ -17,29 +16,29 @@ const Profile = () => {
     description: "",
   });
   const [badges, setBadges] = useState([]); // Nouvel état pour les badges
+
   const assignBadges = useCallback((score) => {
     const badgeList = [
       { threshold: 5, name: "Débutant Ardant ", imageUrl: badgeImage1 },
       { threshold: 10, name: "Étoile Montante", imageUrl: badgeImage2 },
       { threshold: 15, name: "Champion Brillant ", imageUrl: badgeImage3 },
-      { threshold: 20, name: "Légende Ultime", imageUrl: badgeImage4 }
+      { threshold: 20, name: "Légende Ultime", imageUrl: badgeImage4 },
     ];
-  
+
     // Use a Set to track existing badge names and avoid duplicates
-    const existingBadgeNames = new Set(badges.map(b => b.badge.name));
-  
+    const existingBadgeNames = new Set(badges.map((b) => b.badge.name));
+
     const newBadges = badgeList
-      .filter(badge => score >= badge.threshold && !existingBadgeNames.has(badge.name))
+      .filter((badge) => score >= badge.threshold && !existingBadgeNames.has(badge.name))
       .map((badge) => ({
         id: `${badge.name}-${Date.now()}`, // Unique ID using name and timestamp
         badge,
       }));
-  
+
     if (newBadges.length > 0) {
-      setBadges(prevBadges => [...prevBadges, ...newBadges]);
+      setBadges((prevBadges) => [...prevBadges, ...newBadges]);
     }
   }, [badges]);
-  
 
   useEffect(() => {
     window.dispatchEvent(new Event("userChanged"));
@@ -50,7 +49,6 @@ const Profile = () => {
       console.log("ID utilisateur récupéré :", userInformations.id); // Ajoutez ceci
     }
   }, []);
-  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -58,30 +56,30 @@ const Profile = () => {
         console.error("ID utilisateur invalide !");
         return;
       }
-  
+
       try {
         const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
           credentials: "include",
         });
         const data = await response.json();
-        
+
         setUser(data);
         setFormData({
           pseudo: data.pseudo,
           email: data.email,
           description: data.description || "",
         });
-  
-        setCompletedChallenges(data.participate ? data.participate.map(p => p.challenge) : []);
+
+        setCompletedChallenges(data.participate ? data.participate.map((p) => p.challenge) : []);
         setParticipations(data.participate || []);
-  
+
         // Attribuer les badges en fonction du score global
         assignBadges(data.score_global);
       } catch (error) {
         console.error("Erreur lors du chargement du profil:", error);
       }
     };
-  
+
     fetchUserData();
   }, [userId, assignBadges]);
 
@@ -119,7 +117,7 @@ const Profile = () => {
 
   const handleSave = async () => {
     console.log("Données envoyées :", formData);
-  
+
     try {
       const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
         method: "PATCH",
@@ -129,24 +127,54 @@ const Profile = () => {
         body: JSON.stringify(formData),
         credentials: "include",
       });
-  
+
       const data = await response.json();
       console.log("Réponse de l'API:", data);
-  
+
       if (!data) {
-        console.error("Erreur lors de la mise à jour du profil:", data.message)
+        console.error("Erreur lors de la mise à jour du profil:", data.message);
       }
       setUser(data.user);
       setIsEditing(false);
       localStorage.setItem("user", JSON.stringify(data.user));
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       console.error("Erreur lors de la mise à jour du profil:", error);
     }
   };
+
+  // Fonction de suppression du compte
+  const handleDeleteAccount = async () => {
+    if (
+      !window.confirm(
+        "Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible."
+      )
+    ) {
+      return;
+    }
   
+    try {
+      const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
   
+      // Vérifie si la réponse est réussie
+      if (response.ok) {
+        localStorage.removeItem("user");
+        window.location.href = "/"; // Redirection après suppression
+      } else {
+        const errorData = await response.json(); // Récupère les erreurs éventuelles de l'API
+        console.error("Erreur lors de la suppression du compte:", errorData);
+        alert(`Erreur: ${errorData.message || "Une erreur inconnue est survenue."}`);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression du compte:", error);
+      alert("Une erreur est survenue, veuillez réessayer plus tard.");
+    }
+  };
   
+
   return (
     <div className="flex flex-col items-center w-full px-6 py-10 text-white">
       {/* Avatar & Infos */}
@@ -170,72 +198,83 @@ const Profile = () => {
           <div className="mt-4">
             <h2 className="text-xl font-semibold">Badges obtenus</h2>
             <div className="flex space-x-4 mt-2">
-            {badges.length > 0 ? (
-  badges.map((badge) => (
-    <div key={badge.id} className="flex flex-col items-center">
-      <img
-        src={badge.badge.imageUrl}
-        alt={badge.badge.name}
-        className="w-16 h-16"
-      />
-      <span className="text-sm text-gray-400">{badge.badge.name}</span>
-    </div>
-  ))
-) : (
-  <p className="text-gray-400">Aucun badge obtenu</p>
-)}
-
+              {badges.length > 0 ? (
+                badges.map((badge) => (
+                  <div key={badge.id} className="flex flex-col items-center">
+                    <img
+                      src={badge.badge.imageUrl}
+                      alt={badge.badge.name}
+                      className="w-16 h-16"
+                    />
+                    <span className="text-sm text-gray-400">{badge.badge.name}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-400">Aucun badge obtenu</p>
+              )}
             </div>
           </div>
 
           {isEditing ? (
-            <div className="mt-4">
-              <input
-                type="text"
-                name="pseudo"
-                value={formData.pseudo}
-                onChange={handleChange}
-                className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
-                placeholder="Pseudo"
-              />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
-                placeholder="Email"
-              />
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
-                placeholder="Description"
-              />
-              <div className="flex space-x-4 mt-4">
-                <button
-                  onClick={handleSave}
-                  className="bg-[rgba(159,139,32,0.7)] text-white px-4 py-2 rounded-lg hover:bg-[rgba(159,139,32,0.9)] w-full sm:w-auto"
-                >
-                  Sauvegarder
-                </button>
-                <button
-                  onClick={handleCancelEdit}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 w-full sm:w-auto"
-                >
-                  Annuler
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={handleEditClick}
-              className="bg-[rgba(159,139,32,0.7)] text-white px-4 py-2 rounded-lg mt-4 hover:bg-[rgba(159,139,32,0.9)] w-full sm:w-auto"
-            >
-              Modifier le profil
-            </button>
-          )}
+  <div className="mt-4">
+    <input
+      type="text"
+      name="pseudo"
+      value={formData.pseudo}
+      onChange={handleChange}
+      className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
+      placeholder="Pseudo"
+    />
+    <input
+      type="email"
+      name="email"
+      value={formData.email}
+      onChange={handleChange}
+      className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
+      placeholder="Email"
+    />
+    <textarea
+      name="description"
+      value={formData.description}
+      onChange={handleChange}
+      className="block w-full px-4 py-2 mb-2 rounded-lg bg-gray-700 text-white"
+      placeholder="Description"
+    />
+    <div className="flex space-x-4 mt-4">
+      <button
+        onClick={handleSave}
+        className="bg-[rgba(159,139,32,0.7)] text-white px-4 py-2 rounded-lg hover:bg-[rgba(159,139,32,0.9)] w-full sm:w-auto"
+      >
+        Sauvegarder
+      </button>
+      <button
+        onClick={handleCancelEdit}
+        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 w-full sm:w-auto"
+      >
+        Annuler
+      </button>
+    </div>
+  </div>
+) : (
+  <div className="flex space-x-4 mt-4">
+    <button
+      onClick={handleEditClick}
+      className="bg-[rgba(159,139,32,0.7)] text-white px-4 py-2 rounded-lg hover:bg-[rgba(159,139,32,0.9)] w-full sm:w-auto"
+    >
+      Modifier le profil
+    </button>
+
+    {/* Bouton "Supprimer mon compte" */}
+    <button
+      onClick={handleDeleteAccount}
+      className="bg-[rgba(159,139,32,0.7)] text-white px-4 py-2 rounded-lg hover:bg-[rgba(159,139,32,0.9)] w-full sm:w-auto"
+    >
+      Supprimer mon compte
+      <span className="ml-2 text-xl text-white">❌</span>
+    </button>
+  </div>
+)}
+
         </div>
       </div>
 
@@ -247,24 +286,23 @@ const Profile = () => {
             Challenges réussis
           </h2>
           <ul className="text-lg mt-4 space-y-2">
-  {completedChallenges.length > 0 ? (
-    completedChallenges.map((challenge, index) => (
-      <li key={`${challenge.id}-${index}`} className="flex items-center space-x-3">
-        {challenge.image_url && (
-          <img
-            src={challenge.image_url}
-            alt={challenge.title}
-            className="w-8 h-8 rounded-md"
-          />
-        )}
-        <span>✅ {challenge.title}</span>
-      </li>
-    ))
-  ) : (
-    <p className="text-gray-400">Aucun challenge réussi</p>
-  )}
-</ul>
-
+            {completedChallenges.length > 0 ? (
+              completedChallenges.map((challenge, index) => (
+                <li key={`${challenge.id}-${index}`} className="flex items-center space-x-3">
+                  {challenge.image_url && (
+                    <img
+                      src={challenge.image_url}
+                      alt={challenge.title}
+                      className="w-8 h-8 rounded-md"
+                    />
+                  )}
+                  <span>✅ {challenge.title}</span>
+                </li>
+              ))
+            ) : (
+              <p className="text-gray-400">Aucun challenge réussi</p>
+            )}
+          </ul>
         </div>
 
         {/* Participations */}
@@ -306,7 +344,12 @@ const Profile = () => {
 </ul>
 
         </div>
+
+
+        
       </div>
+
+      
     </div>
   );
 };
