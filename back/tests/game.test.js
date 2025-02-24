@@ -2,11 +2,11 @@ import { Game } from "../models/index.js";
 import { sequelize } from "../models/sequelize-client.js";
 
 beforeAll(async () => {
-  await sequelize.sync({ force: true }); // Réinitialise la DB avant tous les tests
+  await sequelize.sync({ force: true });
 });
 
 afterAll(async () => {
-  await sequelize.close(); // Ferme la connexion à la base de données après les tests
+  await sequelize.close(); 
 });
 
 describe("🎮 Game Model", () => {
@@ -29,7 +29,7 @@ describe("🎮 Game Model", () => {
       Game.create({
         title: "Invalid Game",
         description: "This game has no genre",
-        genre: "",  // Genre vide
+        genre: "", 
         url_video_game: "https://example.com/game"
       })
     ).rejects.toThrowError("Le genre ne peut pas être vide");
@@ -46,7 +46,7 @@ describe("🎮 Game Model", () => {
   
     await expect(
       Game.create({
-        title: title,  // Titre dupliqué
+        title: title,  
         description: "Second game with this title",
         genre: "Adventure",
         url_video_game: "https://example.com/second-game"
@@ -58,7 +58,7 @@ describe("🎮 Game Model", () => {
   it("❌ Ne devrait pas permettre un titre vide", async () => {
     await expect(
       Game.create({
-        title: "",  // Titre vide
+        title: "", 
         description: "A game without a title",
         genre: "Action",
         url_video_game: "https://example.com/invalid-game"
@@ -74,7 +74,7 @@ describe("🎮 Game Model", () => {
       genre: "Puzzle"
     });
 
-    expect(game.url_video_game).toBeNull(); // URL vidéo est optionnelle
+    expect(game.url_video_game).toBeNull(); 
   });
 
 });

@@ -8,10 +8,10 @@ Participate.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'challenges', // Nom de la table du modèle Challenge
+      model: 'challenges',
       key: 'id'
     },
-    onDelete: 'CASCADE' // Suppression en cascade si Challenge est supprimé
+    onDelete: 'CASCADE'
   },
   video_url: {
     type: DataTypes.STRING(255),
@@ -33,7 +33,7 @@ Participate.init({
 }, {
   sequelize,
   modelName: 'participation',
-  tableName: 'participations', // Nom de la table dans la base de données
-  timestamps: true, // Ajoute createdAt et updatedAt
-  underscored: true // Si tu préfères le format snake_case pour les noms de colonnes
+  tableName: 'participations',
+  timestamps: true, 
+  underscored: true 
 });

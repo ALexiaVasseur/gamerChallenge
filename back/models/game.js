@@ -10,11 +10,11 @@ Game.init({
   },
   title: {
     type: DataTypes.STRING(255),
-    allowNull: false,  // Le titre ne peut pas être nul
-    unique: true,      // Le titre doit être unique
+    allowNull: false, 
+    unique: true,  
     validate: {
       notEmpty: {
-        msg: 'Le titre ne peut pas être vide' // Validation pour empêcher un titre vide
+        msg: 'Le titre ne peut pas être vide' 
       }
     }
   },
@@ -24,10 +24,10 @@ Game.init({
   },
   genre: {
     type: DataTypes.STRING(50),
-    allowNull: false,  // Genre obligatoire
+    allowNull: false,
     validate: {
       notEmpty: {
-        msg: 'Le genre ne peut pas être vide', // Validation pour éviter une chaîne vide
+        msg: 'Le genre ne peut pas être vide', 
       }
     }
   },
@@ -38,7 +38,7 @@ Game.init({
 }, {
   sequelize,
   modelName: 'game',
-  tableName: 'games', // Nom de la table dans la base de données
-  timestamps: true, // Ajoute createdAt et updatedAt
-  underscored: true // Si tu préfères le format snake_case pour les noms de colonnes
+  tableName: 'games',
+  timestamps: true,
+  underscored: true
 });

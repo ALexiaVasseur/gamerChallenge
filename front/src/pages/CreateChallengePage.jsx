@@ -33,7 +33,6 @@ export default function CreateChallengePage() {
         }
     }, [navigate]);
 
-    // Récupérer les jeux depuis l'API interne
     useEffect(() => {
         const fetchGames = async () => {
             try {
@@ -52,7 +51,6 @@ export default function CreateChallengePage() {
         fetchGames();
     }, []);
 
-    // Récupérer les catégories depuis l'API
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -71,15 +69,13 @@ export default function CreateChallengePage() {
         fetchCategories();
     }, []);
 
-    // Récupérer les jeux depuis l'API externe
     useEffect(() => {
         const fetchExternalGames = async () => {
             try {
                 const response = await fetch("http://localhost:3000/api/freetogames");
                 const data = await response.json();
                 if (response.ok) {
-                    console.log(data)
-                    setGamesList(prevGames => [...prevGames, ...data]); // Combiner avec les jeux internes
+                    setGamesList(prevGames => [...prevGames, ...data]);
                 } else {
                     console.error("Erreur lors de la récupération des jeux externes");
                 }
@@ -103,7 +99,7 @@ export default function CreateChallengePage() {
     };
 
     const handleGameSelect = (game) => {
-        setChallenge({ ...challenge, game: game.id, image_url: game.thumbnail }); // Utiliser game.thumbnail ici
+        setChallenge({ ...challenge, game: game.id, image_url: game.thumbnail }); 
         setSearchQuery(game.title);
         setFilteredGames([]);
     };
@@ -121,8 +117,7 @@ export default function CreateChallengePage() {
             navigate("/login");
             return;
         }
-    
-        // Vérification si game_id est valide
+
         if (!challenge.game || challenge.game <= 0) {
             alert("Veuillez sélectionner un jeu valide.");
             return;
@@ -223,7 +218,6 @@ export default function CreateChallengePage() {
                         value={challenge.video_url}
                         onChange={handleChange}
                     />
-                    {/* Sélection du jeu */}
                     <div className="relative">
                         <input
                             type="text"
@@ -237,7 +231,7 @@ export default function CreateChallengePage() {
                             <ul className="bg-[rgba(48,46,46,0.5)] p-2 rounded-md max-h-40 overflow-auto mt-2">
                                 {filteredGames.map((game, index) => (
                                     <li
-                                        key={`${game.id}-${index}`} // Combinez l'id et l'index pour assurer l'unicité
+                                        key={`${game.id}-${index}`}
                                         className="cursor-pointer hover:bg-gray-600 p-2 text-white"
                                         onClick={() => handleGameSelect(game)}
                                     >
@@ -248,14 +242,12 @@ export default function CreateChallengePage() {
                         )}
                     </div>
 
-                    {/* Afficher le thumbnail après sélection d'un jeu */}
                     {challenge.image_url && (
                         <div className="mt-4">
                             <img src={challenge.image_url} alt="Game Thumbnail" className="w-full h-auto rounded-md" />
                         </div>
                     )}
 
-                    {/* Sélection de la catégorie */}
                     <div className="relative">
                         <select
                             name="category_id"
@@ -276,7 +268,6 @@ export default function CreateChallengePage() {
                         Jeu non listé ? <span className="text-orange-500 cursor-pointer hover:underline">Ajoutez-le</span>
                     </p>
 
-                    {/* Bouton de soumission */}
                     <button
                         type="submit"
                         className="w-full p-3 mt-4 bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,0.9)] rounded-lg text-white font-bold text-lg"

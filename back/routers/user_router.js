@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as userController from "../controllers/user.controller.js";
 import { controllerWrapper as cw } from "./utils.js";
-import { isAuthenticated } from "../middlewares/auth.middleware.js"; // Assurez-vous d'importer le middleware
+import { isAuthenticated } from "../middlewares/auth.middleware.js";
 
 export const router = Router();
 

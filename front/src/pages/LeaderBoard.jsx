@@ -16,14 +16,12 @@ const Leaderboard = () => {
       <h1 className="text-4xl sm:text-5xl font-bold text-yellow-500 mb-8 text-center">🏆 Leaderboard</h1>
 
       <div className="w-full max-w-4xl overflow-hidden rounded-lg shadow-xl">
-        {/* En-tête */}
         <div className="grid grid-cols-3 py-3 px-6 text-lg sm:text-xl text-white font-medium bg-[#9f8b20] rounded-lg mb-2 shadow-md">
           <div className="text-left">Position</div>
           <div className="text-center">Pseudo</div>
           <div className="text-right">Score</div>
         </div>
 
-        {/* Liste des joueurs */}
         <div className="py-4 px-2 sm:px-4 rounded-b-lg">
           {players.length > 0 ? (
             players.map((player, index) => (

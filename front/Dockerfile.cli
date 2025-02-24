@@ -3,20 +3,21 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copie des fichiers de dépendances
+# copy dependencies
 COPY package*.json ./
 
-# Installation des dépendances
+# Installation dependencies
 RUN npm install
 
-# Copie du reste du code source
+# copy source code
 COPY . .
 
-# Build de l'application
+# application Build
 RUN npm run build
 
-# Exposition du port
+# Port
+
 EXPOSE 4173
 
-# Commande de démarrage (ajustez selon votre configuration)
+# Starting code ( adapt with your configuation)
 CMD ["npm", "run", "preview", "--host"]

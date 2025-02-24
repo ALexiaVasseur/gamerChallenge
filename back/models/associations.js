@@ -7,12 +7,7 @@ import { Participate } from "./participate.js";
 import { Badge } from "./badge.js";
 import { Receive } from "./receive.js";
 import { RefreshToken } from "./refreshToken.js";
-import { Category } from "./category.js"; // Importation du modèle Category
-
-// Doc : https://sequelize.org/docs/v6/core-concepts/assocs/
-// One-To-One : hasOne + belongsTo
-// One-To-Many : hasMany + belongsTo
-// Many-To-Many : belongsToMany + belongsToMany
+import { Category } from "./category.js"; 
 
 // User <-> RefreshToken (One-To-Many)
 Account.hasMany(RefreshToken, {
@@ -26,7 +21,7 @@ RefreshToken.belongsTo(Account, {
 
 // Game <-> Challenge (One-to-Many)
 Game.hasMany(Challenge, {
-  as: "challenges", // Quand je demande un game, je veux récupérer "ses challenges"
+  as: "challenges", 
   foreignKey: "game_id",
   onDelete: "CASCADE"
 });
@@ -37,7 +32,7 @@ Challenge.belongsTo(Game, {
 
 // Account <-> Challenge (One-to-Many)
 Account.hasMany(Challenge, {
-  as: "challenges", // Quand je demande un account, je veux récupérer "ses challenges"
+  as: "challenges", 
   foreignKey: "account_id",
   onDelete: "CASCADE"
 });
@@ -132,9 +127,9 @@ Receive.belongsTo(Badge, {
 
 // Category <-> Challenge (One-to-Many)
 Category.hasMany(Challenge, {
-  as: 'challenges', // Quand je demande une catégorie, je veux récupérer "ses challenges"
-  foreignKey: 'category_id', // Ajout du champ category_id dans le modèle Challenge
-  onDelete: 'SET NULL' // En cas de suppression d'une catégorie, on met le champ category_id à NULL
+  as: 'challenges',
+  foreignKey: 'category_id', 
+  onDelete: 'SET NULL' 
 });
 Challenge.belongsTo(Category, {
   as: 'category',

@@ -19,7 +19,7 @@ html {
 }
 body {
   background: var(--background);
-  background-attachment: fixed; /* Fixe le gradient sur toute la page */
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
   font-family: 'JetBrains Mono', monospace;
@@ -37,39 +37,24 @@ html, body, #root {
   flex-direction: column;
 }
 
-/* Customisation de la scrollbar */
 ::-webkit-scrollbar {
-  width: 10px; /* Largeur de la barre */
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; /* Fond transparent */
+  background: transparent;
   background: #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb {
   background: rgba(159, 139, 32, 0.7);
-  border-radius: 5px; /* Bords arrondis */
-  border: 2px solid transparent; /* Pour un effet de profondeur */
+  border-radius: 5px;
+  border: 2px solid transparent; 
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(159, 139, 32, 0.7); /* Légèrement plus foncé au survol */
+  background: rgba(159, 139, 32, 0.7);
 }
-
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-} */
 
 @layer base {
   :root {

@@ -1,11 +1,10 @@
-// routes/gameRoutes.js
 import { Router } from "express";
-import * as apiGameController from "../controllers/apiGame.controller.js";// Assurez-vous d'inclure .js dans l'import
+import { controllerWrapper as cw } from "./utils.js";
+import * as apiGameController from "../controllers/apiGame.controller.js";
 
 
 export const router = Router();
 
-// Définir la route pour récupérer les jeux
-router.get('/freetogames', apiGameController.getGames);
+router.get('/freetogames', cw(apiGameController.getGames));
 
 

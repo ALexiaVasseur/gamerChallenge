@@ -7,10 +7,9 @@ async function populateDatabase() {
         try {
             console.log("🔄 Starting database population...");
 
-            // Synchroniser les modèles et forcer la réinitialisation des tables
             await sequelize.sync({ alter: true });
 
-            // Ajouter des catégories (si elles n'existent pas déjà)
+            // Add categories
             const categories = await Category.bulkCreate([
                 { 
                   name: "Solo", 
@@ -34,7 +33,7 @@ async function populateDatabase() {
                 }
             ]);
 
-            // Ajouter les comptes
+            // Add accounts
             const accounts = await Account.bulkCreate([
                 { pseudo: "PlayerOne", email: "player1@example.com", password: "hashedpassword1", score_global: 5, role: "user", is_active: true },
                 { pseudo: "PlayerTwo", email: "player2@example.com", password: "hashedpassword2", score_global: 10, role: "user", is_active: true },
@@ -44,7 +43,7 @@ async function populateDatabase() {
                 { pseudo: "PlayerSix", email: "player6@example.com", password: "hashedpassword6", score_global: 30, role: "user", is_active: true }
             ]);
 
-            // Ajouter des jeux
+            // Add games
             const games = await Game.bulkCreate([
                 { id_igdb: 12345, title: "Jeu 1", description: "A thrilling adventure game where every decision impacts the world. Explore vast environments and solve challenging puzzles.", genre: "Action", url_video_game: "https://www.youtube.com/watch?v=rBg69tpjAzQ&pp=ygUXc21hbGwgdmlkZW8gb2YgZ2FtZXBsYXk%3D" },
                 { id_igdb: 67890, title: "Jeu 2", description: "An immersive RPG with an epic storyline, travel through various realms and uncover hidden secrets.", genre: "RPG", url_video_game: "https://www.youtube.com/watch?v=rBg69tpjAzQ&pp=ygUXc21hbGwgdmlkZW8gb2YgZ2FtZXBsYXk%3D" },
@@ -54,7 +53,7 @@ async function populateDatabase() {
                 { id_igdb: 45678, title: "Jeu 6", description: "A sci-fi space shooter with intense dogfights and exploration.", genre: "Shooter", url_video_game: "https://www.youtube.com/watch?v=rBg69tpjAzQ&pp=ygUXc21hbGwgdmlkZW8gb2YgZ2FtZXBsYXk%3D" }
             ]);
 
-            // // Ajouter des défis avec un `category_id` valide
+            // Add challenges
             const challenges = await Challenge.bulkCreate([
                 { game_id: games[0].id, account_id: accounts[0].id, title: "First Challenge", description: "Complete an exciting task in this virtual world. Show your skills and creativity!", rules: "No cheating, be respectful to others.", type: "Solo", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/379430/header.jpg", category_id: categories[0].id },
                 { game_id: games[1].id, account_id: accounts[1].id, title: "Second Challenge", description: "Join a competitive match against others. Win the game to become the champion!", rules: "Respect other players, no toxic behavior.", type: "Competitive", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/1174180/header.jpg", category_id: categories[1].id },
@@ -64,7 +63,7 @@ async function populateDatabase() {
                 { game_id: games[5].id, account_id: accounts[5].id, title: "Sixth Challenge", description: "Engage in intense space battles and come out on top!", rules: "Play fair, no exploits.", type: "Competitive", image_url: "https://www.journaldugeek.com/app/uploads/2023/03/mariobros.jpg", category_id: categories[4].id }
             ]);
 
-            // // Ajouter les participations
+            // Add participations
             const participations = await Participate.bulkCreate([
                 { challenge_id: challenges[0].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 10, description: "Successfully completed the challenge!", account_id: accounts[0].id },
                 { challenge_id: challenges[1].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 20, description: "An incredible participation!", account_id: accounts[1].id },
@@ -74,6 +73,7 @@ async function populateDatabase() {
                 { challenge_id: challenges[5].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 22, description: "Victory in space!", account_id: accounts[5].id }
             ]);
 
+            // Add votes
             await Vote.bulkCreate([
                 { account_id: accounts[0].id, participation_id: participations[1].id, vote: 5 },
                 { account_id: accounts[1].id, participation_id: participations[2].id, vote: 4 },
@@ -83,7 +83,7 @@ async function populateDatabase() {
                 { account_id: accounts[5].id, participation_id: participations[5].id, vote: 5 }
             ]);
 
-            // Ajouter des commentaires
+            // Add comments
             await Comment.bulkCreate([
                 { challenge_id: challenges[0].id, account_id: accounts[0].id, text: "Great challenge!" },
                 { challenge_id: challenges[1].id, account_id: accounts[1].id, text: "I love this concept!" },
@@ -92,20 +92,6 @@ async function populateDatabase() {
                 { challenge_id: challenges[4].id, account_id: accounts[4].id, text: "Mind-blowing puzzles!" },
                 { challenge_id: challenges[5].id, account_id: accounts[5].id, text: "Space battles are intense!" }
             ]);
-            
-            // const badges = await Badge.bulkCreate([
-            //     { name: "Champion", description: "Won 10 solo challenges with outstanding performances.", imageUrl: "public/pictures/badge_1.webp" },
-            //     { name: "Explorer", description: "Participated in 5 different challenges, showing a passion for competition and adventure.", imageUrl: "public/pictures/badge_2.webp" },
-            //     { name: "Strategist", description: "Achieved top rankings in multiple competitive challenges, demonstrating tactical prowess.", imageUrl: "public/pictures/badge_3.webp" },
-            //     { name: "Team Player", description: "Excelled in team challenges, contributing significantly to group success.", imageUrl: "public/pictures/badge_4.webp" }
-            // ]);
-            
-            // await Receive.bulkCreate([
-            //     { account_id: accounts[0].id, badges_id: badges[0].id },
-            //     { account_id: accounts[1].id, badges_id: badges[1].id },
-            //     { account_id: accounts[2].id, badges_id: badges[2].id },
-            //     { account_id: accounts[3].id, badges_id: badges[3].id }
-            // ]);
 
             console.log("✅ Database populated successfully!");
         } catch (error) {

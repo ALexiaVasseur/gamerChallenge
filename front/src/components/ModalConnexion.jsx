@@ -20,28 +20,23 @@ const ModalConnexion = ({ isOpen, onClose }) => {
     setLoading(true);
     setErrorMessage("");
 
-    // 🔹 Vérification des champs obligatoires
     if (!email || !password || (!isLogin && (!pseudo || !confirmPassword || !description))) {
       setErrorMessage("Veuillez remplir tous les champs.");
       setLoading(false);
       return;
     }
 
-    // 🔹 Vérification des mots de passe (inscription)
     if (!isLogin && password !== confirmPassword) {
       setErrorMessage("Les mots de passe ne correspondent pas.");
       setLoading(false);
       return;
     }
 
-    // 🔹 Construction du body à envoyer
     const body = {
       email,
       password,
       ...(isLogin ? {} : { pseudo, confirmPassword, description }),
     };
-
-    console.log("📤 Données envoyées :", body); // ✅ DEBUG - Vérifier les données envoyées
 
     const url = isLogin
       ? "http://localhost:3000/api/auth/login"
@@ -59,20 +54,14 @@ const ModalConnexion = ({ isOpen, onClose }) => {
       
       const data = await response.json();
 
-      console.log("📥 Réponse serveur :", data); // ✅ DEBUG - Vérifier la réponse du serveur
-
       if (response.ok) {
         setSuccessMessage("✅ Connexion réussie !");
 
-        
-        // 🔹 Stocker l'utilisateur dans le localStorage
         localStorage.setItem("user", JSON.stringify(data.user));
-      
-        console.log("✅ Utilisateur stocké :", localStorage.getItem("user")); // DEBUG
         
         setTimeout(() => {
           onClose();
-          window.location.reload(); // 🔄 Recharge la page pour mettre à jour UserInfo
+          window.location.reload();
         }, 2000);
       }
       
@@ -89,7 +78,6 @@ const ModalConnexion = ({ isOpen, onClose }) => {
       
 
       <div className="bg-[#222] text-white p-6 rounded-lg shadow-lg w-[400px] relative animate-fadeIn">
-      {/* Affichage du message de succès */}
 {successMessage && (
   <div className="mb-6 p-4 text-green-500 bg-green-100 rounded-md text-center">
     {successMessage}
@@ -100,7 +88,6 @@ const ModalConnexion = ({ isOpen, onClose }) => {
           {isLogin ? "Connexion" : "Inscription"}
         </h2>
 
-        {/* Affichage des erreurs */}
         {errorMessage && <p className="text-red-500 text-center mt-2">{errorMessage}</p>}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -154,14 +141,13 @@ const ModalConnexion = ({ isOpen, onClose }) => {
           </button>
         </form>
 
-        {/* Lien pour changer de mode (connexion ou inscription) */}
         <p className="text-center text-sm mt-4">
           {isLogin ? "Pas encore de compte ?" : "Déjà un compte ?"}{" "}
           <span
             className="text-yellow-400 cursor-pointer"
             onClick={() => {
               setIsLogin(!isLogin);
-              setErrorMessage(""); // Effacer les erreurs en changeant de mode
+              setErrorMessage(""); 
             }}
           >
             {isLogin ? "S'inscrire" : "Se connecter"}

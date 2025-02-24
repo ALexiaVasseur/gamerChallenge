@@ -5,5 +5,4 @@ console.log("📌 Vérification des modèles importés :", {
     Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive, RefreshToken
 });
 
-// J'exporte également le client sequelize, on en aura besoin ;-)
 export { Game, Account, Challenge, Vote, Comment, Participate, Badge, Receive, Category, RefreshToken, sequelize };

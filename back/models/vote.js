@@ -8,21 +8,21 @@ Vote.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'accounts', // Nom de la table du modèle Account
+      model: 'accounts',
       key: 'id'
     },
     primaryKey: true,
-    onDelete: 'CASCADE' // Suppression en cascade si Account est supprimé
+    onDelete: 'CASCADE'
   },
   participation_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'participations', // Nom de la table du modèle Participation
+      model: 'participations', 
       key: 'id'
     },
     primaryKey: true,
-    onDelete: 'CASCADE' // Suppression en cascade si Participation est supprimée
+    onDelete: 'CASCADE'
   },
   vote: {
     type: DataTypes.INTEGER,
@@ -35,7 +35,7 @@ Vote.init({
 }, {
   sequelize,
   modelName: 'vote',
-  tableName: 'votes', // Nom de la table dans la base de données
-  timestamps: true, // Ajoute createdAt et updatedAt
-  underscored: true // Si tu préfères le format snake_case pour les noms de colonnes
+  tableName: 'votes', 
+  timestamps: true,
+  underscored: true 
 });

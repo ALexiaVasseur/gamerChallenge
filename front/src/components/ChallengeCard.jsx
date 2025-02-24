@@ -4,14 +4,13 @@ import { useState } from 'react';
 
 export default function ChallengeCard({ id, title, author, image }) {
     const navigate = useNavigate();
-    const [imageError, setImageError] = useState(false); // Gérer les erreurs d'image
+    const [imageError, setImageError] = useState(false); 
 
     const isYouTubeLink = (url) => {
         const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
         return youtubeRegex.test(url);
     };
 
-    // Fonction pour extraire l'ID de la vidéo YouTube
     const getYouTubeEmbedUrl = (url) => {
         const videoId = url.split('v=')[1]?.split('&')[0] || 
                         url.split('youtu.be/')[1]?.split('?')[0];
@@ -28,7 +27,6 @@ export default function ChallengeCard({ id, title, author, image }) {
             className="backdrop-blur-sm p-0 rounded-lg flex flex-col items-center text-center cursor-pointer transition transform hover:scale-105 duration-300"
             onClick={handleCardClick}
         >
-            {/* Gestion de l'affichage de l'image */}
             {image && !imageError ? (
                 isYouTubeLink(image) ? (
                     <iframe 
@@ -43,7 +41,7 @@ export default function ChallengeCard({ id, title, author, image }) {
                         src={image} 
                         alt={title} 
                         className="w-full h-56 object-cover object-center rounded-t-lg"
-                        onError={() => setImageError(true)} // Si l'image échoue à charger
+                        onError={() => setImageError(true)} 
                     />
                 )
             ) : (
@@ -52,10 +50,9 @@ export default function ChallengeCard({ id, title, author, image }) {
                 </div>
             )}
 
-            {/* Section du bas avec titre + auteur */}
             <div className="w-full bg-[rgba(159,139,32,0.7)] py-6 flex flex-col justify-center items-center rounded-b-lg">
                 <h3 className="text-4xl font-bold text-white uppercase">{title}</h3>
-                <p className="text-2xl text-white">Auteur : {author}</p>
+                <p className="text-2xl text-white">Author: {author}</p>
             </div>
         </div>
     );

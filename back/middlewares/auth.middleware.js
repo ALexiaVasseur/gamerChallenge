@@ -18,16 +18,12 @@ export const isAuthenticated = (req, res, next) => {
     return res.status(401).json({ message: "Token invalide ou expiré." });
   }
 
-  req.userId = decoded.userId; // Ajouter l'ID utilisateur au `req` pour qu'il soit accessible dans la route
-  next(); // Passer à la route suivante (la fonction du contrôleur)
+  req.userId = decoded.userId;
+  next();
 };
 
 
 export function authentify(req) {
-
-  console.log("🔍 Headers :", req.headers);
-  console.log("🔍 Cookies :", req.cookies);
-
   
   // Get access token from either cookies (browsers) or Authorization headers (any service)
   const authorizationHeaders = req.headers?.["Authorization"] || req.headers?.["authorization"];

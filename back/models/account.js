@@ -38,11 +38,11 @@ Account.init({
     allowNull: false,
     defaultValue: true
   },
-  refresh_token: {  // Ajout du champ refresh token
+  refresh_token: { 
     type: DataTypes.STRING(255),
     allowNull: true
   },
-  description: {  // ✅ Ajout du champ description
+  description: { 
     type: DataTypes.TEXT,
     allowNull: true
   }
@@ -50,7 +50,7 @@ Account.init({
 }, {
   sequelize,
   modelName: 'account',
-  tableName: 'accounts', // Optionnel si tu veux spécifier le nom de la table
-  timestamps: true, // Ajoute createdAt et updatedAt
-  underscored: true // Si tu préfères le format snake_case pour les noms de colonnes
+  tableName: 'accounts',
+  timestamps: true,
+  underscored: true
 });

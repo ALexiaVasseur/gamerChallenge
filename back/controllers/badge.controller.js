@@ -1,35 +1,21 @@
-import { Badge } from "../models/index.js"; // Adapte le chemin selon ta structure de dossiers
-import { z } from "zod"; // Import de Zod
-import { hash, compare, generateJwtToken, verifyJwtToken } from "../crypto.js";
+import { Badge } from "../models/index.js";
+import { NotFoundError} from "../lib/errors.js"
 
-// récupérer tous les challenges 
+// recover all badges
 export async function getAllBadges(req, res) {
-    try {
-        const badges = await Badge.findAll();
-        res.status(200).json(badges);
-
-    }catch (error) {
-  console.error("🔥 Erreur serveur:", error);
-  res.status(500).json({ message: "Erreur interne du serveur." });
-}
- 
+  const badges = await Badge.findAll();
+  res.status(200).json(badges); 
 }
 
-// recupérer un game
-
+// recover a badge
 export async function getOneBadge(req, res) {
-
-  try {
-    const badge = await Badge.findByPk(req.params.id);
-    if(!badge) return res.status(404).json({ message: "Badge non trouvé."})
-    res.status(200).json(badge);
-
-}catch (error) {
-console.error("🔥 Erreur serveur:", error);
-res.status(500).json({ message: "Erreur interne du serveur." });
+  const badge = await Badge.findByPk(req.params.id);
+  if (!badge) {
+    throw new NotFoundError("Badge non trouvé.");
+  }
+  res.status(200).json(badge);
 }
 
-}
 
 
 

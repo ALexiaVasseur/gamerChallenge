@@ -8,7 +8,7 @@ const ChallengePage = () => {
   const [challenge, setChallenge] = useState(null);
   const [comments, setComments] = useState([]);
   const [participations, setParticipations] = useState([]);
-  const [votes, setVotes] = useState([]);  // Pour stocker les votes
+  const [votes, setVotes] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState("");
@@ -17,7 +17,6 @@ const ChallengePage = () => {
   const userData = JSON.parse(localStorage.getItem("user"));
   const userId = userData?.id;
 
-  // Fonction pour récupérer l'URL d'intégration YouTube
   const getYouTubeEmbedUrl = (url) => {
     const match = url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     return match ? `https://www.youtube.com/embed/${match[1]}` : null;
@@ -31,7 +30,7 @@ const ChallengePage = () => {
     }
   }, []);
 
-  // Récupérer les données du défi et les commentaires
+
   useEffect(() => {
     const fetchChallengeData = async () => {
       setLoading(true);
@@ -59,7 +58,7 @@ const ChallengePage = () => {
 
         if (votesResponse.ok) {
           const votesData = await votesResponse.json();
-          setVotes(votesData);  // Stockage des votes
+          setVotes(votesData);
         }
       } catch (error) {
         setError(error.message);
@@ -71,7 +70,6 @@ const ChallengePage = () => {
     fetchChallengeData();
   }, [id]);
 
-  // Rafraîchir les participations après la fermeture de la modale
   useEffect(() => {
     if (!isModalOpen) {
       const fetchParticipations = async () => {
@@ -90,20 +88,20 @@ const ChallengePage = () => {
     }
   }, [isModalOpen, id]);
 
-  // Calculer la moyenne des votes
+
   const calculateAverageVote = () => {
-    if (votes.length === 0) return 0; // Eviter la division par zéro
+    if (votes.length === 0) return 0; 
     const totalVotes = votes.reduce((acc, vote) => acc + vote.vote, 0);
     return totalVotes / votes.length;
   };
 
-  // Fonction pour soumettre un commentaire
+
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
   
     const challengeId = parseInt(id, 10);
-    const accountId = userId; // Utiliser l'ID utilisateur
+    const accountId = userId; 
   
     try {
       const response = await fetch(`http://localhost:3000/api/challenge/${challengeId}/comment`, {
@@ -121,11 +119,10 @@ const ChallengePage = () => {
   
       if (!response.ok) {
         const errorData = await response.json();
-        
-        // Si l'erreur est "Vous avez déjà commenté ce défi", on affiche l'erreur
+
         if (errorData.message === "Vous avez déjà commenté ce défi.") {
-          setError(errorData.message); // Afficher l'erreur dans l'interface utilisateur
-          return; // Ne pas continuer le processus si un commentaire existe déjà
+          setError(errorData.message); 
+          return;
         }
   
         if (errorData.message === "Token manquant, veuillez vous connecter.") {
@@ -139,29 +136,24 @@ const ChallengePage = () => {
   
       const addedComment = await response.json();
       setComments([...comments, addedComment]);
-      setNewComment(""); // Réinitialiser le champ du commentaire
+      setNewComment("");
     } catch (error) {
       console.error("Erreur lors de la soumission du commentaire:", error.message);
-      setError(error.message); // Affichage de l'erreur dans l'UI
+      setError(error.message);
     }
   };
-  
 
-  // Fonction pour ouvrir la modale
   const openModal = () => setIsModalOpen(true);
-  // Fonction pour fermer la modale
   const closeModal = () => setIsModalOpen(false);
 
   const handleParticipationSubmit = async () => {
     try {
-      // Rafraîchir les participations
       const participationResponse = await fetch(`http://localhost:3000/api/participations/${id}`);
       if (participationResponse.ok) {
         const participationData = await participationResponse.json();
         setParticipations(participationData);
       }
-  
-      // Rafraîchir les votes
+
       const votesResponse = await fetch(`http://localhost:3000/api/challenge/${id}/votes`);
       if (votesResponse.ok) {
         const votesData = await votesResponse.json();
@@ -171,16 +163,10 @@ const ChallengePage = () => {
       console.error("Erreur lors du rafraîchissement des participations et votes:", error);
     }
   };
-  
 
-  console.log(participations);
-
-  // Chargement et affichage des erreurs
   if (loading) return <p className="text-center text-gray-500 text-2xl">Chargement...</p>;
   if (error) return <p className="text-center text-red-500 text-2xl">{error}</p>;
   if (!challenge) return <p className="text-center text-gray-500 text-2xl">Challenge introuvable.</p>;
-
-  console.log("Participation soumise");
 
   return (
     <main className="mx-auto p-6 md:p-12 text-white">
@@ -243,16 +229,15 @@ const ChallengePage = () => {
                       <img src={participation.image_url} alt="Image de participation" className="w-full h-[250px] object-cover rounded-lg shadow-2xl mb-4" />
                     )}
 
-                    {console.log(participation)}
                     <p><strong>Pseudo:</strong> {participation.account?.pseudo}</p>
                     <p><strong>Description:</strong> {participation.description}</p>
                     <p><strong>Score:</strong> {participation.account?.score_global}</p>
 
                     <p><strong>Votes :</strong></p>
                     <div className="flex text-text-[#9f8b20]">
-                      {[...Array(Math.floor(participation.votes[0]?.vote || 0))].map((_, i) => <FaStar key={`full-${i}`} className="text-[#9f8b20]" />)} {/* Couleur dorée */}
+                      {[...Array(Math.floor(participation.votes[0]?.vote || 0))].map((_, i) => <FaStar key={`full-${i}`} className="text-[#9f8b20]" />)} 
                       {participation.votes[0]?.vote % 1 >= 0.5 && <FaStar key="half" className="text-[#9f8b20] opacity-50" />}
-                      {[...Array(5 - Math.floor(participation.votes[0]?.vote || 0) - (participation.votes[0]?.vote % 1 >= 0.5 ? 1 : 0))].map((_, i) => <FaRegStar key={`empty-${i}`} className="text-gray-400" />)} {/* Couleur grise pour les étoiles vides */}
+                      {[...Array(5 - Math.floor(participation.votes[0]?.vote || 0) - (participation.votes[0]?.vote % 1 >= 0.5 ? 1 : 0))].map((_, i) => <FaRegStar key={`empty-${i}`} className="text-gray-400" />)}
                     </div>
                     
                   </div>
@@ -265,17 +250,16 @@ const ChallengePage = () => {
         </div>
 
         <div className="bg-white/10 p-10 rounded-lg shadow-2xl text-lg">
-          {/* Affichage des étoiles avant le titre Description */}
           
           <div className="flex justify-end items-center space-x-1">
   {[...Array(Math.floor(calculateAverageVote()))].map((_, i) => (
-    <FaStar key={`full-${i}`} className="text-[#9f8b20] text-4xl" /> // Couleur dorée et taille plus grande
+    <FaStar key={`full-${i}`} className="text-[#9f8b20] text-4xl" /> 
   ))}
   {calculateAverageVote() % 1 >= 0.5 && (
     <FaStar key="half" className="text-[#9f8b20]-400 opacity-50 text-4xl" />
   )}
   {[...Array(5 - Math.floor(calculateAverageVote()) - (calculateAverageVote() % 1 >= 0.5 ? 1 : 0))].map((_, i) => (
-    <FaRegStar key={`empty-${i}`} className="text-gray-400 text-4xl" /> // Couleur grise et taille plus grande
+    <FaRegStar key={`empty-${i}`} className="text-gray-400 text-4xl" /> 
   ))}
 </div>
 
@@ -326,7 +310,6 @@ const ChallengePage = () => {
         </div>
       </div>
 
-      {/* Intégration du Modal */}
       <ModalParticipation isOpen={isModalOpen} onClose={closeModal} challengeId={challenge.id} onSubmit={handleParticipationSubmit} />
     </main>
   );

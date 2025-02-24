@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import BaseChallenge from '../components/BaseChallenge';
 
 const CategoriesPage = () => {
-  const { id } = useParams();  // Récupère l'ID de la catégorie depuis l'URL
-  const [categoryData, setCategoryData] = useState(null);  // Stocke les données de la catégorie
-  const [loading, setLoading] = useState(true);           // État de chargement
-  const [error, setError] = useState(null);               // Gestion des erreurs
+  const { id } = useParams();
+  const [categoryData, setCategoryData] = useState(null); 
+  const [loading, setLoading] = useState(true);        
+  const [error, setError] = useState(null);      
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -43,14 +43,14 @@ const CategoriesPage = () => {
 
   return (
     <BaseChallenge
-      title={categoryData.name}  // Nom de la catégorie
+      title={categoryData.name} 
       name_button={`Voir les challenges de la catégorie ${categoryData.name}`}
       section_title="Les challenges"
-      challengesList={categoryData.challenges}  // Liste des challenges
+      challengesList={categoryData.challenges} 
     >
-      {/* Description de la catégorie avec formatage similaire à la page d'accueil */}
+
       <p className='text-2xl text-[#898989] mb-8'>
-        {categoryData.description}  {/* Ici tu insères la description de la catégorie */}
+        {categoryData.description} 
       </p>
     </BaseChallenge>
   );

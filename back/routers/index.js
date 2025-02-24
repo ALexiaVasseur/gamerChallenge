@@ -12,7 +12,7 @@ import { router as apiRouter } from "./api_router.js";
 
 export const router = Router();
 
-// Utilisation des routers
+// Using routers
 router.use(userRouter);
 router.use(challengeRouter);
 router.use(voteRouter);
@@ -23,7 +23,7 @@ router.use(badgeRouter);
 router.use(categoryRouter);
 router.use(apiRouter);
 
-// Gestion des erreurs 404
+// 404 error management
 router.use((req, res) => {
     res.status(404).json({ error: "Vérifiez le endpoint" });
 });

@@ -9,13 +9,13 @@ const Profile = () => {
   const [completedChallenges, setCompletedChallenges] = useState([]);
   const [participations, setParticipations] = useState([]);
   const [userId, setUserId] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); // Gérer l'état de l'édition
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     pseudo: "",
     email: "",
     description: "",
   });
-  const [badges, setBadges] = useState([]); // Nouvel état pour les badges
+  const [badges, setBadges] = useState([]);
 
   const assignBadges = useCallback((score) => {
     const badgeList = [
@@ -25,13 +25,12 @@ const Profile = () => {
       { threshold: 20, name: "Légende Ultime", imageUrl: badgeImage4 },
     ];
 
-    // Use a Set to track existing badge names and avoid duplicates
     const existingBadgeNames = new Set(badges.map((b) => b.badge.name));
 
     const newBadges = badgeList
       .filter((badge) => score >= badge.threshold && !existingBadgeNames.has(badge.name))
       .map((badge) => ({
-        id: `${badge.name}-${Date.now()}`, // Unique ID using name and timestamp
+        id: `${badge.name}-${Date.now()}`, 
         badge,
       }));
 
@@ -46,7 +45,6 @@ const Profile = () => {
     if (userData) {
       const userInformations = JSON.parse(userData);
       setUserId(userInformations.id);
-      console.log("ID utilisateur récupéré :", userInformations.id); // Ajoutez ceci
     }
   }, []);
 
@@ -73,7 +71,6 @@ const Profile = () => {
         setCompletedChallenges(data.participate ? data.participate.map((p) => p.challenge) : []);
         setParticipations(data.participate || []);
 
-        // Attribuer les badges en fonction du score global
         assignBadges(data.score_global);
       } catch (error) {
         console.error("Erreur lors du chargement du profil:", error);
@@ -116,8 +113,6 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
-    console.log("Données envoyées :", formData);
-
     try {
       const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
         method: "PATCH",
@@ -129,7 +124,6 @@ const Profile = () => {
       });
 
       const data = await response.json();
-      console.log("Réponse de l'API:", data);
 
       if (!data) {
         console.error("Erreur lors de la mise à jour du profil:", data.message);
@@ -143,7 +137,6 @@ const Profile = () => {
     }
   };
 
-  // Fonction de suppression du compte
   const handleDeleteAccount = async () => {
     if (
       !window.confirm(
@@ -158,13 +151,12 @@ const Profile = () => {
         method: "DELETE",
         credentials: "include",
       });
-  
-      // Vérifie si la réponse est réussie
+
       if (response.ok) {
         localStorage.removeItem("user");
-        window.location.href = "/"; // Redirection après suppression
+        window.location.href = "/";
       } else {
-        const errorData = await response.json(); // Récupère les erreurs éventuelles de l'API
+        const errorData = await response.json(); 
         console.error("Erreur lors de la suppression du compte:", errorData);
         alert(`Erreur: ${errorData.message || "Une erreur inconnue est survenue."}`);
       }
@@ -177,7 +169,6 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col items-center w-full px-6 py-10 text-white">
-      {/* Avatar & Infos */}
       <div className="flex flex-col lg:flex-row items-center lg:items-start w-full max-w-5xl space-y-6 lg:space-y-0 lg:space-x-12">
         <div className="flex flex-col items-center">
           <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-full border-4 border-yellow-500 flex items-center justify-center text-2xl sm:text-3xl font-bold bg-gray-700">
@@ -194,7 +185,6 @@ const Profile = () => {
           <p className="text-lg">Score Global: {user.score_global ?? 0}</p>
           <p className="text-lg">Mot de passe: *******</p>
 
-          {/* Affichage des badges */}
           <div className="mt-4">
             <h2 className="text-xl font-semibold">Badges obtenus</h2>
             <div className="flex space-x-4 mt-2">
@@ -264,7 +254,6 @@ const Profile = () => {
       Modifier le profil
     </button>
 
-    {/* Bouton "Supprimer mon compte" */}
     <button
       onClick={handleDeleteAccount}
       className="bg-[rgba(159,139,32,0.7)] text-white px-4 py-2 rounded-lg hover:bg-[rgba(159,139,32,0.9)] w-full sm:w-auto"
@@ -278,9 +267,7 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Section Challenges Réussis et Participations côte à côte */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10 w-full max-w-5xl">
-        {/* Challenges Réussis */}
         <div>
           <h2 className="text-2xl font-semibold border-b border-gray-600 pb-3">
             Challenges réussis
@@ -305,7 +292,6 @@ const Profile = () => {
           </ul>
         </div>
 
-        {/* Participations */}
         <div>
           <h2 className="text-2xl font-semibold border-b border-gray-600 pb-3">
             Participations
@@ -314,7 +300,7 @@ const Profile = () => {
   {participations.length > 0 ? (
     participations.map((participation, index) => (
       <li
-        key={`${participation.id}-${index}`} // Combinez l'id avec l'index pour l'unicité
+        key={`${participation.id}-${index}`}
         className="border border-gray-600 p-4 rounded-lg"
       >
         <p className="font-semibold">

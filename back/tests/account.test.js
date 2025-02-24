@@ -1,11 +1,11 @@
 import { Account, sequelize } from "../models/index.js";
 
 beforeAll(async () => {
-  await sequelize.sync({ force: true }); // Réinitialise la DB avant tous les tests
+  await sequelize.sync({ force: true });
 });
 
 afterAll(async () => {
-  await sequelize.close(); // Ferme la connexion à la base de données après les tests
+  await sequelize.close();
 });
 
 describe("🔍 Account Model", () => {
@@ -16,12 +16,12 @@ describe("🔍 Account Model", () => {
       password: "securepassword",
     });
 
-    // Vérifie les propriétés du compte créé
+
     expect(account.id).toBeDefined();
     expect(account.pseudo).toBe("TestUser");
     expect(account.email).toBe("testuser@example.com");
-    expect(account.score_global).toBe(0); // Par défaut
-    expect(account.is_active).toBe(true); // Par défaut
+    expect(account.score_global).toBe(0); 
+    expect(account.is_active).toBe(true); 
   });
 
   it("❌ Ne devrait pas autoriser des emails en double", async () => {

@@ -7,7 +7,7 @@ Category.init({
   name: {
     type: DataTypes.STRING(100),
     allowNull: false,
-    unique: true, // Assure que chaque catégorie a un nom unique
+    unique: true,
   },
   description: {
     type: DataTypes.TEXT,
@@ -17,6 +17,6 @@ Category.init({
   sequelize,
   modelName: 'category',
   tableName: 'categories',
-  timestamps: true, // Ajoute createdAt et updatedAt
-  underscored: true, // Pour le format snake_case
+  timestamps: true, 
+  underscored: true,
 });

@@ -2,7 +2,6 @@ import express from 'express';
 import "dotenv/config";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
-import config from "./config.js";
 import { router as apiRouter } from "./routers/index.js";
 import { notFoundMiddleware, errorHandler } from "./middlewares/index.middleware.js";
 
@@ -12,7 +11,6 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: (origin, callback) => {
-    console.log("🔍 Origine de la requête :", origin); // Pour le débogage
     const allowedDomains = [
       "http://localhost:5173",
       "http://127.0.0.1:5173",

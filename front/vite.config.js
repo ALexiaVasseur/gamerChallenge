@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   preview: {
-    allowedHosts: ['guillaume-dut-server.eddi.cloud'], // Ajoute cette ligne
+    allowedHosts: ['guillaume-dut-server.eddi.cloud'], 
   },
   plugins: [
     react(),

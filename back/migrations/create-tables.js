@@ -11,8 +11,7 @@ async function resetDatabase() {
 
     console.log("📌 Base de données nettoyée, recréation des tables...");
 
-    // Synchronisation des modèles (création des tables)
-    await sequelize.sync(syncOptions); // 'force: true' supprime et recrée les tables
+    await sequelize.sync(syncOptions);
 
     console.log("✅ Base de données recréée avec succès !");
   } catch (error) {

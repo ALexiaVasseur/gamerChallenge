@@ -14,22 +14,18 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
 
-  // Si la modale n'est pas ouverte, on retourne null (ne l'affiche pas)
   if (!isOpen) return null;
 
-  // Fonction de validation de l'URL de la vidéo YouTube
   const isValidUrl = (url) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
     return youtubeRegex.test(url);
   };
 
-  // Fonction pour soumettre la participation et le vote
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage("");
-  
-    // Vérification des champs
+
     if (!videoUrl.trim() || !description.trim()) {
       setErrorMessage("Veuillez remplir tous les champs.");
       setLoading(false);
@@ -50,8 +46,6 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
     
   
     try {
-      // 1. Créer la participation
-      console.log("Tentative de création de participation...");
       const participationResponse = await fetch(
         `http://localhost:3000/api/challenge/${challengeId}/participations`,
         {
@@ -60,7 +54,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ challenge_id: challengeId, video_url: videoUrl, description, vote, account_id: userId, }), // Ou toute autre donnée que tu veux envoyer
+          body: JSON.stringify({ challenge_id: challengeId, video_url: videoUrl, description, vote, account_id: userId, }), 
         }
       );
   
@@ -75,11 +69,8 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
         throw new Error("ID de la participation manquant dans la réponse.");
       }
 
-      const participationId = participationData.participation.id; // Récupérer l'ID de la participation
-      console.log("Participation créée avec succès. ID de participation:", participationId);
+      const participationId = participationData.participation.id; 
   
-      // 2. Créer un vote
-      console.log("Tentative de création du vote...");
       const voteResponse = await fetch(
         `http://localhost:3000/api/challenge/${challengeId}/participation/${participationId}/vote`,
         {
@@ -89,7 +80,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
           },
           credentials: "include",
           body: JSON.stringify({
-            account_id: userId, // Remplacez `userId` par la vraie variable contenant l'ID du compte
+            account_id: userId, 
             participation_id: participationId,
             vote,
           }),
@@ -103,17 +94,15 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
         throw new Error(voteError.message || "Erreur lors de l'envoi du vote");
       }
   
-       // 3. Mise à jour du score de l'utilisateur
-    // 3. Mise à jour du score de l'utilisateur
 const updateScoreResponse = await fetch(
-  `http://localhost:3000/api/user/${userId}/updateScore`, // Assurez-vous que l'URL correspond à celle que tu utilises pour la mise à jour du score
+  `http://localhost:3000/api/user/${userId}/updateScore`, 
   {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ point: vote }), // Le vote sera utilisé comme nombre de points
+    body: JSON.stringify({ point: vote }), 
   }
 );
 
@@ -123,29 +112,23 @@ if (!updateScoreResponse.ok) {
   throw new Error(updateScoreError.message || "Erreur lors de la mise à jour du score");
 }
 
-// Récupérer les données après avoir validé la réponse
 const updateScoreData = await updateScoreResponse.json();
-console.log("Score mis à jour avec succès :", updateScoreData.newScore);
 
-// Mettre à jour l'état newScore
 setNewScore(updateScoreData.newScore);
 
 
-      // Réinitialisation du formulaire après soumission
       setVideoUrl("");
       setVote(1);
       setDescription("");
       setLoading(false);
       setSuccessMessage("Votre participation a été envoyée avec succès et votre vote a été pris en compte !");
   
-      // Attendre quelques secondes avant de fermer la modale pour permettre à l'utilisateur de voir le message
     setTimeout(() => {
-      onClose(); // Ferme la modale après un délai
-    }, 3000); // Délai de 3 secondes
+      onClose(); 
+    }, 3000); 
   
        
-  
-      // Appel de la fonction de callback de soumission
+
       if (onSubmit) onSubmit();
   
     } catch (error) {
@@ -156,30 +139,25 @@ setNewScore(updateScoreData.newScore);
   };
   
 
-  // Fonction pour fermer la modale immédiatement (sans soumission)
   const handleClose = () => {
-    setVideoUrl(""); // Réinitialiser les champs
+    setVideoUrl(""); 
     setVote(1);
     setDescription("");
-    setErrorMessage(""); // Effacer les erreurs avant de fermer
-    onClose(); // Ferme la modale
+    setErrorMessage(""); 
+    onClose();
   };
-
-  console.log("Votes : ", {vote});
 
   return ( 
     <div className="fixed inset-0 flex justify-center items-center bg-opacity-40 backdrop-blur-lg transition-opacity duration-300 z-50">
       <div className="bg-[#222] text-white p-6 rounded-lg shadow-lg w-[400px] relative animate-fadeIn">
         <h2 className="text-3xl font-bold text-center mb-4">Publier ma participation</h2>
 
-        {/* Affichage du message de succès */}
         {successMessage && (
         <div className="mb-6 p-4 text-green-500 bg-green-100 rounded-md text-center">
         {successMessage}
          </div>
           )}
 
-        {/* Affichage des erreurs */}
         {errorMessage && <p className="text-red-500 text-center mt-2">{errorMessage}</p>}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -191,7 +169,6 @@ setNewScore(updateScoreData.newScore);
             onChange={(e) => setVideoUrl(e.target.value)}
           />
 
-          {/* Étoiles pour le vote */}
           <div className="flex justify-center">
             {[1, 2, 3, 4, 5].map((num) => (
               <span
@@ -220,14 +197,12 @@ setNewScore(updateScoreData.newScore);
           </button>
         </form>
 
-        {/* Affichage du nouveau score */}
       {newScore !== null && (
         <div className="mt-4 text-center">
           <p>Votre nouveau score est : <strong>{newScore}</strong></p>
         </div>
       )}
 
-        {/* Bouton ✖ qui ferme immédiatement la modale */}
         <button
           onClick={handleClose}
           className="absolute top-2 right-2 text-white text-lg"
