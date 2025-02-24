@@ -83,9 +83,20 @@ export default function HeaderCard() {
     pseudo ? pseudo.substring(0, 2).toUpperCase() : "";
 
   const handleProfileRedirect = () => {
-    setIsMenuOpen(false);
-    navigate("/profile");
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const userInformations = JSON.parse(userData);
+      if (userInformations.id) {
+        setIsMenuOpen(false);
+        navigate("/profile");
+      } else {
+        alert("ID utilisateur invalide !");
+      }
+    } else {
+      alert("Vous devez être connecté pour accéder à votre profil !");
+    }
   };
+  
 
   const handleHomePageRedirect = () => {
     setIsMenuOpen(false);

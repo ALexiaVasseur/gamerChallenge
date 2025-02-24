@@ -45,6 +45,9 @@ const Profile = () => {
     if (userData) {
       const userInformations = JSON.parse(userData);
       setUserId(userInformations.id);
+      console.log("ID utilisateur défini :", userInformations.id);
+    } else {
+      console.error("Aucune donnée utilisateur trouvée dans le localStorage.");
     }
   }, []);
 

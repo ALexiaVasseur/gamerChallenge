@@ -20,7 +20,10 @@ export default function CreateChallengePage() {
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
-    
+    const isValidUrl = (url) => {
+        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
+        return youtubeRegex.test(url);
+    };
 
     useEffect(() => {
         window.dispatchEvent(new Event("userChanged"));
@@ -102,8 +105,7 @@ export default function CreateChallengePage() {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setChallenge({ ...challenge, [name]: value || "" }); 
+        setChallenge({ ...challenge, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
@@ -121,7 +123,10 @@ export default function CreateChallengePage() {
             return;
         }
     
-
+        if (challenge.video_url && !isValidUrl(challenge.video_url)) {
+            alert("L'URL de la vidéo YouTube n'est pas valide. Veuillez utiliser un lien YouTube valide.");
+            return;
+        }
 
         const challengeData = {
             title: challenge.title,
@@ -132,7 +137,7 @@ export default function CreateChallengePage() {
             category_id: Number(challenge.category_id),
             account_id: JSON.parse(userData).id,
             type: challenge.type || "default",
-            
+            video_url : challenge.video_url
         };
     
         try {
@@ -207,11 +212,12 @@ export default function CreateChallengePage() {
 
                     <input
                         type="text"
-                        name="image_url"
-                        placeholder="URL de l'image du challenge"
-                        className="p-2 rounded bg-gray-300 text-black"
-                        value={challenge.image_url}
+                        name="video_url"
+                        placeholder="URL de la vidéo du jeu YouTube"
+                        className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
+                        value={challenge.video_url}
                         onChange={handleChange}
+                        
                     />
                     <div className="relative">
                         <input
