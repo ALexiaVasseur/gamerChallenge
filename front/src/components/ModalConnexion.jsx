@@ -59,6 +59,7 @@ const ModalConnexion = ({ isOpen, onClose }) => {
 
         localStorage.setItem("user", JSON.stringify(data.user));
         
+      
         setTimeout(() => {
           onClose();
           window.location.reload();
