@@ -163,6 +163,12 @@ export default function HeaderCard() {
             Leaderboard
           </a>
           <a
+            href="/challenges"
+            className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
+          >
+            Challenges
+          </a>
+          <a
             href="/externals/games"
             className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
           >

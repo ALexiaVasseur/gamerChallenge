@@ -100,12 +100,15 @@ const ModalConnexion = ({ isOpen, onClose }) => {
               className="p-2 rounded bg-gray-300 text-black"
               value={pseudo}
               onChange={(e) => setPseudo(e.target.value)}
+              name="pseudo" // Ajouté pour le remplissage automatique
+              autoComplete="username" // Ajouté pour le remplissage automatique
             />
             <textarea
                 placeholder="Décrivez-vous en quelques mots..."
                 className="p-2 rounded bg-gray-300 text-black h-20 resize-none"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                name="description-pseudo" // Ajouté pour le remplissage automatique
               />
             </>
           )}
@@ -115,6 +118,8 @@ const ModalConnexion = ({ isOpen, onClose }) => {
             className="p-2 rounded bg-gray-300 text-black"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            name="email" // Ajouté pour le remplissage automatique
+            autoComplete="email" // Ajouté pour le remplissage automatique
           />
           <input
             type="password"
@@ -122,6 +127,8 @@ const ModalConnexion = ({ isOpen, onClose }) => {
             className="p-2 rounded bg-gray-300 text-black"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            name="password" // Ajouté pour le remplissage automatique
+            autoComplete="new-password" // Ajouté pour le remplissage automatique
           />
           {!isLogin && (
             <input
@@ -130,6 +137,8 @@ const ModalConnexion = ({ isOpen, onClose }) => {
               className="p-2 rounded bg-gray-300 text-black"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              name="confirmPassword" // Ajouté pour le remplissage automatique
+              autoComplete="new-password" // Ajouté pour le remplissage automatique
             />
           )}
 

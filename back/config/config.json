@@ -1,6 +1,6 @@
 {
   "development": {
-    "host": "db",
+    "host": "localhost",
     "database": "gamerchallenge", 
     "username": "gamerchallenge", 
     "password": "gamerchallenge",

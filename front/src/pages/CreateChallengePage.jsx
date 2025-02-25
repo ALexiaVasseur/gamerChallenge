@@ -191,6 +191,7 @@ export default function CreateChallengePage() {
                             value={challenge.title}
                             onChange={handleChange}
                             className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
+                            autoComplete="titre-challenge"
                         />
                     </div>
 
@@ -200,6 +201,7 @@ export default function CreateChallengePage() {
                         value={challenge.description}
                         onChange={handleChange}
                         className="w-full h-40 p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
+                        autoComplete="description-challenge"
                     />
 
                     <textarea
@@ -208,6 +210,7 @@ export default function CreateChallengePage() {
                         value={challenge.rules}
                         onChange={handleChange}
                         className="w-full h-40 p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
+                        autoComplete="rules"
                     />
 
                     <input
@@ -217,6 +220,7 @@ export default function CreateChallengePage() {
                         className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
                         value={challenge.video_url}
                         onChange={handleChange}
+                        autoComplete="url-video"
                         
                     />
                     <div className="relative">

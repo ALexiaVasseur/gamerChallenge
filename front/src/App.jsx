@@ -10,6 +10,7 @@ import GameList from './pages/GamesPage';
 import ContactPage from './pages/ContactPage';
 import PolitiqueConfidentialite from './pages/PolitiqueConfid';
 import MentionsLegales from './pages/MentionsLegales';
+import ChallengesPage from './pages/ChallengesPage';
 
 const App = () => {
   return (
@@ -48,6 +49,9 @@ const App = () => {
 
           {/* Route to the legal mentions page */}
           <Route path="/mentions" element={<MentionsLegales />} />
+
+          <Route path="/challenges" element={<ChallengesPage />} />
+
         </Routes>
       </main>
     </>
