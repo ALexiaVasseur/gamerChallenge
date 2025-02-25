@@ -17,7 +17,7 @@ const ChallengesPage = () => {
         }
         const data = await response.json();
 
-        // Transformation des données pour s'assurer qu'elles sont bien formatées
+        
         const formattedChallenges = data.map((challenge) => ({
           id: challenge.id,
           title: challenge.title,
@@ -68,7 +68,7 @@ const ChallengesPage = () => {
         Liste des Challenges
       </h1>
 
-      {/* Barre de recherche */}
+      
       <div className="flex justify-center mb-6">
         <input
           type="text"
