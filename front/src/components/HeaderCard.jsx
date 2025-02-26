@@ -127,15 +127,15 @@ export default function HeaderCard() {
           />
         </div>
 
-        <div className="hidden lg:flex space-x-40 px-10 py-2 text-white text-xl">
-          <div
-            className="relative"
-            onMouseEnter={() => setIsCategoryOpen(true)}
-            onMouseLeave={() => setIsCategoryOpen(false)}
+        <div className="hidden lg:flex space-x-20 px-10 py-2 text-white text-xl">
+        <div className="relative">
+        <div
+            className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500 cursor-pointer"
+            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
           >
-            <div className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500 cursor-pointer">
-              Catégories ▾
-            </div>
+          Catégories ▾
+        </div>
+
             {isCategoryOpen && (
               <div className="absolute mt-2 w-48 bg-[#2a2a2a] rounded-md shadow-lg py-1 text-white z-20">
                 {categories.length === 0 ? (
@@ -178,15 +178,15 @@ export default function HeaderCard() {
 
         <div className="hidden lg:flex items-center">
           {user ? (
-            <div
-              onMouseEnter={() => setIsMenuOpen(true)}
-              onMouseLeave={() => setIsMenuOpen(false)}
-              className="relative"
-            >
-              <button className="w-16 h-16 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[rgba(159,139,32,0.7)] transition">
-                {getInitials(user.pseudo)}
-              </button>
+            <div className="relative">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="w-16 h-16 border border-white text-white flex items-center justify-center rounded-full font-bold text-lg hover:bg-[rgba(159,139,32,0.7)] transition"
+          >
+            {getInitials(user.pseudo)}
+          </button>
 
+              
               {isMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20">
                   <button
@@ -242,6 +242,10 @@ export default function HeaderCard() {
           >
             Leaderboard
           </a>
+
+          <a href="/challenges" onClick={() => setIsMobileMenuOpen(false)}>
+            Challenges
+          </a>
           <a
             href="/externals/games"
             onClick={() => setIsMobileMenuOpen(false)}
@@ -269,7 +273,7 @@ export default function HeaderCard() {
                     <button
                       key={category.id}
                       onClick={() => handleCategorySelect(category.id)}
-                      className="block w-full text-left px-4 py-2 text-sm hover:bg-white hover:text-[#FFD700] transition-all duration-300"
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-[#2a2a2a] hover:text-[#FFD700] transition-all duration-300"
                     >
                       {category.name}
                     </button>

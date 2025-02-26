@@ -23,7 +23,8 @@ app.use(cors({
       "http://192.168.91.196:5173",
       "guillaume-dut-server.eddi.cloud",
       "http://guillaume-dut-server.eddi.cloud",
-      "https://guillaume-dut-server.eddi.cloud"
+      "https://guillaume-dut-server.eddi.cloud",
+      "http://192.168.94.154:5173"
     ];
 
     if (!origin || allowedDomains.includes(origin) || origin === "null") {
