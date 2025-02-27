@@ -45,7 +45,7 @@ async function populateDatabase() {
 
             // Add games
             const games = await Game.bulkCreate([
-                { id_igdb: 12345, title: "Jeu 1", description: "A thrilling adventure game where every decision impacts the world. Explore vast environments and solve challenging puzzles.", genre: "Action", url_video_game: "https://www.youtube.com/watch?v=Y8g733r4wKg" },
+                { id_igdb: 12345, title: "Jeu 1", description: "A thrilling adventure game where every decision impacts the world. Explore vast environments and solve challenging puzzles.", genre: "Action", url_video_game: "https://www.youtube.com/watch?v=DdntHNkUBFY" },
                 { id_igdb: 67890, title: "Jeu 2", description: "An immersive RPG with an epic storyline, travel through various realms and uncover hidden secrets.", genre: "RPG", url_video_game: "https://www.youtube.com/watch?v=CJnfdBMvFko" },
                 { id_igdb: 11223, title: "Jeu 3", description: "A fast-paced competitive game where strategy and quick reflexes are key to victory.", genre: "Shooter", url_video_game: "https://www.youtube.com/watch?v=srp6CXGlQO0" },
                 { id_igdb: 44556, title: "Jeu 4", description: "A sports simulation game where players compete in high-stakes matches across various disciplines.", genre: "Sports", url_video_game: "https://www.youtube.com/watch?v=okz76Rc2lW0" },
@@ -62,8 +62,8 @@ async function populateDatabase() {
 
             // Add challenges
             const challenges = await Challenge.bulkCreate([
-                { game_id: games[0].id, account_id: accounts[0].id, title: "Shadow Quest", description: "Complete an exciting task in this virtual world. Show your skills and creativity!", rules: "No cheating, be respectful to others.", type: "Solo", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/379430/header.jpg", category_id: categories[0].id },
-                { game_id: games[1].id, account_id: accounts[1].id, title: "Arena Domination", description: "Join a competitive match against others. Win the game to become the champion!", rules: "Respect other players, no toxic behavior.", type: "Competitive", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/1174180/header.jpg", category_id: categories[1].id },
+                { game_id: games[0].id, account_id: accounts[0].id, title: "Kingdom Come", description: "Plongez dans un RPG médiéval réaliste où chaque choix influence votre destin. Menez des combats intenses, maîtrisez l'artisanat et explorez un monde ouvert historiquement fidèle.", rules: "Utilisez uniquement les mécaniques du jeu, pas de mods de triche. Respectez les autres joueurs en mode multijoueur et suivez les objectifs du défi.", type: "Solo", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/379430/header.jpg", category_id: categories[0].id },
+                { game_id: games[1].id, account_id: accounts[1].id, title: "Conquest of Westeros", description: "Join a competitive match against others. Win the game to become the champion!", rules: "Respect other players, no toxic behavior.", type: "Competitive", image_url: "https://www.jeuxnavigateur.com/images/thumbnails/game-of-thrones-winter-is-coming.jpg", category_id: categories[1].id },
                 { game_id: games[2].id, account_id: accounts[2].id, title: "Tactical Warfare", description: "Dominate the battlefield with your reflexes and sharp mind!", rules: "Fair play, no team killing.", type: "Team", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/582660/header.jpg", category_id: categories[2].id },
                 { game_id: games[3].id, account_id: accounts[3].id, title: "Ultimate Showdown", description: "Compete against others in this thrilling sports challenge!", rules: "Follow the rules of the game, no cheating.", type: "Competitive", image_url: "https://cdn.akamai.steamstatic.com/steam/apps/678960/header.jpg", category_id: categories[1].id },
                 { game_id: games[4].id, account_id: accounts[4].id, title: "Mind Hack", description: "Solve mind-bending puzzles in a world of mystery and intrigue.", rules: "Think outside the box, no cheating.", type: "Solo", image_url: "https://bigmedia.bpifrance.fr/sites/default/files/styles/bigmedia_article/public/2022-03/mario.jpg?itok=h5P6EMjR", category_id: categories[3].id },
@@ -78,8 +78,8 @@ async function populateDatabase() {
 
             // Add participations
             const participations = await Participate.bulkCreate([
-                { challenge_id: challenges[0].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 10, description: "Successfully completed the challenge!", account_id: accounts[0].id },
-                { challenge_id: challenges[1].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 20, description: "An incredible participation!", account_id: accounts[1].id },
+                { challenge_id: challenges[0].id, video_url: "https://www.youtube.com/watch?v=mSSEWE1vCSg", score: 10, description: "Successfully completed the challenge!", account_id: accounts[0].id },
+                { challenge_id: challenges[1].id, video_url: "https://www.youtube.com/watch?v=6nKREX6YeCY", score: 20, description: "An incredible participation!", account_id: accounts[1].id },
                 { challenge_id: challenges[2].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 15, description: "Teamwork made this challenge fun!", account_id: accounts[2].id },
                 { challenge_id: challenges[3].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 18, description: "What a challenge!", account_id: accounts[3].id },
                 { challenge_id: challenges[4].id, video_url: "https://www.youtube.com/watch?v=e3tKswNLFjc", score: 17, description: "Puzzle solved!", account_id: accounts[4].id },

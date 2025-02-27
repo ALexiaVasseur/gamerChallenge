@@ -269,12 +269,14 @@ const ChallengePage = () => {
 
           <h2 className="text-3xl md:text-3xl font-bold mb-5">Règles</h2>
           <p className="mb-6 text-1xl">{challenge.rules}</p>
-          <button
+          {connected && (
+            <button
             onClick={openModal}
             className="w-full sm:w-auto bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,1)] transition-all duration-500 text-white px-4 py-3 rounded-lg text-lg font-semibold"
-    >
-            Publier ma participation
-          </button>
+            >
+              Publier ma participation
+            </button>
+          )}
           <div className="mt-10">
             <h3 className="font-semibold mb-4">Commentaires</h3>
             <div className="space-y-4">
