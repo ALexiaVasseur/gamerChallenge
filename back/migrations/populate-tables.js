@@ -45,19 +45,92 @@ async function populateDatabase() {
 
             // Add games
             const games = await Game.bulkCreate([
-                { id_igdb: 12345, title: "Jeu 1", description: "A thrilling adventure game where every decision impacts the world. Explore vast environments and solve challenging puzzles.", genre: "Action", url_video_game: "https://www.youtube.com/watch?v=DdntHNkUBFY" },
-                { id_igdb: 67890, title: "Jeu 2", description: "An immersive RPG with an epic storyline, travel through various realms and uncover hidden secrets.", genre: "RPG", url_video_game: "https://www.youtube.com/watch?v=CJnfdBMvFko" },
-                { id_igdb: 11223, title: "Jeu 3", description: "A fast-paced competitive game where strategy and quick reflexes are key to victory.", genre: "Shooter", url_video_game: "https://www.youtube.com/watch?v=srp6CXGlQO0" },
-                { id_igdb: 44556, title: "Jeu 4", description: "A sports simulation game where players compete in high-stakes matches across various disciplines.", genre: "Sports", url_video_game: "https://www.youtube.com/watch?v=okz76Rc2lW0" },
-                { id_igdb: 78901, title: "Jeu 5", description: "A virtual reality puzzle-solving game that immerses you in another world.", genre: "Puzzle", url_video_game: "https://www.youtube.com/watch?v=no1lLbmX2p4" },
-                { id_igdb: 45678, title: "Jeu 6", description: "A sci-fi space shooter with intense dogfights and exploration.", genre: "Shooter", url_video_game: "https://www.youtube.com/watch?v=L2GVD4LRuMM" },
-                { id_igdb: 13579, title: "Jeu 7", description: "A captivating story-driven game where choices matter. Explore a beautifully crafted world.", genre: "Adventure", url_video_game: "https://www.youtube.com/watch?v=vyi4-bCbcn0&t=1s" },
-                { id_igdb: 24680, title: "Jeu 8", description: "An engaging multiplayer game focused on teamwork and strategy to achieve objectives.", genre: "Strategy", url_video_game: "https://www.youtube.com/watch?v=96BvgafNO5o" },
-                { id_igdb: 31415, title: "Jeu 9", description: "A rhythm-based action game where you fight to the beat of the music.", genre: "Rhythm", url_video_game: "https://www.youtube.com/watch?v=vyi4-bCbcn0&t=1s" },
-                { id_igdb: 27182, title: "Jeu 10", description: "A horror survival game that challenges your nerves and wits as you escape from terrifying creatures.", genre: "Horror", url_video_game: "https://www.youtube.com/watch?v=96BvgafNO5o" },
-                { id_igdb: 16180, title: "Jeu 11", description: "An open-world exploration game that allows players to discover hidden treasures and complete quests.", genre: "Open World", url_video_game: "https://www.youtube.com/watch?v=vyi4-bCbcn0&t=1s" },
-                { id_igdb: 17181, title: "Jeu 12", description: "A fast-paced racing game with thrilling tracks and customizable vehicles.", genre: "Racing", url_video_game: "https://www.youtube.com/watch?v=96BvgafNO5o" }
-            ]);
+                {
+                    thumbnail: "https://www.freetogame.com/g/523/thumbnail.jpg",
+                    title: "Jeu 1_fallguys",
+                    description: "A thrilling adventure game where every decision impacts the world. Explore vast environments and solve challenging puzzles.",
+                    genre: "Action",
+                    game_url: "https://www.freetogame.com/open/fall-guys"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/508/thumbnail.jpg",
+                    title: "Jeu 2_enlisted",
+                    description: "An immersive RPG with an epic storyline, travel through various realms and uncover hidden secrets.",
+                    genre: "RPG",
+                    game_url: "https://www.freetogame.com/open/enlisted"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/582/thumbnail.jpg",
+                    title: "Jeu 3_tarisland",
+                    description: "A fast-paced competitive game where strategy and quick reflexes are key to victory.",
+                    genre: "Shooter",
+                    game_url: "https://www.freetogame.com/open/tarisland"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/14/thumbnail.jpg",
+                    title: "Jeu 4_Star Trek Online",
+                    description: "A free-to-play, 3D, Sci-Fi MMORPG based on the popular Star Trek series.",
+                    genre: "MMORPG",
+                    game_url: "https://www.freetogame.com/open/star-trek-online"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/472/thumbnail.jpg",
+                    title: "Jeu 5_Jade Goddess",
+                    description: "Jade Goddess is a free-to-play, browser based MMO inspired by Eastern mythology.",
+                    genre: "Puzzle",
+                    game_url: "https://www.freetogame.com/open/jade-goddess"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/255/thumbnail.jpg",
+                    title: "Jeu 6_Stronghold Kingdoms",
+                    description: "A sci-fi space shooter with intense dogfights and exploration.",
+                    genre: "Shooter",
+                    game_url: "https://www.freetogame.com/open/stronghold-kingdoms"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/350/thumbnail.jpg",
+                    title: "Jeu 7_Goodgame Empire",
+                    description: "A free to play medieval strategy browser game. Build you own castle and create a powerful army! ",
+                    genre: "Adventure",
+                    game_url: "https://www.freetogame.com/open/goodgame-empire"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/466/thumbnail.jpg",
+                    title: "Jeu 8_Valorant",
+                    description: "Test your mettle in Riot Games’ character-based FPS shooter Valorant.",
+                    genre: "Strategy",
+                    game_url: "https://www.freetogame.com/open/valorant"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/573/thumbnail.jpg",
+                    title: "Jeu 9_Titan Revenge",
+                    description: "A 3D Norse-themed browser MMORPG developed and published by Game Hollywood Games",
+                    genre: "Rhythm",
+                    game_url: "https://www.freetogame.com/open/titan-revenge"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/529/thumbnail.jpg",
+                    title: "Jeu 10_Tower of Fantasy",
+                    description: "Tower of Fantasy is a 3D open-world RPG, anime-style sci-fi MMO RPG game with unique characters and beautiful open vistas!",
+                    genre: "Horror",
+                    game_url: "https://www.freetogame.com/open/tower-of-fantasy"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/594/thumbnail.jpg",
+                    title: "Jeu 11_Stalcraft: X",
+                    description: "A free-to-play MMOFPS set in an open-world.",
+                    genre: "Open World",
+                    game_url: "https://www.freetogame.com/open/stalcraft-x"
+                },
+                {
+                    thumbnail: "https://www.freetogame.com/g/230/thumbnail.jpg",
+                    title: "Jeu 12_Ragnarok Online 2",
+                    description: "A 3D fantasy MMORPG, and sequel to the popular Ragnarok Online.",
+                    genre: "Racing",
+                    game_url: "https://www.freetogame.com/open/ragnarok-online-2"
+                }
+            ]
+            );
 
 
             // Add challenges

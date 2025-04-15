@@ -4,9 +4,14 @@ import { sequelize } from './sequelize-client.js';
 export class Game extends Model {}
 
 Game.init({
-  id_igdb: {
-    type: DataTypes.INTEGER,
-    allowNull: true
+  thumbnail: {
+    type: DataTypes.STRING(255), // Changement en STRING pour stocker l'URL de l'image
+    allowNull: false, // Rend obligatoire la présence d'une image
+    validate: {
+      isUrl: {
+        msg: 'thumbnail doit être une URL valide' 
+      }
+    }
   },
   title: {
     type: DataTypes.STRING(255),
@@ -31,9 +36,14 @@ Game.init({
       }
     }
   },
-  url_video_game: {
+  game_url: {
     type: DataTypes.STRING(255),
-    allowNull: true
+    allowNull: false, // Rend obligatoire la présence d'un lien de jeu
+    validate: {
+      isUrl: {
+        msg: 'L’URL du jeu doit être valide'
+      }
+    }
   }
 }, {
   sequelize,

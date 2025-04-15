@@ -16,7 +16,7 @@ describe("🎮 Game Model", () => {
       title: "New Game",
       description: "A great game",
       genre: "Action",
-      url_video_game: "https://example.com/game"
+      game_url: "https://example.com/game"
     });
 
     expect(game.id).toBeDefined();
@@ -30,7 +30,7 @@ describe("🎮 Game Model", () => {
         title: "Invalid Game",
         description: "This game has no genre",
         genre: "", 
-        url_video_game: "https://example.com/game"
+        game_url: "https://example.com/game"
       })
     ).rejects.toThrowError("Le genre ne peut pas être vide");
   });
@@ -41,7 +41,7 @@ describe("🎮 Game Model", () => {
       title: title,
       description: "First game with this title",
       genre: "Action",
-      url_video_game: "https://example.com/game"
+      game_url: "https://example.com/game"
     });
   
     await expect(
@@ -49,7 +49,7 @@ describe("🎮 Game Model", () => {
         title: title,  
         description: "Second game with this title",
         genre: "Adventure",
-        url_video_game: "https://example.com/second-game"
+        game_url: "https://example.com/second-game"
       })
     ).rejects.toThrowError("la valeur d'une clé dupliquée rompt la contrainte unique « games_title_key »");
   });
@@ -61,7 +61,7 @@ describe("🎮 Game Model", () => {
         title: "", 
         description: "A game without a title",
         genre: "Action",
-        url_video_game: "https://example.com/invalid-game"
+        game_url: "https://example.com/invalid-game"
       })
     ).rejects.toThrowError("Validation error: Le titre ne peut pas être vide");
   });
@@ -74,7 +74,7 @@ describe("🎮 Game Model", () => {
       genre: "Puzzle"
     });
 
-    expect(game.url_video_game).toBeNull(); 
+    expect(game.game_url).toBeNull(); 
   });
 
 });

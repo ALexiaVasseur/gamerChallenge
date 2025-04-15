@@ -4,8 +4,48 @@ import cors from "cors";
 import cookieParser from 'cookie-parser';
 import { router as apiRouter } from "./routers/index.js";
 import { notFoundMiddleware, errorHandler } from "./middlewares/index.middleware.js";
+import { WebSocketServer } from 'ws';
+import http from "http";
+
 
 const app = express();
+const server = http.createServer(app); // Création du serveur HTTP pour WebSocket
+
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", (ws) => {
+  console.log("🟢 Nouveau client connecté");
+
+  // Gérer les messages reçus
+  ws.on("message", (message) => {
+    try {
+      const chatMessage = JSON.parse(message); // Parse le message reçu
+
+      // Affiche le message reçu dans la console
+      console.log(`📩 Message reçu de ${chatMessage.username}: ${chatMessage.message}`);
+
+      // Diffuser le message à tous les clients connectés
+      wss.clients.forEach((client) => {
+        if (client.readyState === ws.OPEN) {
+          // Renvoie le message au format JSON
+          client.send(JSON.stringify(chatMessage));
+        }
+      });
+    } catch (error) {
+      console.error("❌ Erreur lors du traitement du message :", error);
+    }
+  });
+
+  // Gérer la déconnexion
+  ws.on("close", (code, reason) => {
+    console.log(`🔴 Client déconnecté (Code: ${code}, Raison: ${reason})`);
+  });
+
+  // Gérer les erreurs
+  ws.on("error", (error) => {
+    console.error("❌ Erreur WebSocket :", error);
+  });
+});
 
 app.use(cookieParser());
 
@@ -50,6 +90,7 @@ app.use(notFoundMiddleware);
 app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`🚀 Server started at http://localhost:${port}`);
 });
+

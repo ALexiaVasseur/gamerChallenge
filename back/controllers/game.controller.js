@@ -16,11 +16,11 @@ export async function getOneGame(req, res) {
 }
 
 const createGameBodySchema = z.object({
-  id_igdb: z.number().int().min(0),
+  thumbnail: z.string().min(1, "L'image est requise'."),
   title: z.string().min(1, "Le titre est requis."),
   description: z.string().min(1, "La description est requis."),
   genre: z.string().min(1, "Le genre est requise."),
-  url_video_game: z.string().url("L'URL vidéo est invalide.").optional(),
+  game_url: z.string().url("L'URL vidéo est invalide.").optional(),
  
 });
 
@@ -33,7 +33,7 @@ export async function createOneGame(req, res){
     throw new BadRequestError(result.error.format()); // Throwing a BadRequestError
   }
 
-  const {id_igdb, title, description, genre,  url_video_game  } = result.data;
+  const {thumbnail, title, description, genre,  game_url  } = result.data;
 
   const existingGame = await Game.findOne({ where: { title} });
   if (existingGame) {
@@ -41,11 +41,11 @@ export async function createOneGame(req, res){
   }
   
   await Game.create({
-  id_igdb,
+  thumbnail,
   title,
   description,
   genre,
-  url_video_game,
+  game_url,
   });
 
   res.status(201).json({

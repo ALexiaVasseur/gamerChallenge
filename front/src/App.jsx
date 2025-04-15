@@ -1,3 +1,4 @@
+// App.jsx
 import { Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import Profile from './pages/UserPage';
@@ -11,49 +12,31 @@ import ContactPage from './pages/ContactPage';
 import PolitiqueConfidentialite from './pages/PolitiqueConfid';
 import MentionsLegales from './pages/MentionsLegales';
 import ChallengesPage from './pages/ChallengesPage';
+import { WebSocketProvider } from "./components/WebSocketContext"; // Assurez-vous que le chemin est correct
+import PrivateChat from './components/PrivateChat'; 
 
 const App = () => {
   return (
     <>
-      <main>
-        <Routes>
-          {/* Route to the home page */}
-          <Route path="/" element={<HomePage />} />
-
-          {/* Route to the profile page, accessible only if the user is logged in */}
-          <Route path="/profile" element={<Profile />} />
-
-          {/* Route to a specific category page */}
-          <Route path="/category/:id" element={<CategoriesPage />} />
-
-          {/* Route to the challenge creation page */}
-          <Route path="/create-challenge" element={<CreateChallengePage />} />
-
-          {/* Route to the leaderboard page */}
-          <Route path="/leaderboard" element={<LeaderBoard />} />
-
-          {/* Route for the 404 error page */}
-          <Route path="*" element={<NotFoundPage />} />
-
-          {/* Route to a specific challenge page */}
-          <Route path="/challenge/:id" element={<ChallengePage />} />
-
-          {/* Route to the game list page */}
-          <Route path="/externals/games" element={<GameList />} />
-
-          {/* Route to the contact page */}
-          <Route path="/contact" element={<ContactPage />} />
-
-          {/* Route to the privacy policy page */}
-          <Route path="/politique" element={<PolitiqueConfidentialite />} />
-
-          {/* Route to the legal mentions page */}
-          <Route path="/mentions" element={<MentionsLegales />} />
-
-          <Route path="/challenges" element={<ChallengesPage />} />
-
-        </Routes>
-      </main>
+      <WebSocketProvider>  {/* ✅ Ajout du WebSocketProvider ici */}
+        <main>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/category/:id" element={<CategoriesPage />} />
+            <Route path="/create-challenge" element={<CreateChallengePage />} />
+            <Route path="/leaderboard" element={<LeaderBoard />} />
+            <Route path="*" element={<NotFoundPage />} />
+            <Route path="/challenge/:id" element={<ChallengePage />} />
+            <Route path="/externals/games" element={<GameList />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/politique" element={<PolitiqueConfidentialite />} />
+            <Route path="/mentions" element={<MentionsLegales />} />
+            <Route path="/challenges" element={<ChallengesPage />} />
+          </Routes>
+        </main>
+        <PrivateChat />
+      </WebSocketProvider>
     </>
   );
 };

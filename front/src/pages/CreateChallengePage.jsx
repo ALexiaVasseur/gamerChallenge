@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 export default function CreateChallengePage() {
     const [challenge, setChallenge] = useState({
@@ -10,7 +10,8 @@ export default function CreateChallengePage() {
         game: "",
         type: "",
         category_id: "",
-        video_url: ""
+        video_url: "",
+        is_external: false // Indication if the game is external
     });
 
     const [searchQuery, setSearchQuery] = useState("");
@@ -18,12 +19,8 @@ export default function CreateChallengePage() {
     const [gamesList, setGamesList] = useState([]);
     const [categories, setCategories] = useState([]);
     const [successMessage, setSuccessMessage] = useState("");
+    const [selectedGameImage, setSelectedGameImage] = useState(null); // State for selected game image
     const navigate = useNavigate();
-
-    const isValidUrl = (url) => {
-        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-        return youtubeRegex.test(url);
-    };
 
     useEffect(() => {
         window.dispatchEvent(new Event("userChanged"));
@@ -41,10 +38,10 @@ export default function CreateChallengePage() {
                 if (response.ok) {
                     setGamesList(data);
                 } else {
-                    console.error("Erreur lors de la récupération des jeux");
+                    console.error("Error fetching games");
                 }
             } catch (error) {
-                console.error("Erreur lors de la récupération des jeux :", error);
+                console.error("Error fetching games:", error);
             }
         };
 
@@ -59,10 +56,10 @@ export default function CreateChallengePage() {
                 if (response.ok) {
                     setCategories(data);
                 } else {
-                    console.error("Erreur lors de la récupération des catégories");
+                    console.error("Error fetching categories");
                 }
             } catch (error) {
-                console.error("Erreur lors de la récupération des catégories :", error);
+                console.error("Error fetching categories:", error);
             }
         };
 
@@ -75,12 +72,13 @@ export default function CreateChallengePage() {
                 const response = await fetch("http://localhost:3000/api/freetogames");
                 const data = await response.json();
                 if (response.ok) {
-                    setGamesList(prevGames => [...prevGames, ...data]);
+                    const validGames = data.filter(game => game.thumbnail && isValidUrl(game.thumbnail));
+                    setGamesList(prevGames => [...prevGames, ...validGames]);
                 } else {
-                    console.error("Erreur lors de la récupération des jeux externes");
+                    console.error("Error fetching external games");
                 }
             } catch (error) {
-                console.error("Erreur lors de la récupération des jeux externes :", error);
+                console.error("Error fetching external games:", error);
             }
         };
 
@@ -99,7 +97,13 @@ export default function CreateChallengePage() {
     };
 
     const handleGameSelect = (game) => {
-        setChallenge({ ...challenge, game: game.id, image_url: game.thumbnail }); 
+        setChallenge(prevChallenge => ({
+            ...prevChallenge,
+            game: game.id,
+            video_url: game.video_url || "", // Automatically set video URL if available
+            is_external: !game.thumbnail // Detect if the game comes from the external API
+        }));
+        setSelectedGameImage(game.thumbnail); // Set the selected game image
         setSearchQuery(game.title);
         setFilteredGames([]);
     };
@@ -113,21 +117,27 @@ export default function CreateChallengePage() {
     
         const userData = localStorage.getItem("user");
         if (!userData) {
-            alert("Utilisateur non connecté.");
+            alert("User not logged in.");
             navigate("/login");
             return;
         }
-
+    
         if (!challenge.game || challenge.game <= 0) {
-            alert("Veuillez sélectionner un jeu valide.");
+            alert("Please select a valid game.");
             return;
         }
     
-        if (challenge.video_url && !isValidUrl(challenge.video_url)) {
-            alert("L'URL de la vidéo YouTube n'est pas valide. Veuillez utiliser un lien YouTube valide.");
+        // Check that the URLs are valid
+        if (!isValidUrl(challenge.image_url)) {
+            alert("The image URL must be valid.");
             return;
         }
-
+    
+        if (challenge.is_external && !isValidUrl(challenge.video_url)) {
+            alert("The video URL must be valid.");
+            return;
+        }
+    
         const challengeData = {
             title: challenge.title,
             description: challenge.description,
@@ -137,7 +147,7 @@ export default function CreateChallengePage() {
             category_id: Number(challenge.category_id),
             account_id: JSON.parse(userData).id,
             type: challenge.type || "default",
-            video_url : challenge.video_url
+            video_url: challenge.video_url || "", // Ensure this is an empty string if no video
         };
     
         try {
@@ -149,16 +159,22 @@ export default function CreateChallengePage() {
     
             const data = await response.json();
             if (response.ok) {
-                setSuccessMessage(data.message || "Challenge créé avec succès.");
+                setSuccessMessage("Challenge créé avec succès."); // Success message updated
                 window.scrollTo(0, 0);
             } else {
-                alert(data.message || "Erreur lors de la création du challenge.");
+                alert(data.message || "Error creating the challenge.");
             }
         } catch (error) {
-            console.error("Erreur API:", error);
-            alert("Erreur lors de la création du challenge.");
+            console.error("API error:", error);
+            alert("Error creating the challenge.");
         }
     };
+    
+    // URL validation function
+    function isValidUrl(url) {
+        const regex = /^(ftp|http|https):\/\/[^ "]+$/;
+        return regex.test(url);
+    }
     
     useEffect(() => {
         if (successMessage) {
@@ -183,17 +199,33 @@ export default function CreateChallengePage() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <input
-                            type="text"
-                            name="title"
-                            placeholder="Titre"
-                            value={challenge.title}
-                            onChange={handleChange}
-                            className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
-                            autoComplete="titre-challenge"
-                        />
-                    </div>
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Titre"
+                        value={challenge.title}
+                        onChange={handleChange}
+                        className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
+                    />
+
+                    <input
+                        type="text"
+                        name="image_url"
+                        placeholder="URL de l'image du challenge"
+                        value={challenge.image_url}
+                        onChange={handleChange}
+                        className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
+                    />
+
+                    {challenge.image_url && isValidUrl(challenge.image_url) && (
+                        <div className="mt-4 flex justify-center">
+                            <img
+                                src={challenge.image_url}
+                                alt="Aperçu de l'image du challenge"
+                                className="w-full max-w-[300px] h-auto max-h-[200px] object-cover rounded-md shadow-md"
+                            />
+                        </div>
+                    )}
 
                     <textarea
                         name="description"
@@ -201,7 +233,6 @@ export default function CreateChallengePage() {
                         value={challenge.description}
                         onChange={handleChange}
                         className="w-full h-40 p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
-                        autoComplete="description-challenge"
                     />
 
                     <textarea
@@ -210,19 +241,8 @@ export default function CreateChallengePage() {
                         value={challenge.rules}
                         onChange={handleChange}
                         className="w-full h-40 p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
-                        autoComplete="rules"
                     />
 
-                    <input
-                        type="text"
-                        name="video_url"
-                        placeholder="URL de la vidéo du jeu YouTube"
-                        className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
-                        value={challenge.video_url}
-                        onChange={handleChange}
-                        autoComplete="url-video"
-                        
-                    />
                     <div className="relative">
                         <input
                             type="text"
@@ -234,9 +254,9 @@ export default function CreateChallengePage() {
                         />
                         {filteredGames.length > 0 && (
                             <ul className="bg-[rgba(48,46,46,0.5)] p-2 rounded-md max-h-40 overflow-auto mt-2">
-                                {filteredGames.map((game, index) => (
+                                {filteredGames.map((game) => (
                                     <li
-                                        key={`${game.id}-${index}`}
+                                        key={game.id}
                                         className="cursor-pointer hover:bg-gray-600 p-2 text-white"
                                         onClick={() => handleGameSelect(game)}
                                     >
@@ -247,36 +267,32 @@ export default function CreateChallengePage() {
                         )}
                     </div>
 
-                    {challenge.image_url && (
-                        <div className="mt-4">
-                            <img src={challenge.image_url} alt="Game Thumbnail" className="w-full h-auto rounded-md" />
+                    {/* Display the selected game's image below the game selection */}
+                    {selectedGameImage && (
+                        <div className="mt-4 flex justify-center">
+                            <img
+                                src={selectedGameImage}
+                                alt="Image du jeu sélectionné"
+                                className="w-full max-w-[300px] h-auto max-h-[200px] object-cover rounded-md shadow-md"
+                            />
                         </div>
                     )}
 
-                    <div className="relative">
-                        <select
-                            name="category_id"
-                            value={challenge.category_id}
-                            onChange={handleChange}
-                            className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
-                        >
-                            <option value="">Sélectionner une catégorie</option>
-                            {categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <p className="text-gray-400 text-sm">
-                        Jeu non listé ? <span className="text-orange-500 cursor-pointer hover:underline">Ajoutez-le</span>
-                    </p>
-
-                    <button
-                        type="submit"
-                        className="w-full p-3 mt-4 bg-[rgba(159,139,32,0.7)] hover:bg-[rgba(159,139,32,0.9)] rounded-lg text-white font-bold text-lg"
+                    <select
+                        name="category_id"
+                        value={challenge.category_id}
+                        onChange={handleChange}
+                        className="w-full p-4 rounded-md bg-white text-black border border-gray-500 placeholder-gray-500 text-lg"
                     >
+                        <option value="">Sélectionner une catégorie</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <button type="submit" className="w-full p-3 mt-4 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white font-bold text-lg">
                         Créer le challenge
                     </button>
                 </form>

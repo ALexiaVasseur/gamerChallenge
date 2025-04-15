@@ -16,6 +16,11 @@ const ChallengePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const userData = JSON.parse(localStorage.getItem("user"));
   const userId = userData?.id;
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+const openFullScreen = () => setIsFullScreen(true);
+const closeFullScreen = () => setIsFullScreen(false);
+
 
   const getYouTubeEmbedUrl = (url) => {
     const match = url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -197,16 +202,47 @@ const ChallengePage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div>
-          {challenge.game?.url_video_game && (
-            <iframe
-              className="w-full max-w-[960px] h-[400px] rounded-lg shadow-2xl mx-auto"
-              src={`${getYouTubeEmbedUrl(challenge.game.url_video_game)}?controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`}
-              title="Game Video"
-              frameBorder="0"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
-            />
-          )}
+        {challenge.game?.game_url && ( 
+  <div className="relative">
+    <iframe
+      className="w-full max-w-[960px] h-[400px] rounded-lg shadow-2xl mx-auto"
+      src={challenge.game.game_url}
+      title="Jeu du challenge"
+      frameBorder="0"
+      allowFullScreen
+    />
+    <button 
+      onClick={openFullScreen}
+      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-6 py-3 rounded-lg text-xl font-bold transition-all hover:bg-black"
+    >
+      🔎 Plein écran
+    </button>
+  </div>
+)}
+
+{isFullScreen && (
+  <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+    <div className="relative w-full h-full">
+      <button 
+        onClick={closeFullScreen}
+        className="absolute top-8 right-8 bg-red-600 text-white px-6 py-3 rounded-lg text-2xl font-bold transition-all hover:bg-red-700"
+      >
+        ❌ Fermer et revenir sur GamerChallenge
+      </button>
+      <iframe
+        className="w-full h-full"
+        src={challenge.game.game_url}
+        title="Jeu en plein écran"
+        frameBorder="0"
+        allowFullScreen
+      />
+    </div>
+  </div>
+)}
+
+
+
+
           <details className="mt-10 bg-white/10 p-5 rounded-lg">
             <summary className="cursor-pointer text-3xl font-semibold">Voir les participations</summary>
             <div className="max-h-[500px] overflow-y-auto space-y-6 mt-4">
@@ -262,6 +298,23 @@ const ChallengePage = () => {
     <FaRegStar key={`empty-${i}`} className="text-gray-400 text-4xl" /> 
   ))}
 </div>
+
+{challenge.game?.thumbnail ? (
+  <div className="w-full flex justify-center my-8">
+    <img
+      src={challenge.game.thumbnail}
+      alt="Thumbnail du jeu"
+      className="w-full max-w-[500px] h-auto max-h-[400px] object-cover rounded-lg shadow-lg"
+      onError={(e) => {
+        e.target.onerror = null;
+        e.target.src = "/path/to/default-thumbnail.png"; // Image de secours
+      }}
+    />
+  </div>
+) : (
+  <p className="text-center text-gray-400 text-lg my-4">Aucune image disponible.</p>
+)}
+
 
 
           <h2 className="text-3xl md:text-3xl font-bold mb-5">Description</h2>

@@ -34,7 +34,8 @@ const HomePage = () => {
         <p className="text-lg sm:text-xl md:text-2xl text-[#898989] mb-4 leading-snug">
           GamerChallenges est une plateforme <span className="text-[#9f8b20]">ambitieuse</span> qui vise à rassembler les joueurs autour de <span className="text-[#9f8b20]">défis ludiques</span> et <span className="text-[#9f8b20]">compétitifs</span>. 
           Ce projet permet de mettre en application diverses <span className="text-[#9f8b20]">compétences techniques</span> et 
-          <span className="text-[#9f8b20] break-words"> organisationnelles</span> tout en offrant une <span className="text-[#9f8b20]">expérience immersive</span> à la communauté gaming.
+          <span className="text-[#9f8b20] break-words"> organisationnelles</span> tout en offrant une <span className="text-[#9f8b20]">expérience immersive</span> à la communauté gaming. Les jeux sont extraits de <span className="text-[#9f8b20]">l&apos;API </span>
+           https://www.freetogame.com
         </p>
       </div>
     </BaseChallenge>

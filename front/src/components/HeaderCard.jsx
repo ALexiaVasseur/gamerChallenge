@@ -128,7 +128,14 @@ export default function HeaderCard() {
         </div>
 
         <div className="hidden lg:flex space-x-20 px-10 py-2 text-white text-xl">
+        <a
+            href="/challenges"
+            className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
+          >
+            Challenges
+          </a>
         <div className="relative">
+          
         <div
             className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500 cursor-pointer"
             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
@@ -156,23 +163,20 @@ export default function HeaderCard() {
               </div>
             )}
           </div>
-          <a
-            href="/leaderboard"
-            className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
-          >
-            Leaderboard
-          </a>
-          <a
-            href="/challenges"
-            className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
-          >
-            Challenges
-          </a>
+          
+          
           <a
             href="/externals/games"
             className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
           >
             Games
+          </a>
+
+          <a
+            href="/leaderboard"
+            className="hover:scale-110 hover:text-[#9f8b20] transition-all duration-500"
+          >
+            Leaderboard
           </a>
         </div>
 
@@ -236,22 +240,12 @@ export default function HeaderCard() {
           <a href="/" onClick={() => setIsMobileMenuOpen(false)}>
             Accueil
           </a>
-          <a
-            href="/leaderboard"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Leaderboard
-          </a>
+          
 
           <a href="/challenges" onClick={() => setIsMobileMenuOpen(false)}>
             Challenges
           </a>
-          <a
-            href="/externals/games"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Games
-          </a>
+          
 
           <div
             className="relative w-full text-center"
@@ -282,6 +276,18 @@ export default function HeaderCard() {
               </div>
             )}
           </div>
+            <a
+            href="/externals/games"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Games
+          </a>
+          <a
+            href="/leaderboard"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Leaderboard
+          </a>
 
           {user ? (
             <button

@@ -8,6 +8,7 @@ import { router as commentRouter } from "./comment_router.js";
 import { router as badgeRouter } from "./badge_router.js"; 
 import { router as categoryRouter } from "./category_router.js"; 
 import { router as apiRouter } from "./api_router.js"; 
+import { router as chatRouter } from "./chat_router.js"; 
 
 
 export const router = Router();
@@ -22,6 +23,7 @@ router.use(commentRouter);
 router.use(badgeRouter);
 router.use(categoryRouter);
 router.use(apiRouter);
+router.use(chatRouter);
 
 // 404 error management
 router.use((req, res) => {
