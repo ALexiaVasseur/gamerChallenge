@@ -14,6 +14,8 @@ import { router as chatRouter } from "./chat_router.js";
 export const router = Router();
 
 // Using routers
+
+  
 router.use(userRouter);
 router.use(challengeRouter);
 router.use(voteRouter);
