@@ -11,10 +11,11 @@ import { logger } from './lib/logger.js'; // Assure-toi que le logger est bien i
 const app = express();
 const server = http.createServer(app); // Création du serveur HTTP pour WebSocket
 
-// Définir la route par défaut avant les autres middlewares
 app.get("/", (req, res) => {
+  console.log("Requête reçue sur la racine (GET /)");
   res.send("Bienvenue sur Gamer Challenge API !");
 });
+
 
 // Configuration du WebSocket
 const wss = new WebSocketServer({ server });
