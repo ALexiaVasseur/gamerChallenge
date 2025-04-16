@@ -21,14 +21,16 @@ const getBadgeForScore = (score) => {
 
 const Leaderboard = () => {
   const [players, setPlayers] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_URL; // Utilise la variable d'environnement
+
 
   useEffect(() => {
     window.dispatchEvent(new Event("userChanged"));
-    fetch("http://localhost:3000/api/leaderboard")
+    fetch(`${apiUrl}/leaderboard`)
       .then((res) => res.json())
       .then((data) => setPlayers(data))
       .catch((err) => console.error("Erreur de récupération:", err));
-  }, []);
+  }, [apiUrl]);
 
   return (
     <div className="flex flex-col items-center min-h-screen py-10 px-4 sm:px-6 lg:px-8">

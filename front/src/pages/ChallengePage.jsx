@@ -17,9 +17,10 @@ const ChallengePage = () => {
   const userData = JSON.parse(localStorage.getItem("user"));
   const userId = userData?.id;
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const openFullScreen = () => setIsFullScreen(true);
+  const closeFullScreen = () => setIsFullScreen(false);
+  const apiUrl = import.meta.env.VITE_API_URL; // Utilise la variable d'environnement
 
-const openFullScreen = () => setIsFullScreen(true);
-const closeFullScreen = () => setIsFullScreen(false);
 
 
   const getYouTubeEmbedUrl = (url) => {
@@ -41,10 +42,10 @@ const closeFullScreen = () => setIsFullScreen(false);
       setLoading(true);
       try {
         const [challengeResponse, commentsResponse, participationsResponse, votesResponse] = await Promise.all([
-          fetch(`http://localhost:3000/api/challenge/${id}`),
-          fetch(`http://localhost:3000/api/challenges/${id}/comments`),
-          fetch(`http://localhost:3000/api/participations/${id}`),
-          fetch(`http://localhost:3000/api/challenge/${id}/votes`),
+        fetch(`${apiUrl}/api/challenge/${id}`),
+        fetch(`${apiUrl}/api/challenges/${id}/comments`),
+        fetch(`${apiUrl}/api/participations/${id}`),
+        fetch(`${apiUrl}/api/challenge/${id}/votes`),
         ]);
 
         if (!challengeResponse.ok) throw new Error("Challenge introuvable");
@@ -73,13 +74,13 @@ const closeFullScreen = () => setIsFullScreen(false);
     };
 
     fetchChallengeData();
-  }, [id]);
+  }, [id,apiUrl]);
 
   useEffect(() => {
     if (!isModalOpen) {
       const fetchParticipations = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/api/participations/${id}`);
+          const response = await fetch(`${apiUrl}/api/participations/${id}`);
           if (response.ok) {
             const participationsData = await response.json();
             setParticipations(participationsData);
@@ -91,7 +92,7 @@ const closeFullScreen = () => setIsFullScreen(false);
 
       fetchParticipations();
     }
-  }, [isModalOpen, id]);
+  }, [isModalOpen, id, apiUrl]);
 
 
   const calculateAverageVote = () => {
@@ -109,7 +110,7 @@ const closeFullScreen = () => setIsFullScreen(false);
     const accountId = userId; 
   
     try {
-      const response = await fetch(`http://localhost:3000/api/challenge/${challengeId}/comment`, {
+      const response = await fetch(`${apiUrl}/api/challenge/${challengeId}/comment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -153,13 +154,13 @@ const closeFullScreen = () => setIsFullScreen(false);
 
   const handleParticipationSubmit = async () => {
     try {
-      const participationResponse = await fetch(`http://localhost:3000/api/participations/${id}`);
+      const participationResponse = await fetch(`${apiUrl}/api/participations/${id}`);
       if (participationResponse.ok) {
         const participationData = await participationResponse.json();
         setParticipations(participationData);
       }
 
-      const votesResponse = await fetch(`http://localhost:3000/api/challenge/${id}/votes`);
+      const votesResponse = await fetch(`${apiUrl}/api/challenge/${id}/votes`);
       if (votesResponse.ok) {
         const votesData = await votesResponse.json();
         setVotes(votesData);

@@ -3,12 +3,14 @@ import BaseChallenge from '../components/BaseChallenge';
 
 const HomePage = () => {
   const [challenges, setChallenges] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_URL; // Utilise la variable d'environnement
+
 
   useEffect(() => {
     window.dispatchEvent(new Event("userChanged"));
     const fetchChallenges = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/sixChallenges");
+        const response = await fetch(`${apiUrl}/sixChallenges`);
         const data = await response.json();
         setChallenges(data);
       } catch (error) {
@@ -17,7 +19,7 @@ const HomePage = () => {
     };
 
     fetchChallenges();
-  }, []);
+  }, [apiUrl]);
 
   return (
     <BaseChallenge 

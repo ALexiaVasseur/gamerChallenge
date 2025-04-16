@@ -21,6 +21,8 @@ export default function CreateChallengePage() {
     const [successMessage, setSuccessMessage] = useState("");
     const [selectedGameImage, setSelectedGameImage] = useState(null); // State for selected game image
     const navigate = useNavigate();
+    const apiUrl = import.meta.env.VITE_API_URL; // Utilise la variable d'environnement
+
 
     useEffect(() => {
         window.dispatchEvent(new Event("userChanged"));
@@ -33,7 +35,7 @@ export default function CreateChallengePage() {
     useEffect(() => {
         const fetchGames = async () => {
             try {
-                const response = await fetch("http://localhost:3000/api/games");
+                const response = await fetch(`${apiUrl}/games`);
                 const data = await response.json();
                 if (response.ok) {
                     setGamesList(data);
@@ -46,12 +48,12 @@ export default function CreateChallengePage() {
         };
 
         fetchGames();
-    }, []);
+    }, [apiUrl]);
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch("http://localhost:3000/api/categories");
+                const response = await fetch(`${apiUrl}/categories`);
                 const data = await response.json();
                 if (response.ok) {
                     setCategories(data);
@@ -64,12 +66,12 @@ export default function CreateChallengePage() {
         };
 
         fetchCategories();
-    }, []);
+    }, [apiUrl]);
 
     useEffect(() => {
         const fetchExternalGames = async () => {
             try {
-                const response = await fetch("http://localhost:3000/api/freetogames");
+                const response = await fetch(`${apiUrl}/freetogames`);
                 const data = await response.json();
                 if (response.ok) {
                     const validGames = data.filter(game => game.thumbnail && isValidUrl(game.thumbnail));
@@ -83,7 +85,7 @@ export default function CreateChallengePage() {
         };
 
         fetchExternalGames();
-    }, []);
+    }, [apiUrl]);
 
     const handleSearchChange = (e) => {
         const query = e.target.value;
@@ -151,7 +153,7 @@ export default function CreateChallengePage() {
         };
     
         try {
-            const response = await fetch("http://localhost:3000/api/challenge", {
+            const response = await fetch(`${apiUrl}/challenge`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(challengeData),

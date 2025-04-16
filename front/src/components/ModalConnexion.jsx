@@ -38,9 +38,11 @@ const ModalConnexion = ({ isOpen, onClose }) => {
       ...(isLogin ? {} : { pseudo, confirmPassword, description }),
     };
 
+    const apiUrl = import.meta.env.VITE_API_URL;  // Utilisation de la variable d'environnement
+
     const url = isLogin
-      ? "http://localhost:3000/api/auth/login"
-      : "http://localhost:3000/api/auth/signup";
+      ? `${apiUrl}/api/auth/login`
+      : `${apiUrl}/api/auth/signup`;
 
     try {
       const response = await fetch(url, {

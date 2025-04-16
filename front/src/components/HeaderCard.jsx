@@ -13,6 +13,7 @@ export default function HeaderCard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef(null);
+  
 
   useEffect(() => {
     const updateUser = () => {
@@ -31,10 +32,11 @@ export default function HeaderCard() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/auth/check", {
+        const apiUrl = import.meta.env.VITE_API_URL; // Récupère l'URL de l'API depuis les variables d'environnement
+        const response = await fetch(`${apiUrl}/api/auth/check`, {
           credentials: "include",
         });
-
+  
         if (!response.ok) {
           console.warn("Token expiré, déconnexion...");
           localStorage.removeItem("user");
@@ -44,22 +46,24 @@ export default function HeaderCard() {
         console.error("Erreur lors de la vérification du token :", error);
       }
     };
-
+  
     const initialTimeout = setTimeout(() => {
       checkAuth();
-
+  
       const intervalId = setInterval(() => {
         checkAuth();
       }, 5000);
-
+  
       return () => clearInterval(intervalId);
     }, 3000);
-
+  
     return () => clearTimeout(initialTimeout);
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/categories")
+    const apiUrl = import.meta.env.VITE_API_URL; // Récupère l'URL de l'API depuis les variables d'environnement
+
+    fetch(`${apiUrl}/categories`)
       .then((response) =>
         response.ok ? response.json() : Promise.reject("Erreur API")
       )

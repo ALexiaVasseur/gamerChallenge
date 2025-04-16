@@ -39,6 +39,9 @@ const Profile = () => {
     }
   }, [badges]);
 
+  const apiUrl = import.meta.env.VITE_API_URL; // Utilise la variable d'environnement
+
+
   useEffect(() => {
     window.dispatchEvent(new Event("userChanged"));
     const userData = localStorage.getItem("user");
@@ -59,7 +62,7 @@ const Profile = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
+        const response = await fetch(`${apiUrl}/user/${userId}`, {
           credentials: "include",
         });
         const data = await response.json();
@@ -81,7 +84,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [userId, assignBadges]);
+  }, [userId, assignBadges, apiUrl]);
 
   if (!user)
     return (
@@ -117,7 +120,7 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
+      const response = await fetch(`${apiUrl}/user/${userId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -150,7 +153,7 @@ const Profile = () => {
     }
   
     try {
-      const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
+      const response = await fetch(`${apiUrl}/user/${userId}`, {
         method: "DELETE",
         credentials: "include",
       });

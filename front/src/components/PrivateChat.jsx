@@ -7,10 +7,12 @@ const PrivateChat = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false); // État pour gérer l'ouverture de la fenêtre de chat
+  const apiUrl = import.meta.env.VITE_API_URL;  // Utilisation de la variable d'environnement
 
+  // Vérification de l'authentification au chargement du composant
   useEffect(() => {
     // Essayer de vérifier l'authentification via une requête
-    fetch('http://localhost:3000/api/chat', {
+    fetch(`${apiUrl}/api/chat`, {
       method: 'GET',
       credentials: 'include' // Cela permettra d'envoyer les cookies
     })
@@ -27,7 +29,7 @@ const PrivateChat = () => {
     .finally(() => {
       setLoading(false);
     });
-  }, []);
+  }, [apiUrl]);
 
   if (loading) {
     return <p>Chargement...</p>;

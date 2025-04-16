@@ -6,11 +6,13 @@ const GameList = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredGames, setFilteredGames] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_URL; // Utilise la variable d'environnement
+
 
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/freetogames");
+        const response = await fetch(`${apiUrl}/freetogames`);
         if (!response.ok) {
           throw new Error(`Network response was not ok: ${response.statusText}`);
         }
@@ -32,7 +34,7 @@ const GameList = () => {
     };
 
     fetchGames();
-  }, []);
+  }, [apiUrl]);
 
   useEffect(() => {
     let filtered = games;

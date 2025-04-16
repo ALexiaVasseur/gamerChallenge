@@ -6,13 +6,14 @@ const CategoriesPage = () => {
   const { id } = useParams();
   const [categoryData, setCategoryData] = useState(null); 
   const [loading, setLoading] = useState(true);        
-  const [error, setError] = useState(null);      
+  const [error, setError] = useState(null);  
+  const apiUrl = import.meta.env.VITE_API_URL;     
 
   useEffect(() => {
     const fetchCategoryData = async () => {
       window.dispatchEvent(new Event("userChanged"));
       try {
-        const response = await fetch(`http://localhost:3000/api/category/${id}`);
+        const response = await fetch(`${apiUrl}/api/category/${id}`);
         if (!response.ok) {
           throw new Error('Erreur lors de la récupération des données de la catégorie');
         }
@@ -27,7 +28,7 @@ const CategoriesPage = () => {
     };
 
     fetchCategoryData();
-  }, [id]);
+  }, [id, apiUrl]);
 
   if (loading) {
     return <div>Chargement...</div>;

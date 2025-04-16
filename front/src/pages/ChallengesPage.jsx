@@ -7,11 +7,13 @@ const ChallengesPage = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredChallenges, setFilteredChallenges] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_URL; // Utilise la variable d'environnement
+
 
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/challenges");
+        const response = await fetch(`${apiUrl}/challenges`);
         if (!response.ok) {
           throw new Error(`Erreur réseau: ${response.statusText}`);
         }
@@ -36,7 +38,7 @@ const ChallengesPage = () => {
     };
 
     fetchChallenges();
-  }, []);
+  }, [apiUrl]);
 
   useEffect(() => {
     let filtered = challenges;

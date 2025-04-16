@@ -46,15 +46,23 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
     
   
     try {
+      const apiUrl = import.meta.env.VITE_API_URL;  // Utilisation de la variable d'environnement
+
       const participationResponse = await fetch(
-        `http://localhost:3000/api/challenge/${challengeId}/participations`,
+        `${apiUrl}/api/challenge/${challengeId}/participations`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ challenge_id: challengeId, video_url: videoUrl, description, vote, account_id: userId, }), 
+          body: JSON.stringify({
+            challenge_id: challengeId,
+            video_url: videoUrl,
+            description,
+            vote,
+            account_id: userId,
+          }),
         }
       );
   
@@ -71,8 +79,10 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
 
       const participationId = participationData.participation.id; 
   
+      
+
       const voteResponse = await fetch(
-        `http://localhost:3000/api/challenge/${challengeId}/participation/${participationId}/vote`,
+        `${apiUrl}/api/challenge/${challengeId}/participation/${participationId}/vote`,
         {
           method: "POST",
           headers: {
@@ -87,6 +97,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
         }
       );
       
+      
   
       if (!voteResponse.ok) {
         const voteError = await voteResponse.json();
@@ -94,17 +105,19 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
         throw new Error(voteError.message || "Erreur lors de l'envoi du vote");
       }
   
-const updateScoreResponse = await fetch(
-  `http://localhost:3000/api/user/${userId}/updateScore`, 
-  {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify({ point: vote }), 
-  }
-);
+
+      const updateScoreResponse = await fetch(
+        `${apiUrl}/api/user/${userId}/updateScore`, 
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ point: vote }), 
+        }
+      );
+      
 
 if (!updateScoreResponse.ok) {
   const updateScoreError = await updateScoreResponse.json();
