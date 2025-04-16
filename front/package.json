@@ -3,11 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "start": "serve dist",
     "dev": "vite --host",
-    "build": "vite build",
-    "lint": "eslint .",
+    "build": "rm -rf node_modules && npm install && vite build",
     "preview": "vite preview --host"
   },
   "dependencies": {
