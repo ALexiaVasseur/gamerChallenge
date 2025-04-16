@@ -41,8 +41,8 @@ const ModalConnexion = ({ isOpen, onClose }) => {
     const apiUrl = import.meta.env.VITE_API_URL;  // Utilisation de la variable d'environnement
 
     const url = isLogin
-      ? `${apiUrl}/api/auth/login`
-      : `${apiUrl}/api/auth/signup`;
+      ? `${apiUrl}/auth/login`
+      : `${apiUrl}/auth/signup`;
 
     try {
       const response = await fetch(url, {

@@ -12,7 +12,7 @@ const PrivateChat = () => {
   // Vérification de l'authentification au chargement du composant
   useEffect(() => {
     // Essayer de vérifier l'authentification via une requête
-    fetch(`${apiUrl}/api/chat`, {
+    fetch(`${apiUrl}/chat`, {
       method: 'GET',
       credentials: 'include' // Cela permettra d'envoyer les cookies
     })

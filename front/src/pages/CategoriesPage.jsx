@@ -13,7 +13,7 @@ const CategoriesPage = () => {
     const fetchCategoryData = async () => {
       window.dispatchEvent(new Event("userChanged"));
       try {
-        const response = await fetch(`${apiUrl}/api/category/${id}`);
+        const response = await fetch(`${apiUrl}/category/${id}`);
         if (!response.ok) {
           throw new Error('Erreur lors de la récupération des données de la catégorie');
         }

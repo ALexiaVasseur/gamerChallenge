@@ -42,10 +42,10 @@ const ChallengePage = () => {
       setLoading(true);
       try {
         const [challengeResponse, commentsResponse, participationsResponse, votesResponse] = await Promise.all([
-        fetch(`${apiUrl}/api/challenge/${id}`),
-        fetch(`${apiUrl}/api/challenges/${id}/comments`),
-        fetch(`${apiUrl}/api/participations/${id}`),
-        fetch(`${apiUrl}/api/challenge/${id}/votes`),
+        fetch(`${apiUrl}/challenge/${id}`),
+        fetch(`${apiUrl}/challenges/${id}/comments`),
+        fetch(`${apiUrl}/participations/${id}`),
+        fetch(`${apiUrl}/challenge/${id}/votes`),
         ]);
 
         if (!challengeResponse.ok) throw new Error("Challenge introuvable");
@@ -80,7 +80,7 @@ const ChallengePage = () => {
     if (!isModalOpen) {
       const fetchParticipations = async () => {
         try {
-          const response = await fetch(`${apiUrl}/api/participations/${id}`);
+          const response = await fetch(`${apiUrl}/participations/${id}`);
           if (response.ok) {
             const participationsData = await response.json();
             setParticipations(participationsData);
@@ -110,7 +110,7 @@ const ChallengePage = () => {
     const accountId = userId; 
   
     try {
-      const response = await fetch(`${apiUrl}/api/challenge/${challengeId}/comment`, {
+      const response = await fetch(`${apiUrl}/challenge/${challengeId}/comment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -154,13 +154,13 @@ const ChallengePage = () => {
 
   const handleParticipationSubmit = async () => {
     try {
-      const participationResponse = await fetch(`${apiUrl}/api/participations/${id}`);
+      const participationResponse = await fetch(`${apiUrl}/participations/${id}`);
       if (participationResponse.ok) {
         const participationData = await participationResponse.json();
         setParticipations(participationData);
       }
 
-      const votesResponse = await fetch(`${apiUrl}/api/challenge/${id}/votes`);
+      const votesResponse = await fetch(`${apiUrl}/challenge/${id}/votes`);
       if (votesResponse.ok) {
         const votesData = await votesResponse.json();
         setVotes(votesData);

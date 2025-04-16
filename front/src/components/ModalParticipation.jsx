@@ -49,7 +49,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
       const apiUrl = import.meta.env.VITE_API_URL;  // Utilisation de la variable d'environnement
 
       const participationResponse = await fetch(
-        `${apiUrl}/api/challenge/${challengeId}/participations`,
+        `${apiUrl}/challenge/${challengeId}/participations`,
         {
           method: "POST",
           headers: {
@@ -82,7 +82,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
       
 
       const voteResponse = await fetch(
-        `${apiUrl}/api/challenge/${challengeId}/participation/${participationId}/vote`,
+        `${apiUrl}/challenge/${challengeId}/participation/${participationId}/vote`,
         {
           method: "POST",
           headers: {
@@ -107,7 +107,7 @@ const ModalParticipation = ({ isOpen, onClose, challengeId, onSubmit }) => {
   
 
       const updateScoreResponse = await fetch(
-        `${apiUrl}/api/user/${userId}/updateScore`, 
+        `${apiUrl}/user/${userId}/updateScore`, 
         {
           method: "PATCH",
           headers: {

@@ -33,7 +33,7 @@ export default function HeaderCard() {
     const checkAuth = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_URL; // Récupère l'URL de l'API depuis les variables d'environnement
-        const response = await fetch(`${apiUrl}/api/auth/check`, {
+        const response = await fetch(`${apiUrl}/auth/check`, {
           credentials: "include",
         });
   
