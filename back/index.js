@@ -6,28 +6,30 @@ import { router as apiRouter } from "./routers/index.js";
 import { notFoundMiddleware, errorHandler } from "./middlewares/index.middleware.js";
 import { WebSocketServer } from 'ws';
 import http from "http";
-
+import { logger } from './lib/logger.js'; // Assure-toi que le logger est bien importé
 
 const app = express();
 const server = http.createServer(app); // Création du serveur HTTP pour WebSocket
 
+// Définir la route par défaut avant les autres middlewares
+app.get("/", (req, res) => {
+  res.send("Bienvenue sur Gamer Challenge API !");
+});
+
+// Configuration du WebSocket
 const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws) => {
   console.log("🟢 Nouveau client connecté");
 
-  // Gérer les messages reçus
   ws.on("message", (message) => {
     try {
       const chatMessage = JSON.parse(message); // Parse le message reçu
 
-      // Affiche le message reçu dans la console
       console.log(`📩 Message reçu de ${chatMessage.username}: ${chatMessage.message}`);
 
-      // Diffuser le message à tous les clients connectés
       wss.clients.forEach((client) => {
         if (client.readyState === ws.OPEN) {
-          // Renvoie le message au format JSON
           client.send(JSON.stringify(chatMessage));
         }
       });
@@ -36,12 +38,10 @@ wss.on("connection", (ws) => {
     }
   });
 
-  // Gérer la déconnexion
   ws.on("close", (code, reason) => {
     console.log(`🔴 Client déconnecté (Code: ${code}, Raison: ${reason})`);
   });
 
-  // Gérer les erreurs
   ws.on("error", (error) => {
     console.error("❌ Erreur WebSocket :", error);
   });
@@ -68,7 +68,6 @@ app.use(cors({
     ];
 
     if (!origin || allowedDomains.includes(origin) || origin === "null") {
-
       callback(null, true);
     } else {
       callback(new Error("CORS non autorisé"));
@@ -80,17 +79,14 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
+// Ton API Router ici
 app.use("/api", apiRouter);
 
-// Not found middleware
-app.use(notFoundMiddleware);
-
-// Error middleware
-app.use(errorHandler);
+// Middleware de gestion des erreurs
+app.use(notFoundMiddleware);  // Gère les routes non trouvées
+app.use(errorHandler);         // Gère les erreurs (NotFoundError et autres)
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`🚀 Server started at http://localhost:${port}`);
 });
-
