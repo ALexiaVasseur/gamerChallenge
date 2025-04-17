@@ -12,28 +12,8 @@ import path from 'path';
 const app = express();
 const server = http.createServer(app); // Création du serveur HTTP pour WebSocket
 
-// Configuration du WebSocket avec vérification de l'origine
-const wss = new WebSocketServer({
-  server,
-  verifyClient: (info, done) => {
-    // Liste des origines autorisées
-    const allowedOrigins = [
-      "http://localhost:5173",  // Local Dev
-      "http://127.0.0.1:5173",  // Local Dev
-      "https://gamerchallenge-frontend.onrender.com", // Production
-      "ws://localhost:3000",  // WebSocket local (Dev)
-      "wss://gamerchallenge.onrender.com", // WebSocket Production
-    ];
-
-    const origin = info.origin || info.headers.origin; // Récupère l'origine de la requête
-
-    if (allowedOrigins.includes(origin)) {
-      done(true); // Autorise la connexion si l'origine est dans la liste
-    } else {
-      done(false, 403, "CORS non autorisé"); // Refuse la connexion avec une erreur 403 si l'origine est non autorisée
-    }
-  }
-});
+// Configuration du WebSocket
+const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws) => {
   console.log("🟢 Nouveau client connecté");
