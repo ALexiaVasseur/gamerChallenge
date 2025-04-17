@@ -6,19 +6,34 @@ import { router as apiRouter } from "./routers/index.js";
 import { notFoundMiddleware, errorHandler } from "./middlewares/index.middleware.js";
 import { WebSocketServer } from 'ws';
 import http from "http";
-import { logger } from './lib/logger.js'; // Assure-toi que le logger est bien importé
+import { logger } from './lib/logger.js';
+import path from 'path';
 
 const app = express();
 const server = http.createServer(app); // Création du serveur HTTP pour WebSocket
 
-app.get("/", (req, res) => {
-  console.log("Requête reçue sur la racine (GET /)");
-  res.send("Bienvenue sur Gamer Challenge API !");
+// Configuration du WebSocket avec vérification de l'origine
+const wss = new WebSocketServer({
+  server,
+  verifyClient: (info, done) => {
+    // Liste des origines autorisées
+    const allowedOrigins = [
+      "http://localhost:5173",  // Local Dev
+      "http://127.0.0.1:5173",  // Local Dev
+      "https://gamerchallenge-frontend.onrender.com", // Production
+      "ws://localhost:3000",  // WebSocket local (Dev)
+      "wss://gamerchallenge.onrender.com", // WebSocket Production
+    ];
+
+    const origin = info.origin || info.headers.origin; // Récupère l'origine de la requête
+
+    if (allowedOrigins.includes(origin)) {
+      done(true); // Autorise la connexion si l'origine est dans la liste
+    } else {
+      done(false, 403, "CORS non autorisé"); // Refuse la connexion avec une erreur 403 si l'origine est non autorisée
+    }
+  }
 });
-
-
-// Configuration du WebSocket
-const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws) => {
   console.log("🟢 Nouveau client connecté");
@@ -84,6 +99,15 @@ app.use("/api", apiRouter);
 app.use(notFoundMiddleware);  // Gère les routes non trouvées
 app.use(errorHandler);         // Gère les erreurs (NotFoundError et autres)
 
+// Servir les fichiers statiques (frontend)
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Gérer toutes les autres requêtes pour rediriger vers index.html (Single Page Application)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+// Démarrer le serveur
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`🚀 Server started at http://localhost:${port}`);

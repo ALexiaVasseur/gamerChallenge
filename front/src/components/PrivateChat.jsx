@@ -8,13 +8,18 @@ const PrivateChat = () => {
   const [error, setError] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false); // État pour gérer l'ouverture de la fenêtre de chat
   const apiUrl = import.meta.env.VITE_API_URL;  // Utilisation de la variable d'environnement
+  const token = localStorage.getItem("token");
 
   // Vérification de l'authentification au chargement du composant
   useEffect(() => {
     // Essayer de vérifier l'authentification via une requête
     fetch(`${apiUrl}/chat`, {
       method: 'GET',
-      credentials: 'include' // Cela permettra d'envoyer les cookies
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      credentials: 'include' 
+      }// Cela permettra d'envoyer les cookies
     })
     .then(response => {
       if (response.ok) {
@@ -29,7 +34,7 @@ const PrivateChat = () => {
     .finally(() => {
       setLoading(false);
     });
-  }, [apiUrl]);
+  }, [apiUrl, token]);
 
   if (loading) {
     return <p>Chargement...</p>;
