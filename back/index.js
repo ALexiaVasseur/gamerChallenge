@@ -60,11 +60,8 @@ app.use(cors({
       "http://172.18.0.4:4173",
       "http://localhost:4173",
       "http://192.168.91.196:5173",
-      "http://192.168.94.105:5173",
       "http://192.168.91.196:5173",
-      "guillaume-dut-server.eddi.cloud",
-      "http://guillaume-dut-server.eddi.cloud",
-      "https://guillaume-dut-server.eddi.cloud",
+      "https://gamerchallenge-frontend.onrender.com",
       "http://192.168.94.154:5173"
     ];
 
